@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_AUTO_FILTER = {
   type: 24,
   name: "Auto Filter",

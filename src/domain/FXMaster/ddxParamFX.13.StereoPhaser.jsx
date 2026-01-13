@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_STEREO_PHASER = {
   type: 13,
   name: "Stereo Phaser",

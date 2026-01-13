@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import knobUrl from "../assets/fader_knob.svg";
 import { buildParamChange, clamp } from "../router/MidiControl";
 import FaderScale from "./FaderScaleComponent";
+import { PARAM_DEFS } from "../domain/ddxParamDefinition";
 
 import {
   normToDb,
@@ -16,16 +17,16 @@ export default function FaderControl({
   min = 0,
   max = 100,
   height = 500,
-  trackWidth = 10,
+  trackWidth = 5,
   knobSize = 70,
   step = 1,
-  showDb = true,
   channelIndex,
   ic,
   apparatusId,
   sender,
   receiver,
 }) {
+  const VOLUME_PARAM = PARAM_DEFS.find((p) => p.key === "volume");
   const isControlled = currentValue != null;
 
   const [internalValue, setInternalValue] = useState(50);
@@ -83,10 +84,9 @@ export default function FaderControl({
 
   // Convert slider value (0..100) -> dB
   const valueDb = useMemo(() => {
-    if (!showDb) return null;
     const db = normToDb(value); // <-- value is 0..100
     return Number.isFinite(db) ? db.toFixed(1) : "-∞";
-  }, [value, showDb]);
+  }, [value]);
 
   // Send SysEx for dB
   const sendSysexDb = useCallback(
@@ -95,7 +95,7 @@ export default function FaderControl({
 
       const module = channelIndex; // adjust if needed: channelIndex - 1
       const value14 = dbToValue14(dbStrOrNum);
-      const changes = [{ module, param: 1, value14 }];
+      const changes = [{ module, param: VOLUME_PARAM.id, value14 }];
       const bytes = buildParamChange({ ic, apparatusId, changes });
       sender.send(bytes);
     },
@@ -121,12 +121,10 @@ export default function FaderControl({
       const nextValue = clientYToValue(clientY);
       setValue(nextValue);
 
-      if (showDb) {
-        const db = normToDb(nextValue); // 0..100 -> dB
-        if (Number.isFinite(db)) sendThrottled(db.toFixed(1));
-      }
+      const db = normToDb(nextValue); // 0..100 -> dB
+      if (Number.isFinite(db)) sendThrottled(db.toFixed(1));
     },
-    [clientYToValue, setValue, showDb, sendThrottled]
+    [clientYToValue, setValue, sendThrottled]
   );
 
   const startDrag = useCallback(
@@ -185,7 +183,7 @@ export default function FaderControl({
 
     for (const change of changes) {
       if (change.module !== channelIndex) continue;
-      if (change.param !== 1) continue;
+      if (change.param !== VOLUME_PARAM.id) continue;
 
       const db = value14ToDb(change.value14);
       const nextNorm = dbToNorm(db); // should return 0..100 with your new mapping
@@ -232,13 +230,13 @@ export default function FaderControl({
             }}
             onMouseDown={(e) => startDrag(e.clientY)}
             onTouchStart={(e) => startDrag(e.touches[0].clientY)}
-            title={`${value}${showDb ? ` (${valueDb} dB)` : ""}`}
+            title={`${value}${` (${valueDb} dB)`}`}
           />
         </div>
       </div>
 
       <div className="fader-readout p-2">
-        <b>{showDb ? `${valueDb} dB` : value}</b>
+        <b>{`${valueDb} dB`}</b>
       </div>
     </>
   );

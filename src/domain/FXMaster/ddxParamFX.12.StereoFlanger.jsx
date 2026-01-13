@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_STEREO_FLANGER = {
   type: 12,
   name: "Stereo Flanger",

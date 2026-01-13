@@ -1,9 +1,11 @@
+import { ParamKind } from "./ddxParamKind";
+
 export const BASE_PARAMS = [
   {
     id: 1,
     key: "volume",
     label: "Volume",
-    kind: "range",
+    kind: ParamKind.RANGE,
     min: 0,
     max: 1472,
     defaultRaw: 0,
@@ -13,7 +15,7 @@ export const BASE_PARAMS = [
     id: 2,
     key: "mute",
     label: "Mute",
-    kind: "switch",
+    kind: ParamKind.SWITCH,
     defaultRaw: 0, // 0/1 (or use true/false if you prefer)
     format: (v) => (v ? "On" : "Off"),
   },
@@ -21,7 +23,7 @@ export const BASE_PARAMS = [
     id: 3,
     key: "pan",
     label: "Pan",
-    kind: "range",
+    kind: ParamKind.RANGE,
     min: 0,
     max: 60,
     defaultRaw: 30,
@@ -31,7 +33,7 @@ export const BASE_PARAMS = [
     id: 4,
     key: "rtToMain",
     label: "Route to Main",
-    kind: "switch",
+    kind: ParamKind.SWITCH,
     defaultRaw: 0, // 0/1 (or use true/false if you prefer)
     format: (v) => (v ? "On" : "Off"),
   },
@@ -39,7 +41,7 @@ export const BASE_PARAMS = [
     id: 5,
     key: "rtToBus",
     label: "Route to Bus",
-    kind: "switch",
+    kind: ParamKind.SWITCH,
     defaultRaw: 0, // 0/1 (or use true/false if you prefer)
     format: (v) => (v ? "On" : "Off"),
   },
@@ -47,7 +49,7 @@ export const BASE_PARAMS = [
     id: 6,
     key: "busVolume",
     label: "Bus Volume",
-    kind: "range",
+    kind: ParamKind.RANGE,
     min: 0,
     max: 1472,
     defaultRaw: 0,
@@ -57,7 +59,7 @@ export const BASE_PARAMS = [
     id: 6,
     key: "busVolumePrePost",
     label: "Bus Volume Pre/Post",
-    kind: "switch",
+    kind: ParamKind.SWITCH,
     defaultRaw: 0, // 0/1 (or use true/false if you prefer)
     format: (v) => (v ? "Pre" : "Post"),
   },
@@ -65,7 +67,7 @@ export const BASE_PARAMS = [
     id: 8,
     key: "busPan",
     label: "Bus Pan",
-    kind: "range",
+    kind: ParamKind.RANGE,
     min: 0,
     max: 60,
     defaultRaw: 30,
@@ -75,7 +77,7 @@ export const BASE_PARAMS = [
     id: 9,
     key: "busPanFollowChannel",
     label: "Bus Pan Follow Channel",
-    kind: "switch",
+    kind: ParamKind.SWITCH,
     defaultRaw: 0, // 0/1 (or use true/false if you prefer)
     format: (v) => (v ? "On" : "Off"),
   },

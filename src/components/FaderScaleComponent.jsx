@@ -41,7 +41,15 @@ export default function FaderScale({
   }, [showMinorTicks, travel, padding, knobSize]);
 
   return (
-    <div style={{ height, width, position: "relative", userSelect: "none" }}>
+    <div
+      style={{
+        height,
+        width,
+        position: "relative",
+        userSelect: "none",
+        color: "white",
+      }}
+    >
       {/* Major ticks + labels */}
       {majorTicks.map((t) => (
         <div

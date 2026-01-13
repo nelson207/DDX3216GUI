@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_STEREO_DELAY = {
   type: 9,
   name: "Stereo Delay",

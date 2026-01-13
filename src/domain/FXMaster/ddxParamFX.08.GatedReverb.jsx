@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_GATED_REVERB = {
   type: 8,
   name: "Gated Reverb",

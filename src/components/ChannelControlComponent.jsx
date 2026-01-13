@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import FaderControl from "./FaderComponent";
+import FaderControl from "./FaderControlComponent";
 import PanControl from "./PanComponent";
 import { buildParamChange } from "../router/MidiControl";
+import { PARAM_DEFS } from "../domain/ddxParamDefinition";
 
 function ChannelControl({
-  channelNumber,
+  channelName,
   channelIndex,
   ic,
   apparatusId,
@@ -12,25 +13,18 @@ function ChannelControl({
   receiver,
 }) {
   const [isMuted, setIsMuted] = useState(false);
-  const [isEqOn, setisEqOn] = useState(false);
+
+  const MUTE_PARAM = PARAM_DEFS.find((p) => p.key === "mute");
+
+  console.log(MUTE_PARAM);
 
   function setAndSendIsMuted() {
     const changes = [];
     const module = channelIndex;
-    changes.push({ module, param: 2, value14: isMuted ? 0 : 1 });
+    changes.push({ module, param: MUTE_PARAM.id, value14: isMuted ? 0 : 1 });
     const bytes = buildParamChange({ ic, apparatusId, changes });
     sender.send(bytes);
     setIsMuted(!isMuted);
-  }
-
-  function setAndSendisEqOn() {
-    const changes = [];
-    let module = channelIndex;
-    changes.push({ module, param: 20, value14: isEqOn ? 0 : 1 });
-
-    const bytes = buildParamChange({ ic, apparatusId, changes });
-    sender.send(bytes);
-    setisEqOn(!isEqOn);
   }
 
   useEffect(() => {
@@ -43,9 +37,6 @@ function ChannelControl({
           if (change.param === 2) {
             setIsMuted(change.value14 !== 0);
           }
-          if (change.param === 20) {
-            setisEqOn(change.value14 !== 0);
-          }
         }
       }
     }
@@ -54,7 +45,7 @@ function ChannelControl({
   return (
     <div className="border border-1">
       <div className="channel p-2">
-        <b>CH {channelNumber}</b>
+        <b>{channelName}</b>
       </div>
       <div className="pan p-2">
         <PanControl />
@@ -73,18 +64,7 @@ function ChannelControl({
           style={{ width: "50%" }}
           onClick={() => setAndSendIsMuted()}
         >
-          M
-        </button>
-
-        <button
-          type="button"
-          className={`btn ${
-            isEqOn ? "btn-warning" : "btn-outline-light"
-          } solo px-1 mx-1`}
-          style={{ width: "50%" }}
-          onClick={() => setAndSendisEqOn()}
-        >
-          E
+          {MUTE_PARAM.label}
         </button>
       </div>
       <div className="">

@@ -1,3 +1,4 @@
+import { ParamKind } from "./ddxParamKind";
 export const GATE_PARAMS = [
   {
     id: 50,

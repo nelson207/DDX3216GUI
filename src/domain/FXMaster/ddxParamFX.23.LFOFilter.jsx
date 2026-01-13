@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_LFO_FILTER = {
   type: 23,
   name: "LFO Filter",

@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_LOFI = {
   type: 25,
   name: "LoFi",

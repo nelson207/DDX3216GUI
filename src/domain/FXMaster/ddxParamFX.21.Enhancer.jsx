@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_ENHANCER = {
   type: 21,
   name: "Enhancer",

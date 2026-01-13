@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_ROOM = {
   type: 4,
   name: "Room",

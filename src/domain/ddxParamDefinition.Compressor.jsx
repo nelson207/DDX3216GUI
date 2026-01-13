@@ -1,9 +1,10 @@
+import { ParamKind } from "./ddxParamKind";
 export const COMPRESSOR_PARAMS = [
   {
     id: 40,
     key: "compOn",
     label: "Compressor On",
-    kind: "switch",
+    kind: ParamKind.SWITCH,
     defaultRaw: 0, // 0/1 (or use true/false if you prefer)
     format: (v) => (v ? "On" : "Off"),
   },
@@ -11,7 +12,7 @@ export const COMPRESSOR_PARAMS = [
     id: 41,
     key: "compKey",
     label: "Compressor Key Source",
-    kind: "enum",
+    kind: ParamKind.ENUM,
     values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
     labels: Object.fromEntries([
       [0, "Self / Sum"],

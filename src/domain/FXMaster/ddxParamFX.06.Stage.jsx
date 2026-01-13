@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_STAGE = {
   type: 6,
   name: "Stage",

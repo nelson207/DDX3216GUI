@@ -1,3 +1,5 @@
+import { ParamKind } from "../ddxParamKind";
+
 export const FX_PLATE = {
   type: 2,
   name: "Plate",

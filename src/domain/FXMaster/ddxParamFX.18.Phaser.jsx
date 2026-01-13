@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_PHASER = {
   type: 18,
   name: "Phaser",

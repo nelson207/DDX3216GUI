@@ -1,3 +1,4 @@
+import { ParamKind } from "./ddxParamKind";
 function makeFXParams(fx) {
   const base = 80 + (fx - 1) * 2;
   return [

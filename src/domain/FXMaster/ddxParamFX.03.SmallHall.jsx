@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_SMALL_HALL = {
   type: 3,
   name: "Small Hall",

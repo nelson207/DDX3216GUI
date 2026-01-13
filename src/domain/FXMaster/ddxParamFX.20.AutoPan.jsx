@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_AUTOPAN = {
   type: 20,
   name: "Autopan",

@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_FLANGER = {
   type: 16,
   name: "Flanger",

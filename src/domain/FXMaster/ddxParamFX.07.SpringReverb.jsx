@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_SPRING_REVERB = {
   type: 7,
   name: "Spring Reverb",

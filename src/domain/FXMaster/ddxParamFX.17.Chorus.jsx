@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_CHORUS = {
   type: 17,
   name: "Chorus",

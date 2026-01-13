@@ -13,7 +13,7 @@
 
   background: transparent; /* we’ll style via track pseudos */
   margin: 0;
-  height: 24px;           /* gives room for the thumb to overflow */
+  height: 24px; /* gives room for the thumb to overflow */
   touch-action: none;
 }
 
@@ -21,24 +21,26 @@
 .pan .pan-slider::-webkit-slider-runnable-track {
   height: 6px;
   border-radius: 4px;
-  background:
-    linear-gradient(to right,
-      transparent 49.5%,
-      rgba(255,255,255,0.35) 49.5%,
-      rgba(255,255,255,0.35) 50.5%,
-      transparent 50.5%);
+  background: linear-gradient(
+    to right,
+    transparent 49.5%,
+    rgba(255, 255, 255, 0.35) 49.5%,
+    rgba(255, 255, 255, 0.35) 50.5%,
+    transparent 50.5%
+  );
 }
 
 /* Firefox track */
 .pan .pan-slider::-moz-range-track {
   height: 6px;
   border-radius: 4px;
-  background:
-    linear-gradient(to right,
-      transparent 49.5%,
-      rgba(255,255,255,0.35) 49.5%,
-      rgba(255,255,255,0.35) 50.5%,
-      transparent 50.5%);
+  background: linear-gradient(
+    to right,
+    transparent 49.5%,
+    rgba(255, 255, 255, 0.35) 49.5%,
+    rgba(255, 255, 255, 0.35) 50.5%,
+    transparent 50.5%
+  );
 }
 
 /* Thumb (WebKit) */
@@ -49,7 +51,7 @@
   height: 16px;
   border-radius: 50%;
   background: white;
-  border: 1px solid rgba(0,0,0,0.25);
+  border: 1px solid rgba(0, 0, 0, 0.25);
   margin-top: -5px; /* center thumb on a 6px track: (16-6)/2 = 5 */
   cursor: pointer;
 }
@@ -60,7 +62,7 @@
   height: 16px;
   border-radius: 50%;
   background: white;
-  border: 1px solid rgba(0,0,0,0.25);
+  border: 1px solid rgba(0, 0, 0, 0.25);
   cursor: pointer;
 }
 
@@ -68,14 +70,17 @@
 .pan .pan-slider:focus {
   outline: none;
 }
-.pan .pan-slider:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgba(0,120,255,.25); }
-.pan .pan-slider:focus-visible::-moz-range-thumb     { box-shadow: 0 0 0 4px rgba(0,120,255,.25); }
-
+.pan .pan-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgba(0, 120, 255, 0.25);
+}
+.pan .pan-slider:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px rgba(0, 120, 255, 0.25);
+}
 
 /* Layout container */
 .fader {
   position: relative;
-  width: 95%;             /* enough room for left scale + slot */
+  width: 95%; /* enough room for left scale + slot */
   margin: 0 auto;
   user-select: none;
   touch-action: none;
@@ -85,10 +90,10 @@
 /* LEFT SCALE ------------------------------------------------------------ */
 .fader-scale {
   position: absolute;
-  left: 8px;               /* gutter from panel edge */
+  left: 8px; /* gutter from panel edge */
   top: 0;
   bottom: 0;
-  width: 40px;             /* space for ticks + labels */
+  width: 40px; /* space for ticks + labels */
   pointer-events: none;
 }
 
@@ -120,7 +125,7 @@
   font-size: 10px;
   line-height: 1;
   color: #aab3bd;
-  text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
   font-feature-settings: "tnum"; /* tabular lining if available */
 }
 
@@ -130,9 +135,9 @@
   bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  background: white;           /* just to see it */
+  background: black; /* just to see it */
   border-radius: 999px;
-  width: 2% !important;
+  max-width: 10% !important;
   height: 90%;
   margin-bottom: 10px;
   margin-top: 10px;
@@ -149,7 +154,9 @@
   padding: 1%;
 }
 
-.fader-knob:active { cursor: grabbing; }
+.fader-knob:active {
+  cursor: grabbing;
+}
 
 .fader-readout {
   position: relative;
@@ -174,4 +181,7 @@
   font: 20px/1.2 system-ui, sans-serif;
   pointer-events: none;
   color: #fff;
+}
+.fader-table {
+  background-color: transparent;
 }

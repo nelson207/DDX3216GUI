@@ -1,3 +1,4 @@
+import { ParamKind } from "./ddxParamKind";
 export const DELAY_PARAMS = [
   {
     id: 60,

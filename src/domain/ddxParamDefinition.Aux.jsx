@@ -1,3 +1,5 @@
+import { ParamKind } from "./ddxParamKind";
+
 function makeAuxParams(aux) {
   const base = 70 + (aux - 1) * 2;
   return [

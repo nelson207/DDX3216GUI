@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_STEREO_CHORUS = {
   type: 11,
   name: "Stereo Chorus",

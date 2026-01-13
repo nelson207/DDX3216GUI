@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_PITCH_SHIFTER = {
   type: 14,
   name: "Pitch Shifter",

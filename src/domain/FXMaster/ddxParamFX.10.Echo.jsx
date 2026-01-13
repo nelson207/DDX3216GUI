@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_ECHO = {
   type: 10,
   name: "Echo",

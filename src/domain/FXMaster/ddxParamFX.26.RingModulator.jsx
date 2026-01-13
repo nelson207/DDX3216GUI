@@ -1,3 +1,4 @@
+import { ParamKind } from "../ddxParamKind";
 export const FX_RING_MODULATOR = {
   type: 26,
   name: "Ring Modulator",

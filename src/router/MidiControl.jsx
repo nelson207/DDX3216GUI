@@ -48,7 +48,7 @@ export function decodeDdXParamChange(data) {
   return { ic, apparatusId, func, nn, changes };
 }
 
-function to14Bit(value) {
+export function to14Bit(value) {
   const v = clamp(Math.round(value), 0, 0x3fff);
   return [(v >> 7) & 0x7f, v & 0x7f];
 }

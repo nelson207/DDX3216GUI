@@ -5,6 +5,7 @@ export const GATE_PARAMS = [
     key: "gateOn",
     label: "Gate On",
     kind: ParamKind.SWITCH,
+    classSelected: "btn-success",
     defaultRaw: 0,
     format: (v) => (v ? "On" : "Off"),
   },

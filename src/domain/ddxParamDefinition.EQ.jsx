@@ -6,7 +6,8 @@ export const EQ_PARAMS = [
     label: "EQ on",
     kind: ParamKind.SWITCH,
     defaultRaw: 0,
-    format: (v) => (v ? "On" : "Off"),
+    classSelected: "btn-success",
+    format: (v) => (v ? "EQ On" : "EQ Off"),
   },
   {
     id: 21,
@@ -14,7 +15,7 @@ export const EQ_PARAMS = [
     label: "EQ band 1 Filter type",
     kind: ParamKind.ENUM,
     values: [0, 1, 2],
-    labels: { 0: "param", 1: "HC", 2: "HSh" },
+    labels: { 0: "Param", 1: "HC", 2: "HSh" },
     defaultRaw: 0,
     format: (v, def) => def.labels?.[v] ?? String(v),
   },
@@ -197,6 +198,7 @@ export const EQ_PARAMS = [
     key: "highPassOn",
     label: "High Pass on",
     kind: ParamKind.SWITCH,
+    classSelected: "btn-success",
     defaultRaw: 0, // 0/1 (or use true/false if you prefer)
     format: (v) => (v ? "On" : "Off"),
   },
@@ -210,7 +212,7 @@ export const EQ_PARAMS = [
     defaultRaw: 0,
     format: (v) => {
       const q = 4 * Math.pow(100, v / 80);
-      return `Q ${q.toFixed(2)}`;
+      return `${q.toFixed(1)} Hz`;
     },
   },
 ];

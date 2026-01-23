@@ -13,7 +13,7 @@
     id="svg2"
     version="1.1"
     inkscape:version="0.91 r13725"
-    viewBox="0 0 56.853088 108.13638"
+    viewBox="0 0 108.13638 56.853088"
     sodipodi:docname="mixer-knob.svg"
     inkscape:export-filename="/home/rutledge/art/mixer-knob.png"
     inkscape:export-xdpi="202.81689"
@@ -213,6 +213,7 @@
       fit-margin-right="0"
       fit-margin-bottom="0"
   />
+  <g transform="rotate(90) translate(0 -108.13638)">
   <rect
       style="fill:#d3d3d3;fill-opacity:1;stroke:#979797;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
       id="rect3342"
@@ -363,6 +364,7 @@
       inkscape:export-xdpi="332.92392"
       inkscape:export-ydpi="332.92392"
   />
+  </g>
   <metadata
     >
     <rdf:RDF

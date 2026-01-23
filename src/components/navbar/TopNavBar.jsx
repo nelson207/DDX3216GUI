@@ -1,39 +1,25 @@
-import React from "react";
+import headerLogoUrl from "../../assets/header-logo-behringer.svg";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setSelectedMidiDeviceIn,
+  setSelectedMidiDeviceOut,
+  setSelectedMidiChannel,
+} from "../../router/slices/midiSlice";
+import { DDX_VIEW_RANGES } from "../../domain/ddxViewRanges";
+import { useMidi } from "../../router/MidiControl";
 
-/**
- * Props:
- * - activeView: string ("ch1_16" | "ch16_32" | "bus" | "aux" | "fx")
- * - setActiveView: (view: string) => void
- * - inputs, outputs: arrays from useMidi()
- * - selectedIn, selectedOut: selected MIDI port objects (or null)
- * - setSelectedIn, setSelectedOut: setters
- * - midiChannel: number 1..16
- * - setMidiChannel: (n: number) => void
- */
-export default function TopNavBar({
-  activeView,
-  setActiveView,
-  inputs,
-  outputs,
-  selectedIn,
-  selectedOut,
-  setSelectedIn,
-  setSelectedOut,
-  midiChannel,
-  setMidiChannel,
-}) {
-  const tabs = [
-    { key: "ch1_16", label: "Channel 1–16" },
-    { key: "ch17_32", label: "Channel 17–32" },
-    { key: "bus1_16", label: "Bus Out 1-16" },
-    { key: "aux_fx", label: "Aux/FX" },
-  ];
+export default function TopNavBar({ activeView, setActiveView }) {
+  const dispatch = useDispatch();
+  const selectedIn = useSelector((s) => s.midi.selectedMidiDeviceIn);
+  const selectedOut = useSelector((s) => s.midi.selectedMidiDeviceOut);
+  const selectedChannel = useSelector((s) => s.midi.selectedMidiChannel);
+  const { inputs, outputs } = useMidi();
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark px-3 fixed-top">
+    <nav className="navbar navbar-expand-lg navbar-dark px-3 bg-dark z-3 h-100 w-100">
       <a className="navbar-brand fw-semibold" href="#">
         <img
-          src="src/assets/header-logo-behringer.svg"
+          src={headerLogoUrl}
           height="32"
           className="d-inline-block align-text-top text-white"
         />
@@ -54,17 +40,16 @@ export default function TopNavBar({
       <div className="collapse navbar-collapse" id="topNav">
         {/* LEFT: tabs */}
         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-          {tabs.map((t) => (
-            <li className="nav-item" key={t.key}>
+          {Object.entries(DDX_VIEW_RANGES).map(([key, { label }]) => (
+            <li className="nav-item" key={key}>
               <button
                 type="button"
-                className={`nav-link btn btn-link text-decoration-none ${
-                  activeView === t.key ? "active" : ""
+                className={`nav-link btn btn-link text-decoration-none fw-bold m-2 ${
+                  activeView === key ? "active" : ""
                 }`}
-                onClick={() => setActiveView(t.key)}
-                style={{ padding: "0.5rem 0.75rem" }}
+                onClick={() => setActiveView(key)}
               >
-                {t.label}
+                {label}
               </button>
             </li>
           ))}
@@ -74,7 +59,7 @@ export default function TopNavBar({
         <div className="d-flex align-items-center">
           <div className="dropdown">
             <button
-              className="btn btn-outline-light dropdown-toggle"
+              className="btn btn-outline-light dropdown-toggle fw-bold"
               type="button"
               id="midiDropdown"
               data-bs-toggle="dropdown"
@@ -84,7 +69,7 @@ export default function TopNavBar({
             </button>
 
             <div
-              className="dropdown-menu dropdown-menu-end p-3 text-white bg-dark"
+              className="dropdown-menu dropdown-menu-end p-3 text-white bg-dark fw-bold"
               aria-labelledby="midiDropdown"
               style={{ minWidth: 320 }}
             >
@@ -93,11 +78,9 @@ export default function TopNavBar({
                 <label className="form-label mb-1">MIDI In</label>
                 <select
                   className="form-select  text-white"
-                  value={selectedIn?.id || ""}
+                  value={selectedIn || ""}
                   onChange={(e) =>
-                    setSelectedIn(
-                      inputs.find((i) => i.id === e.target.value) || null
-                    )
+                    dispatch(setSelectedMidiDeviceIn(e.target.value || null))
                   }
                 >
                   <option value="" className="text-white">
@@ -116,11 +99,9 @@ export default function TopNavBar({
                 <label className="form-label mb-1">MIDI Out</label>
                 <select
                   className="form-select  text-white"
-                  value={selectedOut?.id || ""}
+                  value={selectedOut || ""}
                   onChange={(e) =>
-                    setSelectedOut(
-                      outputs.find((o) => o.id === e.target.value) || null
-                    )
+                    dispatch(setSelectedMidiDeviceOut(e.target.value || null))
                   }
                 >
                   <option value="" className="text-white">
@@ -139,8 +120,10 @@ export default function TopNavBar({
                 <label className="form-label mb-1">MIDI Channel</label>
                 <select
                   className="form-select text-white"
-                  value={midiChannel}
-                  onChange={(e) => setMidiChannel(Number(e.target.value))}
+                  value={selectedChannel}
+                  onChange={(e) =>
+                    dispatch(setSelectedMidiChannel(Number(e.target.value)))
+                  }
                 >
                   {Array.from({ length: 16 }, (_, idx) => idx + 1).map((ch) => (
                     <option key={ch} value={ch} className="text-white">

@@ -1,10 +1,10 @@
 import { useMemo } from "react";
-import { normToDb, N_BREAKS } from "../functions/DBFunction";
+import { normToDb, N_BREAKS } from "../../functions/DBFunction";
 
 // Your 9-interval breakpoints
 
 export default function FaderScale({
-  height = 500,
+  height = 646,
   knobSize = 70,
   padding = 8,
   width = 48, // scale column width

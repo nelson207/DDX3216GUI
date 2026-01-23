@@ -20,17 +20,14 @@ Currently implemented:
 - 🎚 **Channel faders** with accurate logarithmic dB scaling
 - 🎛 **Pan control**
 - 🔇 **Mute**
-- 📊 **Visual dB scale** aligned to fader travel
+- 🔇 **Processing**
 - 🔁 **Bidirectional MIDI/SysEx communication**
 
 Planned / upcoming:
 
-- Solo
-- EQ controls
-- Bus sends
 - Scene recall
 - Preset management
-- Improved MIDI device discovery
+- Improved MIDI device discovery and future API Integration for correct server usage
 - UI refinements and performance optimizations
 
 ---
@@ -40,7 +37,7 @@ Planned / upcoming:
 - **React**
 - **Vite** (fast dev server with HMR)
 - **JavaScript**
-- **Web MIDI API**
+- **Web MIDI API** -> To be Deprecated and replaced with Server Host API
 - **SVG & CSS** for precise fader and scale rendering
 
 ---

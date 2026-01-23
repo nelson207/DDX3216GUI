@@ -5,6 +5,7 @@ export const COMPRESSOR_PARAMS = [
     key: "compOn",
     label: "Compressor On",
     kind: ParamKind.SWITCH,
+    classSelected: "btn-success",
     defaultRaw: 0, // 0/1 (or use true/false if you prefer)
     format: (v) => (v ? "On" : "Off"),
   },

@@ -1,25 +1,31 @@
 export function buildFadersForView(activeView) {
   // Helper to create an item
-  const item = (label, channelIndex) => ({ label, channelIndex });
+  const item = (label, channelId) => ({ label, channelId });
 
   // 1) Channel views
   if (activeView === "ch1_16") {
-    return Array.from(
-      { length: 16 },
-      (_, i) => item(`Ch ${i + 1}`, i) // 1–16 → indices 0–15
-    );
+    return [
+      ...Array.from({ length: 16 }, (_, i) => item(`C ${i + 1}`, i)),
+      item(`Main`, 64),
+    ];
   }
 
   if (activeView === "ch17_32") {
-    return Array.from(
-      { length: 16 },
-      (_, i) => item(`Ch ${i + 17}`, i + 16) // 17–32 → indices 16–31
-    );
+    return [
+      ...Array.from(
+        { length: 16 },
+        (_, i) => item(`C ${i + 17}`, i + 16), // 17–32 → indices 16–31
+      ),
+      item(`Main`, 64),
+    ];
   }
 
   // 2) Bus view: Bus 1..16 mapped to indices 32..47
   if (activeView === "ch33_49" || activeView === "bus1_16") {
-    return Array.from({ length: 16 }, (_, i) => item(`Bus ${i + 1}`, 32 + i));
+    return [
+      ...Array.from({ length: 16 }, (_, i) => item(`B ${i + 1}`, 32 + i)),
+      item(`Main`, 64),
+    ];
   }
 
   // 3) “Higher” view: Aux + FX Send + FX Return
@@ -32,7 +38,7 @@ export function buildFadersForView(activeView) {
     return [
       ...Array.from({ length: 4 }, (_, i) => item(`Aux ${i + 1}`, auxBase + i)),
       ...Array.from({ length: 4 }, (_, i) =>
-        item(`Fx Send ${i + 1}`, fxSendBase + i)
+        item(`Fx Send ${i + 1}`, fxSendBase + i),
       ),
       ...Array.from({ length: 8 }, (_, i) => {
         const fxNumber = Math.floor(i / 2) + 1;
@@ -43,5 +49,5 @@ export function buildFadersForView(activeView) {
   }
 
   // Default fallback
-  return Array.from({ length: 32 }, (_, i) => item(`Ch ${i + 1}`, i));
+  return [];
 }

@@ -1,117 +1,55 @@
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js"; // <-- IMPORTANT for dropdown
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./App.css";
-
-import TopNavBar from "./components/TopNavBarComponent";
-import ChannelControl from "./components/ChannelControlComponent";
-import {
-  useMidi,
-  packIC,
-  useSender,
-  clamp,
-  useReceiver,
-  buildCurrentSettingsRequest,
-  decodeDdXParamChange,
-  toHex,
-} from "./router/MidiControl";
-import { buildFadersForView } from "./functions/ChannelFunction";
-
-// ... keep your Field / NumberInput / Toggle as-is
+import TopNavBar from "./components/navbar/TopNavBar";
+import ChannelSelectNavBar from "./components/NavBar/ChannelSelectNavBar";
+import ChannelProcNavBar from "./components/NavBar/ChannelProcNavBar";
+import ChannelFXPanel from "./components/panels/FxPanel";
+import ProcPanel from "./components/panels/procpanel";
+import FadersPanel from "./components/panels/FadersPanel";
 
 function App() {
-  const VIEW_RANGES = {
-    ch1_16: { start: 0, count: 16 },
-    ch17_32: { start: 16, count: 16 },
-    bus1_16: { start: 32, count: 16 },
-    aux_fx: { start: 48, count: 16 },
-  };
-
+  //Channel Selection
   const [activeView, setActiveView] = useState("ch1_16");
-  const [selectedOut, setSelectedOut] = useState(null);
-  const [selectedIn, setSelectedIn] = useState(null);
-  const { inputs, outputs } = useMidi();
+  const [channelSelected, setChannelSelected] = useState(1);
+  const [processorSelected, setProcessorSelected] = useState("EQ");
 
-  const [ic, setIc] = useState(packIC({ midiChannel: 1, ignoreFlags: 0 }));
-  const [apparatusId, setApparatusId] = useState(11);
-  const [omni, setOmni] = useState(false);
-  const [ignoreAppId, setIgnoreAppId] = useState(false);
-
-  const sender = useSender(selectedOut);
-  const { lastMsg } = useReceiver(selectedIn);
-
-  // convenience helpers for MIDI channel 1..16
-  const midiChannel = (ic & 0x0f) + 1;
-  const setMidiChannel = (ch) =>
-    setIc(((ic & 0x70) | clamp(ch - 1, 0, 15)) & 0x7f);
-
-  useEffect(() => {
-    if (!selectedIn) return;
-    if (!selectedOut) return;
-    if (!sender?.send) return;
-
-    const modules = Array.from({ length: 1 }, (_, i) => i);
-    const reqs = modules.map((m) => ({ module: m, param: 2 }));
-
-    for (let i = 0; i < reqs.length; i += 23) {
-      const bytes = buildCurrentSettingsRequest({ ic, apparatusId });
-      console.log(toHex(bytes));
-      console.log(decodeDdXParamChange(bytes));
-      sender.send(bytes);
-    }
-  }, [selectedIn, selectedOut]);
-
-  const { start, count } = VIEW_RANGES[activeView] ?? VIEW_RANGES.ch1_16;
-  const faders = buildFadersForView(activeView);
+  const isChannelFXMenu = activeView === "ch_fx";
+  const isChannelProcessorMenu = activeView === "ch_proc";
+  const showFaders = !isChannelFXMenu && !isChannelProcessorMenu;
 
   return (
     <>
-      <TopNavBar
-        activeView={activeView}
-        setActiveView={setActiveView}
-        inputs={inputs}
-        outputs={outputs}
-        selectedIn={selectedIn}
-        selectedOut={selectedOut}
-        setSelectedIn={setSelectedIn}
-        setSelectedOut={setSelectedOut}
-        midiChannel={midiChannel}
-        setMidiChannel={setMidiChannel}
-      />
+      <div className="NavBar h-top-nav-area">
+        <TopNavBar activeView={activeView} setActiveView={setActiveView} />
+      </div>
+      <div className="SecondNav h-second-nav-area">
+        {(isChannelFXMenu || isChannelProcessorMenu) && (
+          <ChannelSelectNavBar
+            selected={channelSelected}
+            onSelect={setChannelSelected}
+          />
+        )}
+        {isChannelProcessorMenu && (
+          <ChannelProcNavBar
+            selected={processorSelected}
+            onSelect={setProcessorSelected}
+          ></ChannelProcNavBar>
+        )}
+      </div>
+      <div className="Mixer h-mixer-area">
+        {showFaders && <FadersPanel activeView={activeView}></FadersPanel>}
 
-      {/* The rest of your UI can remain below */}
-      {/* ... your existing Field / Apparatus / etc ... */}
-
-      <div className="container-fluid mt-3 fixed-bottom mb-2">
-        <table className="w-100 fader-table" style={{ tableLayout: "fixed" }}>
-          <tbody>
-            <tr>
-              {faders.map(({ label, channelIndex }) => (
-                <td key={channelIndex}>
-                  <ChannelControl
-                    channelName={label}
-                    channelIndex={channelIndex}
-                    ic={ic}
-                    apparatusId={apparatusId}
-                    sender={sender}
-                    receiver={lastMsg}
-                  />
-                </td>
-              ))}
-              {/* MAIN stays always visible */}
-              <td key="main">
-                <ChannelControl
-                  channelName="Main"
-                  channelIndex={64}
-                  ic={ic}
-                  apparatusId={apparatusId}
-                  sender={sender}
-                  receiver={lastMsg}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        {isChannelProcessorMenu && (
+          <ProcPanel
+            selectedChannel={channelSelected}
+            selectedProcessor={processorSelected}
+          />
+        )}
+        {isChannelFXMenu && (
+          <ChannelFXPanel selectedChannel={channelSelected} />
+        )}
       </div>
     </>
   );

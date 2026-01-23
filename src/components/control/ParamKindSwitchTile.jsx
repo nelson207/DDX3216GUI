@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelectedMidi } from "../../router/MidiSelected";
-import { useSender } from "../../router/MidiControl";
+import { useReceiver, useSender } from "../../router/MidiControl";
 import sendThrottled from "../../router/MidiSend";
 
 function ParamKindSwitchTile({
@@ -12,8 +12,9 @@ function ParamKindSwitchTile({
   processorId,
 }) {
   const [cValue, setCValue] = useState(value);
-  const { selectedOut, selectedChannel } = useSelectedMidi();
+  const { selectedOut, selectedIn, selectedChannel } = useSelectedMidi();
   const sender = useSender(selectedOut);
+  const { lastMsg } = useReceiver(selectedIn);
 
   useEffect(() => {
     if (!selectedOut) return;
@@ -21,6 +22,22 @@ function ParamKindSwitchTile({
     sendThrottled(channelId, processorId, cValue, sender, selectedChannel);
     console.log(`${componentId} value changed to ${cValue}`);
   }, [cValue]);
+
+  useEffect(() => {
+    if (lastMsg?.decoded) {
+      const changes = lastMsg?.decoded?.changes;
+
+      if (!Array.isArray(changes)) return;
+
+      for (const change of changes) {
+        if (change.module === channelId) {
+          if (change.param === processorId) {
+            setCValue(change.value14);
+          }
+        }
+      }
+    }
+  }, [lastMsg]);
 
   return (
     <>

@@ -1,6 +1,8 @@
 # DDX3216 GUI
 
 ![DDX3216 GUI Screenshot](./screenshots/screenshot1.png)
+![DDX3216 FX Screenshot](./screenshots/screenshot2.png)
+![DDX3216 Processing Screenshot](./screenshots/screenshot3.png)
 
 A **web-based control interface** for the **Behringer DDX3216 digital mixer**, built with **React + Vite**.
 
@@ -21,6 +23,7 @@ Currently implemented:
 - 🎛 **Pan control**
 - 🔇 **Mute**
 - 🔇 **Processing**
+- 🔇 **FX**
 - 🔁 **Bidirectional MIDI/SysEx communication**
 
 Planned / upcoming:

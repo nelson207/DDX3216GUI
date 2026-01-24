@@ -7,10 +7,10 @@ function ParamCell(
   props = {
     def,
     value,
-    componentId,
-    channelId,
-    channelLabel,
-    processorId,
+    componentid,
+    channelid,
+    channellabel,
+    processorid,
   },
 ) {
   return (
@@ -42,3 +42,16 @@ function ParamCell(
   );
 }
 export default ParamCell;
+
+export function EmptyCell() {
+  return (
+    <div
+      className="border border-secondary rounded-3 bg-dark bg-opacity-50"
+      style={{
+        borderStyle: "dashed",
+        minHeight: 78,
+        opacity: 0.5,
+      }}
+    />
+  );
+}

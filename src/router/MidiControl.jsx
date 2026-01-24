@@ -147,9 +147,6 @@ export function buildParamChange({ ic, apparatusId, changes }) {
     payload.push(module & 0x7f, param & 0x7f, hi, lo);
   }
 
-  var returnvalue = endSysEx([...header, ...body, ...payload]);
-
-  console.log(returnvalue);
   return endSysEx([...header, ...body, ...payload]);
 }
 
@@ -206,21 +203,17 @@ export function useReceiver(selectedIn, { logRawHex = true } = {}) {
       const data = e.data; // Uint8Array
       const bytes = Array.from(data);
 
-      if (logRawHex) {
-        console.log("MIDI IN:", toHex(bytes));
-      }
-
       // Try decode known DDX messages
       const decoded = decodeDdXParamChange(data);
-      console.log("MIDI Decoded", decoded);
 
       const decoded2 = decodeCurrentSettingsDump(data);
-      console.log("MIDI Decoded2", decoded2);
 
       const msg = {
         time: new Date(),
+        data,
         bytes,
         decoded, // null if not recognized
+        decoded2,
         raw: data,
       };
 
@@ -244,6 +237,7 @@ export function useReceiver(selectedIn, { logRawHex = true } = {}) {
 export const F_ALL = 0x00; // <-- confirm your spec's actual values
 export const F_SETUP = 0x01;
 export const F_CHANL = 0x02;
+export const F_SNAPS = 0x07;
 // ... etc
 
 export function buildCurrentSettingsRequest({
@@ -280,20 +274,22 @@ export function decodeCurrentSettingsDump(data) {
 
   const ic = data[4];
   const apparatusId = data[5];
-  const func = data[6]; // should be 0x10 for dump block
-
+  const func = data[6]; // 0x10 for dump
   if (func !== 0x10) return null;
 
-  const vv = data[7];
-  const totalBlocks = (data[8] << 7) | data[9];
-  const blockIndex = (data[10] << 7) | data[11];
+  const what = data[7]; // <-- IMPORTANT (ww)
+  const vv = data[8];
 
-  // data length field (7-bit), might appear as one byte in your notes
-  const byteCount = data[12];
+  const totalBlocks = ((data[9] & 0x7f) << 7) | (data[10] & 0x7f);
+  const blockIndex = ((data[11] & 0x7f) << 7) | (data[12] & 0x7f);
 
-  // packed payload starts at 13
-  const packedPayload = Array.from(data.slice(13, 13 + byteCount));
-  const checksum = data[13 + byteCount];
+  const byteCount = data[13] & 0x7f; // 7-bit length
+
+  const payloadStart = 14;
+  const payloadEnd = payloadStart + byteCount;
+
+  const packedPayload = Array.from(data.slice(payloadStart, payloadEnd));
+  const checksum = data[payloadEnd] & 0x7f;
 
   const rawPayload = depack7bit(packedPayload);
 
@@ -301,12 +297,13 @@ export function decodeCurrentSettingsDump(data) {
     ic,
     apparatusId,
     func,
+    what,
     vv,
     totalBlocks,
     blockIndex,
     byteCount,
     checksum,
-    rawPayload, // 8-bit bytes (0..255)
-    packedPayload, // original 7-bit packed
+    rawPayload,
+    packedPayload,
   };
 }

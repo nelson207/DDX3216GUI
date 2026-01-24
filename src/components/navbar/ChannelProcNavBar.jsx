@@ -1,5 +1,13 @@
 function ChannelProcNavBar({ selected, onSelect }) {
-  const processors = ["EQ", "Compressor", "Gate", "Delay", "Routing"];
+  const processors = [
+    "EQ",
+    "Compressor",
+    "Gate",
+    "Delay",
+    "Routing",
+    "Aux",
+    "Fx",
+  ];
 
   return (
     <nav

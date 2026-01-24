@@ -13,8 +13,12 @@ function FadersPanel({ activeView }) {
 
   return (
     <div className="mixer p-0 h-100 w-100 d-flex">
-      {FADERS.map(({ label, channelId }) => (
-        <div className="channel border border-secondary rounded-3">
+      {FADERS.map(({ label, channelid }) => (
+        <div
+          id={`f_${channelid}`}
+          key={`f_${channelid}`}
+          className="channel border border-secondary rounded-3"
+        >
           <p className="channel-label mb-2 text-white w-100 text-center fw-bold text-truncate">
             {label}
           </p>
@@ -23,10 +27,10 @@ function FadersPanel({ activeView }) {
               <ParamKindRangeTile
                 def={PAN_PARAM}
                 value={PAN_PARAM.defaultRaw}
-                componentId={`ch_${String(channelId)}_${PAN_PARAM.key}`}
-                channelId={channelId}
-                channelLabel={label}
-                processorId={PAN_PARAM.id}
+                componentid={`ch_${String(channelid)}_${PAN_PARAM.key}`}
+                channelid={channelid}
+                channellabel={label}
+                processorid={PAN_PARAM.id}
               />
             )}
           </div>
@@ -35,10 +39,10 @@ function FadersPanel({ activeView }) {
               <ParamKindSwitchTile
                 def={MUTE_PARAM}
                 value={MUTE_PARAM.defaultRaw}
-                componentId={`ch_${String(channelId)}_${MUTE_PARAM.key}`}
-                channelId={channelId}
-                channelLabel={label}
-                processorId={MUTE_PARAM.id}
+                componentid={`ch_${String(channelid)}_${MUTE_PARAM.key}`}
+                channelid={channelid}
+                channellabel={label}
+                processorid={MUTE_PARAM.id}
               />
             )}
           </div>
@@ -46,10 +50,10 @@ function FadersPanel({ activeView }) {
             <FaderRange
               def={VOLUME_PARAM}
               value={VOLUME_PARAM.defaultRaw}
-              componentId={`ch_${String(channelId)}_${VOLUME_PARAM.key}`}
-              channelId={channelId}
-              channelLabel={label}
-              processorId={VOLUME_PARAM.id}
+              componentid={`ch_${String(channelid)}_${VOLUME_PARAM.key}`}
+              channelid={channelid}
+              channellabel={label}
+              processorid={VOLUME_PARAM.id}
             ></FaderRange>
           </div>
         </div>

@@ -6,10 +6,10 @@ import sendThrottled from "../../router/MidiSend";
 function ParamKindRangeTile({
   def,
   value,
-  componentId,
-  channelId,
-  channelLabel,
-  processorId,
+  componentid,
+  channelid,
+  channellabel,
+  processorid,
 }) {
   const [cValue, setCValue] = useState(value);
   const { selectedOut, selectedIn, selectedChannel } = useSelectedMidi();
@@ -19,8 +19,7 @@ function ParamKindRangeTile({
   useEffect(() => {
     if (!selectedOut) return;
 
-    sendThrottled(channelId, processorId, cValue, sender, selectedChannel);
-    console.log(`${componentId} value changed to ${cValue}`);
+    sendThrottled(channelid, processorid, cValue, sender, selectedChannel);
   }, [cValue]);
 
   useEffect(() => {
@@ -30,8 +29,8 @@ function ParamKindRangeTile({
       if (!Array.isArray(changes)) return;
 
       for (const change of changes) {
-        if (change.module === channelId) {
-          if (change.param === processorId) {
+        if (change.module === channelid) {
+          if (change.param === processorid) {
             setCValue(change.value14);
           }
         }
@@ -50,15 +49,15 @@ function ParamKindRangeTile({
           value={cValue}
           onChange={(e) => setCValue(Number(e.target.value))}
           onDoubleClick={() => setCValue(def.defaultRaw)}
-          id={componentId}
-          channelId={channelId}
-          channelLabel={channelLabel}
-          processorId={processorId}
+          id={componentid}
+          channelid={channelid}
+          channellabel={channellabel}
+          processorid={processorid}
         />
       </div>
       <output
-        htmlFor={componentId}
-        id={`rangeValue_${componentId}`}
+        htmlFor={componentid}
+        id={`rangeValue_${componentid}`}
         aria-hidden="true"
       >
         {def.format(cValue)}

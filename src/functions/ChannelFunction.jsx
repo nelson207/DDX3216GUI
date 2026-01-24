@@ -1,6 +1,6 @@
 export function buildFadersForView(activeView) {
   // Helper to create an item
-  const item = (label, channelId) => ({ label, channelId });
+  const item = (label, channelid) => ({ label, channelid });
 
   // 1) Channel views
   if (activeView === "ch1_16") {

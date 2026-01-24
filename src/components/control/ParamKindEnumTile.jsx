@@ -6,10 +6,10 @@ import sendThrottled from "../../router/MidiSend";
 function ParamKindEnumTile({
   def,
   value,
-  componentId,
-  channelId,
-  channelLabel,
-  processorId,
+  componentid,
+  channelid,
+  channellabel,
+  processorid,
 }) {
   const [cValue, setCValue] = useState(value);
   const { selectedOut, selectedIn, selectedChannel } = useSelectedMidi();
@@ -19,8 +19,8 @@ function ParamKindEnumTile({
   useEffect(() => {
     if (!selectedOut) return;
 
-    sendThrottled(channelId, processorId, cValue, sender, selectedChannel);
-    console.log(`${componentId} value changed to ${cValue}`);
+    sendThrottled(channelid, processorid, cValue, sender, selectedChannel);
+    console.log(`${componentid} value changed to ${cValue}`);
   }, [cValue]);
 
   useEffect(() => {
@@ -30,8 +30,8 @@ function ParamKindEnumTile({
       if (!Array.isArray(changes)) return;
 
       for (const change of changes) {
-        if (change.module === channelId) {
-          if (change.param === processorId) {
+        if (change.module === channelid) {
+          if (change.param === processorid) {
             setCValue(change.value14);
           }
         }
@@ -44,10 +44,10 @@ function ParamKindEnumTile({
       className="form-select m-2 w-75  text-center bg-dark text-light mx-auto"
       value={cValue}
       onChange={(e) => setCValue(e.target.checked)}
-      id={componentId}
-      channelId={channelId}
-      channelLabel={channelLabel}
-      processorId={processorId}
+      id={componentid}
+      channelid={channelid}
+      channellabel={channellabel}
+      processorid={processorid}
     >
       {(def.values ?? []).map((v) => (
         <option key={v} value={v}>

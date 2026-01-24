@@ -9,7 +9,6 @@ export default function sendThrottled(
 ) {
   // You MUST decide how channel maps to module/param for your mixer.
   // Example placeholders:
-  console.log(value);
   const module = channelId; // adjust if needed: channelIndex - 1
   const value14 = value;
   const changes = [{ module, param: processorId, value14 }];

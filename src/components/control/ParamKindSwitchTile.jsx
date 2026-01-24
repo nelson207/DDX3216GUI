@@ -6,10 +6,10 @@ import sendThrottled from "../../router/MidiSend";
 function ParamKindSwitchTile({
   def,
   value,
-  componentId,
-  channelId,
-  channelLabel,
-  processorId,
+  componentid,
+  channelid,
+  channellabel,
+  processorid,
 }) {
   const [cValue, setCValue] = useState(value);
   const { selectedOut, selectedIn, selectedChannel } = useSelectedMidi();
@@ -19,19 +19,20 @@ function ParamKindSwitchTile({
   useEffect(() => {
     if (!selectedOut) return;
 
-    sendThrottled(channelId, processorId, cValue, sender, selectedChannel);
-    console.log(`${componentId} value changed to ${cValue}`);
+    sendThrottled(channelid, processorid, cValue, sender, selectedChannel);
+    console.log(`${componentid} value changed to ${cValue}`);
   }, [cValue]);
 
   useEffect(() => {
+    console.log(lastMsg);
     if (lastMsg?.decoded) {
       const changes = lastMsg?.decoded?.changes;
 
       if (!Array.isArray(changes)) return;
 
       for (const change of changes) {
-        if (change.module === channelId) {
-          if (change.param === processorId) {
+        if (change.module === channelid) {
+          if (change.param === processorid) {
             setCValue(change.value14);
           }
         }
@@ -46,14 +47,14 @@ function ParamKindSwitchTile({
         className="btn-check"
         checked={cValue}
         onChange={(e) => setCValue(e.target.checked)}
-        id={componentId}
-        channelId={channelId}
-        channelLabel={channelLabel}
-        processorId={processorId}
+        id={componentid}
+        channelid={channelid}
+        channellabel={channellabel}
+        processorid={processorid}
       />
       <label
         className={`btn m-2 w-75 text-truncate ${cValue ? def.classSelected : "btn-outline-light"}`}
-        htmlFor={componentId}
+        htmlFor={componentid}
       >
         {def.format(cValue)}
       </label>

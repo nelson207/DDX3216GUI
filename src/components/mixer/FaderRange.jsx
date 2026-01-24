@@ -7,10 +7,10 @@ import { useSelectedMidi } from "../../router/MidiSelected";
 function FaderRange({
   def,
   value,
-  componentId,
-  channelId,
-  channelLabel,
-  processorId,
+  componentid,
+  channelid,
+  channellabel,
+  processorid,
   showScale = true,
 }) {
   const [faderValue, setFaderValue] = useState(value);
@@ -19,9 +19,8 @@ function FaderRange({
   const { lastMsg } = useReceiver(selectedIn);
 
   useEffect(() => {
-    console.log(`Aqui estou eu ${selectedOut}`);
     if (!selectedOut) return;
-    sendThrottled(channelId, processorId, faderValue, sender, selectedChannel);
+    sendThrottled(channelid, processorid, faderValue, sender, selectedChannel);
   }, [faderValue]);
 
   useEffect(() => {
@@ -30,9 +29,13 @@ function FaderRange({
 
       if (!Array.isArray(changes)) return;
 
+      if (channelid === 0) {
+        console.log("MIDI IN: " + lastMsg.data);
+      }
+
       for (const change of changes) {
-        if (change.module === channelId) {
-          if (change.param === processorId) {
+        if (change.module === channelid) {
+          if (change.param === processorid) {
             setFaderValue(change.value14);
           }
         }
@@ -45,8 +48,8 @@ function FaderRange({
       <div className="border border-secondary rounded-3 h-100">
         <div className="fader-db">
           <output
-            htmlFor={componentId}
-            id={`rangeValue_${componentId}`}
+            htmlFor={componentid}
+            id={`rangeValue_${componentid}`}
             aria-hidden="true"
             className="text-white text-center fw-bold m-2 text-truncate"
           >
@@ -64,10 +67,10 @@ function FaderRange({
               max={def.max ?? 127}
               value={faderValue}
               onChange={(e) => setFaderValue(Number(e.target.value))}
-              id={componentId}
-              channelId={channelId}
-              channelLabel={channelLabel}
-              processorId={processorId}
+              id={componentid}
+              channelid={channelid}
+              channellabel={channellabel}
+              processorid={processorid}
             />
           }
         </div>

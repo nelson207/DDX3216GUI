@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./App.css";
@@ -25,7 +25,7 @@ function App() {
         <TopNavBar activeView={activeView} setActiveView={setActiveView} />
       </div>
       <div className="SecondNav h-second-nav-area">
-        {(isChannelFXMenu || isChannelProcessorMenu) && (
+        {isChannelProcessorMenu && (
           <ChannelSelectNavBar
             selected={channelSelected}
             onSelect={setChannelSelected}
@@ -47,9 +47,7 @@ function App() {
             selectedProcessor={processorSelected}
           />
         )}
-        {isChannelFXMenu && (
-          <ChannelFXPanel selectedChannel={channelSelected} />
-        )}
+        {isChannelFXMenu && <ChannelFXPanel />}
       </div>
     </>
   );

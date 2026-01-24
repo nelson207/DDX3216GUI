@@ -1,7 +1,9 @@
 import { PARAM_DEFS } from "../../domain/ddxParamDefinition";
+import { AUX_PARAMS } from "../../domain/ddxParamDefinition.Aux";
 import { COMPRESSOR_PARAMS } from "../../domain/ddxParamDefinition.Compressor";
 import { DELAY_PARAMS } from "../../domain/ddxParamDefinition.Delay";
 import { EQ_PARAMS } from "../../domain/ddxParamDefinition.EQ";
+import { FX_PARAMS } from "../../domain/ddxParamDefinition.FX";
 import { GATE_PARAMS } from "../../domain/ddxParamDefinition.Gate";
 import ParamCell from "../control/ParamCell";
 
@@ -20,6 +22,10 @@ function ProcPanel({ selectedChannel, selectedProcessor }) {
         return DELAY_PARAMS;
       case "Routing":
         return PARAM_DEFS.filter((p) => p.group === "routing");
+      case "Aux":
+        return AUX_PARAMS;
+      case "Fx":
+        return FX_PARAMS;
       default:
         return [];
     }
@@ -40,10 +46,10 @@ function ProcPanel({ selectedChannel, selectedProcessor }) {
               <ParamCell
                 def={def}
                 value={value}
-                componentId={componentId}
-                channelId={selectedChannel - 1} //Channel Index
-                channelLabel={""}
-                processorId={def.id}
+                componentid={componentId}
+                channelid={selectedChannel - 1} //Channel Index
+                channellabel={""}
+                processorid={def.id}
               />
             </div>
           );

@@ -22,15 +22,13 @@ Currently implemented:
 - 🎚 **Channel faders** with accurate logarithmic dB scaling
 - 🎛 **Pan control**
 - 🔇 **Mute**
-- 🔇 **Processing**
-- 🔇 **FX**
+- 🧰 **Processing**
+- 🎚️ **FX**
 - 🔁 **Bidirectional MIDI/SysEx communication**
 
 Planned / upcoming:
 
-- Scene recall
 - Preset management
-- Improved MIDI device discovery and future API Integration for correct server usage
 - UI refinements and performance optimizations
 
 ---
@@ -40,7 +38,7 @@ Planned / upcoming:
 - **React**
 - **Vite** (fast dev server with HMR)
 - **JavaScript**
-- **Web MIDI API** -> To be Deprecated and replaced with Server Host API
+- **.Net 8 WebSocket Handler**
 - **SVG & CSS** for precise fader and scale rendering
 
 ---
@@ -51,6 +49,7 @@ Make sure you have:
 
 - **Node.js** (v18+ recommended)
 - **npm** (comes with Node.js)
+- **.Net 8 Framework**
 
 Check versions:
 

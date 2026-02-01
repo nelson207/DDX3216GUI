@@ -1,0 +1,10 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "https://localhost:56578",
+"RedirectUrl": "",
+"LaunchCommand": "npm run dev",
+"WorkingDirectory": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\DDX3216MidiControl.Server\\..\\ddx3216midicontrol.client",
+"MaxTimeoutInSeconds": "120",
+"KeepRunning": "false"
+}
+}

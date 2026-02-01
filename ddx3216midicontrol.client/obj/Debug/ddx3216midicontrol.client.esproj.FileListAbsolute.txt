@@ -1,0 +1,1 @@
+C:\Users\ferna\source\repos\DDX3216MidiControl\ddx3216midicontrol.client\obj\Debug\ddx3216midicontrol.client.esproj.CoreCompileInputs.cache

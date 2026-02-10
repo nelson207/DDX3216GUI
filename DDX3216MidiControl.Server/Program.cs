@@ -33,7 +33,6 @@ app.UseStaticFiles();
 app.UseCors("AllowFrontend");
 
 // Configure the HTTP request pipeline.
-<<<<<<< HEAD
 
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -42,14 +41,13 @@ app.UseSwaggerUI();
 app.MapGet("/_routes", (IEnumerable<EndpointDataSource> sources) =>
     sources.SelectMany(s => s.Endpoints).Select(e => e.DisplayName));
 app.MapGet("/api/_debug", () => Results.Text("API OK FROM PI", "text/plain"));
-=======
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
+
 app.MapControllers();
 
 app.UseWebSockets();
@@ -68,10 +66,6 @@ app.Map("/ws/midi", async context =>
     await webSocket.HandleClientWebSocketAsync(ws, context.RequestAborted);
 });
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
 app.MapFallbackToFile("/index.html");
 
 app.Run();

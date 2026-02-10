@@ -18,11 +18,7 @@ function makeFXParams(fx) {
       label: `FX ${fx} Pre/Post`,
       kind: ParamKind.SWITCH,
       defaultRaw: 0,
-<<<<<<< HEAD
       format: (v) => (v ? "Pre" : "Post"),
-=======
-      format: (v) => (v ? "Post" : "Pre"),
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
     },
   ];
 }

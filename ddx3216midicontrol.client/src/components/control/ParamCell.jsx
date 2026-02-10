@@ -1,8 +1,5 @@
 import { ParamKind } from "../../domain/ddxParamKind";
-<<<<<<< HEAD
 import ParamKindEnumMultiTile from "./ParamKindEnumMultiTile";
-=======
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
 import ParamKindEnumTile from "./ParamKindEnumTile";
 import ParamKindRangeTile from "./ParamKindRangeTile";
 import ParamKindSwitchTile from "./ParamKindSwitchTile";
@@ -41,15 +38,11 @@ function ParamCell(
             <ParamKindRangeTile {...props} />
           </div>
         )}
-<<<<<<< HEAD
-
         {props.def.kind === ParamKind.ENUMMULTI && (
           <div>
             <ParamKindEnumMultiTile {...props} />
           </div>
         )}
-=======
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
       </div>
     </div>
   );

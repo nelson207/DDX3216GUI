@@ -5,7 +5,7 @@
       {
         "Path": "DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj",
         "Action": "Start",
-        "DebugTarget": "IIS Express"
+        "DebugTarget": "http"
       },
       {
         "Path": "ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj",

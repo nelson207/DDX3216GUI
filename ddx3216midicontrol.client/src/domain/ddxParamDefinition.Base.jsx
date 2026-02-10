@@ -57,12 +57,8 @@ export const BASE_PARAMS = [
     key: "rtToBus",
     group: "routing",
     label: "Route to Bus",
-<<<<<<< HEAD
     kind: ParamKind.ENUMMULTI,
     values: ["1-2", "3-4", "5-6", "7-8", "9-10", "11-12", "13-14", "15-16"],
-=======
-    kind: ParamKind.SWITCH,
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
     classSelected: "btn-success",
     defaultRaw: 0, // 0/1 (or use true/false if you prefer)
     format: (v) => (v ? "On" : "Off"),
@@ -71,10 +67,7 @@ export const BASE_PARAMS = [
     id: 6,
     key: "busVolume",
     label: "Bus Volume",
-<<<<<<< HEAD
     group: "bus",
-=======
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
     kind: ParamKind.RANGE,
     min: 0,
     max: 1472,
@@ -82,16 +75,10 @@ export const BASE_PARAMS = [
     format: (v) => `${(-80 + v / 16).toFixed(1)} dB`,
   },
   {
-<<<<<<< HEAD
     id: 7,
     key: "busVolumePrePost",
     label: "Bus Volume Pre/Post",
     group: "bus",
-=======
-    id: 6,
-    key: "busVolumePrePost",
-    label: "Bus Volume Pre/Post",
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
     kind: ParamKind.SWITCH,
     defaultRaw: 0, // 0/1 (or use true/false if you prefer)
     format: (v) => (v ? "Pre" : "Post"),
@@ -100,10 +87,7 @@ export const BASE_PARAMS = [
     id: 8,
     key: "busPan",
     label: "Bus Pan",
-<<<<<<< HEAD
     group: "bus",
-=======
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
     kind: ParamKind.RANGE,
     min: 0,
     max: 60,
@@ -114,10 +98,7 @@ export const BASE_PARAMS = [
     id: 9,
     key: "busPanFollowChannel",
     label: "Bus Pan Follow Channel",
-<<<<<<< HEAD
     group: "bus",
-=======
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
     kind: ParamKind.SWITCH,
     defaultRaw: 0, // 0/1 (or use true/false if you prefer)
     format: (v) => (v ? "On" : "Off"),

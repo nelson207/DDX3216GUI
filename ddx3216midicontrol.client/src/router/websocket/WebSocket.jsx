@@ -5,13 +5,8 @@ import {
   wsMessage,
 } from "../slices/wsSlice";
 
-<<<<<<< HEAD
 const protocol = window.location.protocol === "https:" ? "wss" : "ws";
 const WS_URL = `${protocol}://${window.location.host}/ws/midi`;
-=======
-const WS_URL = "ws://localhost:32768/ws/midi";
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
-// ---- Singleton socket instance (module-scoped) ----
 let socket = null;
 
 // Connect thunk

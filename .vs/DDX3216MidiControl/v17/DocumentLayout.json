@@ -1,62 +1,94 @@
 {
   "Version": 1,
-<<<<<<< HEAD
   "WorkspaceRootPath": "C:\\WorkSpaces\\DDX3216GUI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.server\\controllers\\midicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\controllers\\midicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\src\\domain\\ddxparamkind.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\domain\\ddxparamkind.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.server\\models\\mididevices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\models\\mididevices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\src\\domain\\ddxparamdefinition.aux.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\domain\\ddxparamdefinition.aux.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.server\\services\\midirouterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\services\\midirouterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\src\\domain\\ddxparamdefinition.base.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\domain\\ddxparamdefinition.base.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\src\\components\\navbar\\topnavbar.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\components\\navbar\\topnavbar.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\src\\domain\\ddxparamdefinition.fx.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\domain\\ddxparamdefinition.fx.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\src\\components\\control\\paramcell.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\components\\control\\paramcell.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\src\\components\\panels\\procpanel.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\components\\panels\\procpanel.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\src\\components\\mixer\\faderrange.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\components\\mixer\\faderrange.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\src\\components\\panels\\faderspanel.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\components\\panels\\faderspanel.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\src\\app.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\app.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\src\\router\\websocket\\websocket.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\router\\websocket\\websocket.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\vite.config.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\vite.config.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-=======
-  "WorkspaceRootPath": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\users\\ferna\\source\\repos\\ddx3216midicontrol\\ddx3216midicontrol.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\users\\ferna\\source\\repos\\ddx3216midicontrol\\ddx3216midicontrol.server\\ddx3216midicontrol.server.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\ddx3216midicontrol.server.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\users\\ferna\\source\\repos\\ddx3216midicontrol\\ddx3216midicontrol.client\\src\\router\\apis\\midiapi.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
-      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\router\\apis\\midiapi.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\users\\ferna\\source\\repos\\ddx3216midicontrol\\ddx3216midicontrol.client\\src\\router\\websocket\\websocket.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\router\\websocket\\websocket.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\users\\ferna\\source\\repos\\ddx3216midicontrol\\ddx3216midicontrol.client\\src\\router\\apis\\emptyapi.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\src\\router\\apis\\emptyapi.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
       "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\router\\apis\\emptyapi.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\users\\ferna\\source\\repos\\ddx3216midicontrol\\ddx3216midicontrol.client\\package.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\package.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.server\\ddx3216midicontrol.server.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\ddx3216midicontrol.server.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\users\\ferna\\source\\repos\\ddx3216midicontrol\\ddx3216midicontrol.server\\services\\midirouterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.server\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.server\\ddx3216midicontrol.server.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\ddx3216midicontrol.server.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\src\\router\\apis\\openapi-config.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\src\\router\\apis\\openapi-config.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.server\\models\\mididevices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\models\\mididevices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.server\\controllers\\midicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\controllers\\midicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.server\\services\\midirouterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{759C662A-FEA3-4946-B048-C144CEC62B94}|DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj|solutionrelative:ddx3216midicontrol.server\\services\\midirouterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|c:\\workspaces\\ddx3216gui\\ddx3216midicontrol.client\\vite.config.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{97D422CB-5C9C-0D70-6E18-6C358993C996}|ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj|solutionrelative:ddx3216midicontrol.client\\vite.config.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
   ],
   "DocumentGroupContainers": [
@@ -66,176 +98,291 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-<<<<<<< HEAD
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ddxParamKind.jsx",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\domain\\ddxParamKind.jsx",
+              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\domain\\ddxParamKind.jsx",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\domain\\ddxParamKind.jsx",
+              "RelativeToolTip": "ddx3216midicontrol.client\\src\\domain\\ddxParamKind.jsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2026-02-10T15:36:58.495Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ddxParamDefinition.Aux.jsx",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\domain\\ddxParamDefinition.Aux.jsx",
+              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\domain\\ddxParamDefinition.Aux.jsx",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\domain\\ddxParamDefinition.Aux.jsx",
+              "RelativeToolTip": "ddx3216midicontrol.client\\src\\domain\\ddxParamDefinition.Aux.jsx",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAQwBQAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2026-02-10T15:36:39.221Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TopNavBar.jsx",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\components\\navbar\\TopNavBar.jsx",
+              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\components\\navbar\\TopNavBar.jsx",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\components\\navbar\\TopNavBar.jsx",
+              "RelativeToolTip": "ddx3216midicontrol.client\\src\\components\\navbar\\TopNavBar.jsx",
+              "ViewState": "AgIAAMsAAAAAAAAAAAAQwNgAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2026-02-10T15:35:25.138Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ddxParamDefinition.Base.jsx",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\domain\\ddxParamDefinition.Base.jsx",
+              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\domain\\ddxParamDefinition.Base.jsx",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\domain\\ddxParamDefinition.Base.jsx",
+              "RelativeToolTip": "ddx3216midicontrol.client\\src\\domain\\ddxParamDefinition.Base.jsx",
+              "ViewState": "AgIAAGMAAAAAAAAAAAAAAGQAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2026-02-10T15:34:23.932Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 4,
+              "Title": "ddxParamDefinition.FX.jsx",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\domain\\ddxParamDefinition.FX.jsx",
+              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\domain\\ddxParamDefinition.FX.jsx",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\domain\\ddxParamDefinition.FX.jsx",
+              "RelativeToolTip": "ddx3216midicontrol.client\\src\\domain\\ddxParamDefinition.FX.jsx",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAQwBMAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2026-02-10T15:34:10.526Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ParamCell.jsx",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\components\\control\\ParamCell.jsx",
+              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\components\\control\\ParamCell.jsx",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\components\\control\\ParamCell.jsx",
+              "RelativeToolTip": "ddx3216midicontrol.client\\src\\components\\control\\ParamCell.jsx",
+              "ViewState": "AgIAACkAAAAAAAAAAAAQwCgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2026-02-10T15:33:10.081Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ProcPanel.jsx",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\components\\panels\\ProcPanel.jsx",
+              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\components\\panels\\ProcPanel.jsx",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\components\\panels\\ProcPanel.jsx",
+              "RelativeToolTip": "ddx3216midicontrol.client\\src\\components\\panels\\ProcPanel.jsx",
+              "ViewState": "AgIAADgAAAAAAAAAAAAQwE4AAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2026-02-10T15:32:20.675Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "FaderRange.jsx",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\components\\mixer\\FaderRange.jsx",
+              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\components\\mixer\\FaderRange.jsx",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\components\\mixer\\FaderRange.jsx",
+              "RelativeToolTip": "ddx3216midicontrol.client\\src\\components\\mixer\\FaderRange.jsx",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAQwBAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2026-02-10T15:32:04.612Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "FadersPanel.jsx",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\components\\panels\\FadersPanel.jsx",
+              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\components\\panels\\FadersPanel.jsx",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\components\\panels\\FadersPanel.jsx",
+              "RelativeToolTip": "ddx3216midicontrol.client\\src\\components\\panels\\FadersPanel.jsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2026-02-10T15:31:52.631Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "App.jsx",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\App.jsx",
+              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\App.jsx",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\App.jsx",
+              "RelativeToolTip": "ddx3216midicontrol.client\\src\\App.jsx",
+              "ViewState": "AgIAADgAAAAAAAAAAAAAAAcAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2026-02-10T15:31:36.65Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "emptyApi.ts",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\router\\apis\\emptyApi.ts",
+              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\router\\apis\\emptyApi.ts",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\router\\apis\\emptyApi.ts",
+              "RelativeToolTip": "ddx3216midicontrol.client\\src\\router\\apis\\emptyApi.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-02-10T15:31:10.331Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "DDX3216MidiControl.Server",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj",
+              "RelativeDocumentMoniker": "DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj",
+              "RelativeToolTip": "DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-02-10T15:30:06.186Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\appsettings.json",
+              "RelativeDocumentMoniker": "DDX3216MidiControl.Server\\appsettings.json",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\appsettings.json",
+              "RelativeToolTip": "DDX3216MidiControl.Server\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-10T15:29:54.624Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "DDX3216MidiControl.Server.http",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\DDX3216MidiControl.Server.http",
+              "RelativeDocumentMoniker": "DDX3216MidiControl.Server\\DDX3216MidiControl.Server.http",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\DDX3216MidiControl.Server.http",
+              "RelativeToolTip": "DDX3216MidiControl.Server\\DDX3216MidiControl.Server.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2026-02-10T15:29:40.028Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "DDX3216MidiControl.Server\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\Properties\\launchSettings.json",
+              "RelativeToolTip": "DDX3216MidiControl.Server\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-10T15:29:31.419Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "openapi-config.ts",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\router\\apis\\openapi-config.ts",
+              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\router\\apis\\openapi-config.ts",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\router\\apis\\openapi-config.ts",
+              "RelativeToolTip": "ddx3216midicontrol.client\\src\\router\\apis\\openapi-config.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-02-10T15:27:42.233Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "MidiController.cs",
+              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\Controllers\\MidiController.cs",
+              "RelativeDocumentMoniker": "DDX3216MidiControl.Server\\Controllers\\MidiController.cs",
+              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\Controllers\\MidiController.cs",
+              "RelativeToolTip": "DDX3216MidiControl.Server\\Controllers\\MidiController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-10T15:26:21.363Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "WebSocket.jsx",
               "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\router\\websocket\\WebSocket.jsx",
               "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\router\\websocket\\WebSocket.jsx",
               "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\src\\router\\websocket\\WebSocket.jsx",
               "RelativeToolTip": "ddx3216midicontrol.client\\src\\router\\websocket\\WebSocket.jsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAyAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
               "WhenOpened": "2026-02-10T13:54:01.041Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 21,
               "Title": "vite.config.js",
               "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\vite.config.js",
               "RelativeDocumentMoniker": "ddx3216midicontrol.client\\vite.config.js",
               "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\ddx3216midicontrol.client\\vite.config.js",
               "RelativeToolTip": "ddx3216midicontrol.client\\vite.config.js",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADkAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2026-02-10T13:51:02.193Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 20,
               "Title": "MidiRouterService.cs",
               "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\Services\\MidiRouterService.cs",
               "RelativeDocumentMoniker": "DDX3216MidiControl.Server\\Services\\MidiRouterService.cs",
               "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\Services\\MidiRouterService.cs",
               "RelativeToolTip": "DDX3216MidiControl.Server\\Services\\MidiRouterService.cs",
-              "ViewState": "AgIAAEcAAAAAAAAAAAAAwDEAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAHUAAAAAAAAAAAAAADEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-05T13:40:07.522Z",
+              "WhenOpened": "2026-02-10T15:23:33.686Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 17,
               "Title": "MidiDevices.cs",
               "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\Models\\MidiDevices.cs",
               "RelativeDocumentMoniker": "DDX3216MidiControl.Server\\Models\\MidiDevices.cs",
               "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\Models\\MidiDevices.cs",
               "RelativeToolTip": "DDX3216MidiControl.Server\\Models\\MidiDevices.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAQwAcAAABaAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAABuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-05T13:16:31.284Z",
+              "WhenOpened": "2026-02-10T15:23:33.688Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "MidiController.cs",
-              "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\Controllers\\MidiController.cs",
-              "RelativeDocumentMoniker": "DDX3216MidiControl.Server\\Controllers\\MidiController.cs",
-              "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\Controllers\\MidiController.cs",
-              "RelativeToolTip": "DDX3216MidiControl.Server\\Controllers\\MidiController.cs",
-              "ViewState": "AgIAAEgAAAAAAAAAAAAAwFIAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-04T23:31:30.964Z",
-=======
-          "SelectedChildIndex": 6,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MidiApi.ts",
-              "DocumentMoniker": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\ddx3216midicontrol.client\\src\\router\\apis\\MidiApi.ts",
-              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\router\\apis\\MidiApi.ts",
-              "ToolTip": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\ddx3216midicontrol.client\\src\\router\\apis\\MidiApi.ts",
-              "RelativeToolTip": "ddx3216midicontrol.client\\src\\router\\apis\\MidiApi.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-02-01T18:45:38.766Z",
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-<<<<<<< HEAD
+              "DocumentIndex": 18,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\Program.cs",
               "RelativeDocumentMoniker": "DDX3216MidiControl.Server\\Program.cs",
               "ToolTip": "C:\\WorkSpaces\\DDX3216GUI\\DDX3216MidiControl.Server\\Program.cs",
               "RelativeToolTip": "DDX3216MidiControl.Server\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAAiAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAABOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-04T23:26:59.356Z",
-=======
-              "Title": "WebSocket.jsx",
-              "DocumentMoniker": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\ddx3216midicontrol.client\\src\\router\\websocket\\WebSocket.jsx",
-              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\router\\websocket\\WebSocket.jsx",
-              "ToolTip": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\ddx3216midicontrol.client\\src\\router\\websocket\\WebSocket.jsx",
-              "RelativeToolTip": "ddx3216midicontrol.client\\src\\router\\websocket\\WebSocket.jsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2026-02-01T18:45:04.887Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "emptyApi.ts",
-              "DocumentMoniker": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\ddx3216midicontrol.client\\src\\router\\apis\\emptyApi.ts",
-              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\src\\router\\apis\\emptyApi.ts",
-              "ToolTip": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\ddx3216midicontrol.client\\src\\router\\apis\\emptyApi.ts",
-              "RelativeToolTip": "ddx3216midicontrol.client\\src\\router\\apis\\emptyApi.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-02-01T18:44:20.503Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "package.json",
-              "DocumentMoniker": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\ddx3216midicontrol.client\\package.json",
-              "RelativeDocumentMoniker": "ddx3216midicontrol.client\\package.json",
-              "ToolTip": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\ddx3216midicontrol.client\\package.json",
-              "RelativeToolTip": "ddx3216midicontrol.client\\package.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-02-01T18:40:42.026Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "MidiRouterService.cs",
-              "DocumentMoniker": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\DDX3216MidiControl.Server\\Services\\MidiRouterService.cs",
-              "RelativeDocumentMoniker": "DDX3216MidiControl.Server\\Services\\MidiRouterService.cs",
-              "ToolTip": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\DDX3216MidiControl.Server\\Services\\MidiRouterService.cs",
-              "RelativeToolTip": "DDX3216MidiControl.Server\\Services\\MidiRouterService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABHAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-01T18:37:29.606Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DDX3216MidiControl.Server",
-              "DocumentMoniker": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj",
-              "RelativeDocumentMoniker": "DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj",
-              "ToolTip": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj",
-              "RelativeToolTip": "DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAA5AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-02-01T18:35:59.578Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\DDX3216MidiControl.Server\\Program.cs",
-              "RelativeDocumentMoniker": "DDX3216MidiControl.Server\\Program.cs",
-              "ToolTip": "C:\\Users\\ferna\\source\\repos\\DDX3216MidiControl\\DDX3216MidiControl.Server\\Program.cs",
-              "RelativeToolTip": "DDX3216MidiControl.Server\\Program.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAAACQAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-01T18:35:28.739Z",
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
+              "WhenOpened": "2026-02-10T15:23:33.691Z",
               "EditorCaption": ""
             }
           ]

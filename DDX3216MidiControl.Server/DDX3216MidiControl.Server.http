@@ -1,0 +1,6 @@
+@DDX3216MidiControl.Server_HostAddress = http://localhost:5104
+
+GET {{DDX3216MidiControl.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

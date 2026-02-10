@@ -1,0 +1,204 @@
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.h-top-nav-area {
+  position: absolute;
+  top: 0%;
+  height: 5% !important;
+  width: 100% !important;
+}
+
+.h-second-nav-area {
+  position: absolute;
+  top: 5%;
+  height: 10% !important;
+  width: 100% !important;
+}
+
+.h-mixer-area {
+  position: absolute;
+  top: 15%;
+  height: 85% !important;
+  width: 100% !important;
+}
+
+.mixer-top {
+  position: absolute;
+  top: 10%;
+  height: 85% !important;
+  width: 100% !important;
+}
+
+.btn-channel-selected {
+  background-color: #800020 !important;
+}
+
+/* a channel strip fills height */
+.channel {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.fader-input {
+  container-type: size;
+  position: relative;
+  width: 100%; /* your channel width */
+  height: 100%; /* IMPORTANT: parent must have a real height */
+}
+
+.fader-db {
+  height: 5% !important;
+}
+
+LEFT
+  SCALE
+  ------------------------------------------------------------
+  .fader-scale {
+  position: absolute;
+  left: 8px; /* gutter from panel edge */
+  top: 0;
+  bottom: 0;
+  width: 40px; /* space for ticks + labels */
+  pointer-events: none;
+}
+
+.fader-scale .scale-row {
+  position: absolute;
+  left: 0;
+  transform: translateY(-50%); /* align by center */
+  height: 0;
+}
+
+.fader-scale .tick {
+  position: absolute;
+  left: 0;
+  width: 10px;
+  height: 1px;
+  background: rgba(240, 246, 252, 0.45);
+}
+
+.fader-scale .tick.major {
+  width: 14px;
+  height: 1.5px;
+  background: rgba(240, 246, 252, 0.75);
+}
+
+.fader-scale .label {
+  position: absolute;
+  left: 18px;
+  top: -8px;
+  font-size: 10px;
+  line-height: 1;
+  color: #aab3bd;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  font-feature-settings: "tnum"; /* tabular lining if available */
+}
+
+/* scale fills height */
+.scale {
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #fff;
+}
+
+.vertical-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+
+  /* track thickness (responsive) */
+  --track-h: clamp(4px, 0.35vmin, 8px);
+
+  /* thumb height driven by fader height + viewport clamp */
+  --thumb-h: clamp(
+    28px,
+    calc(var(--vr-h, 260px) * var(--thumb-h-ratio, 0.14)),
+    96px
+  );
+
+  /* thumb width tied to channel width */
+  --thumb-w: clamp(18px, calc(var(--vr-w, 46px) * 1.1), 100px);
+
+  /* WebKit centering: (thumbHeight - trackHeight)/2, negative */
+  --thumb-center-offset: calc((var(--thumb-h) - var(--track-h)) / -2);
+}
+
+/* TRACK */
+.vertical-range::-webkit-slider-runnable-track {
+  height: clamp(4px, var(--track-h), 1080px);
+  border-radius: 999px;
+  background: var(--bs-secondary-bg, #dee2e6);
+}
+
+.vertical-range::-moz-range-track {
+  height: clamp(4px, var(--track-h), 1080px);
+  border-radius: 999px;
+  background: var(--bs-secondary-bg, #dee2e6);
+}
+
+/* THUMB (SVG) */
+.vertical-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+
+  width: var(--thumb-w);
+  height: var(--thumb-h);
+  border: 0;
+  border-radius: 0;
+
+  background-image: url("assets/fader_knob.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-color: transparent;
+
+  /* Centers SVG box; then we can nudge optically with --thumb-svg-shift */
+  background-position: 50% calc(50% + var(--thumb-svg-shift, 0px));
+
+  /* Center thumb on track */
+  /* margin-top: var(--thumb-center-offset); */
+
+  cursor: pointer;
+}
+
+.vertical-range::-moz-range-thumb {
+  width: var(--thumb-w);
+  height: var(--thumb-h);
+  border: 0;
+  border-radius: 0;
+
+  background-image: url("assets/fader_knob.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: 50% calc(50% + var(--thumb-svg-shift, 0px));
+  background-color: transparent;
+
+  cursor: pointer;
+}
+
+.vertical-range::-webkit-slider-thumb:active {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.vertical-range:active::-moz-range-thumb {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+/* Optional: ensure the clickable hit area is nice on touch */
+.vertical-range {
+  padding: 6px 0;
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "DDX3216MidiControl.Server\\DDX3216MidiControl.Server.csproj",
+        "Action": "Start",
+        "DebugTarget": "IIS Express"
+      },
+      {
+        "Path": "ddx3216midicontrol.client\\ddx3216midicontrol.client.esproj",
+        "Action": "Start",
+        "DebugTarget": "localhost (Chrome)"
+      }
+    ]
+  }
+]

@@ -14,6 +14,10 @@ function FaderRange({
 }) {
   const { send } = useSender();
   const { lastMsg } = useReceiver();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
   const { data, isLoading } =
     useGetApiMidiStatusByModuleAndParamDefaultValueQuery({
       module: channelid,

@@ -41,7 +41,11 @@ namespace MidiInterface.Controllers
             try
             {
                 _router.SelectOut(index);
+<<<<<<< HEAD
                 return Ok(new { seleindexctedOut = index });
+=======
+                return Ok(new { selectedOut = index });
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
             }
             catch (Exception ex)
             {
@@ -78,6 +82,7 @@ namespace MidiInterface.Controllers
                 return BadRequest(ex.Message);
             }
         }
+<<<<<<< HEAD
 
         [HttpPost("devices/refresh")]
         public IActionResult RefreshDevices()
@@ -92,5 +97,7 @@ namespace MidiInterface.Controllers
                 return BadRequest(ex.Message);
             }
         }
+=======
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
     }
 }

@@ -21,7 +21,6 @@ namespace MidiInterface.Services
         public int? SelectedInDevice { get; private set; }
         public int Channel { get; private set; } = 1;
 
-
         public MidiRouterService(BehringerStateStoreService behringerStateStoreService)
         {
             _behringerStateStoreService = behringerStateStoreService;

@@ -8,7 +8,10 @@ import {
   usePostApiMidiInSelectByIndexMutation,
   usePostApiMidiOutSelectByIndexMutation,
   usePostApiMidiChannelByChannelMutation,
+<<<<<<< HEAD
   usePostApiMidiDevicesRefreshMutation,
+=======
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
 } from "../../router/apis/MidiApi"; // <-- adjust path
 
 import { DDX_VIEW_RANGES } from "../../domain/ddxViewRanges";
@@ -27,15 +30,22 @@ export default function TopNavBar({ activeView, setActiveView }) {
     usePostApiMidiOutSelectByIndexMutation();
   const [setMidiChannel, setMidiChannelState] =
     usePostApiMidiChannelByChannelMutation();
+<<<<<<< HEAD
   const [refreshDevices, refreshDevicesState] =
     usePostApiMidiDevicesRefreshMutation();
+=======
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
 
   useEffect(() => {
     if (
       selectMidiInState.isSuccess ||
       selectMidiOutState.isSuccess ||
+<<<<<<< HEAD
       setMidiChannelState.isSuccess ||
       refreshDevicesState.isSuccess
+=======
+      setMidiChannelState.isSuccess
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
     ) {
       refetch();
     }
@@ -43,23 +53,35 @@ export default function TopNavBar({ activeView, setActiveView }) {
     selectMidiInState.isSuccess,
     selectMidiOutState.isSuccess,
     setMidiChannelState.isSuccess,
+<<<<<<< HEAD
     refreshDevicesState.isSuccess,
+=======
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
     refetch,
   ]);
 
   // JS-safe normalization
   const inDevices = (data && data.inDevices) || [];
   const outDevices = (data && data.outDevices) || [];
+<<<<<<< HEAD
   const selectedMidiDeviceIn = (data && data.selectedInDevice) ?? null;
   const selectedMidiDeviceOut = (data && data.selectedOutDevice) ?? null;
+=======
+  const selectedMidiDeviceIn = (data && data.selectedIn) ?? null;
+  const selectedMidiDeviceOut = (data && data.selectedOut) ?? null;
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
   const selectedMidiChannel = (data && data.channel) ?? 1;
 
   const busy =
     isFetching ||
     selectMidiInState.isLoading ||
     selectMidiOutState.isLoading ||
+<<<<<<< HEAD
     setMidiChannelState.isLoading ||
     refreshDevicesState.isLoading;
+=======
+    setMidiChannelState.isLoading;
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark px-3 bg-dark z-3 h-100 w-100">
@@ -196,6 +218,7 @@ export default function TopNavBar({ activeView, setActiveView }) {
               <div className="text-secondary small mt-2 text-white">
                 Tip: choose both In + Out before requesting settings.
               </div>
+<<<<<<< HEAD
               <div className="mb-3 d-flex gap-2">
                 <button
                   type="button"
@@ -215,6 +238,8 @@ export default function TopNavBar({ activeView, setActiveView }) {
                   </span>
                 )}
               </div>
+=======
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
             </div>
           </div>
         </div>

@@ -27,6 +27,7 @@
   width: 100% !important;
 }
 
+<<<<<<< HEAD
 .mixer-top {
   position: absolute;
   top: 10%;
@@ -34,6 +35,8 @@
   width: 100% !important;
 }
 
+=======
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
 .btn-channel-selected {
   background-color: #800020 !important;
 }

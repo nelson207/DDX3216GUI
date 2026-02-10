@@ -8,6 +8,7 @@
     <SpaRoot>..\ddx3216midicontrol.client</SpaRoot>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:56578</SpaProxyServerUrl>
+<<<<<<< HEAD
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -19,12 +20,21 @@
   </ItemGroup>
 
   <ItemGroup>
+=======
+  </PropertyGroup>
+
+  <ItemGroup>
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
       <Version>8.*-*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+<<<<<<< HEAD
     <PackageReference Include="RtMidi.Core" Version="1.0.53" />
     <PackageReference Include="RtMidi.Net" Version="1.3.0" />
+=======
+    <PackageReference Include="NAudio" Version="2.2.1" />
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 

@@ -6,8 +6,13 @@ import TopNavBar from "./components/navbar/TopNavBar";
 import ChannelSelectNavBar from "./components/NavBar/ChannelSelectNavBar";
 import ChannelProcNavBar from "./components/NavBar/ChannelProcNavBar";
 import ChannelFXPanel from "./components/panels/FxPanel";
+<<<<<<< HEAD
 import FadersPanel from "./components/panels/FadersPanel";
 import ProcPanel from "./components/panels/ProcPanel";
+=======
+import ProcPanel from "./components/panels/procpanel";
+import FadersPanel from "./components/panels/FadersPanel";
+>>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
 
 function App() {
   //Channel Selection

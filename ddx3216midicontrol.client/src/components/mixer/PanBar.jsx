@@ -6,7 +6,7 @@ const DOUBLE_TAP_MS = 300;
 const TAP_MOVE_PX = 4;
 
 /**
- * Horizontal pan bar (Soundcraft Ui style): relative drag, double tap = center.
+ * Horizontal pan bar: relative drag, double tap = center.
  * Vertical swipes are left to the browser.
  */
 function PanBar({ def, componentid, channelid, channellabel, processorid }) {

@@ -21,7 +21,7 @@ const FINE_FACTOR = 0.25;
 /**
  * Console-style vertical fader (pointer events, works with mouse, touch and pen).
  * - Relative drag: grabbing anywhere on the track moves the cap from where it is,
- *   it never jumps to the finger (same behaviour as the Soundcraft Ui).
+ *   it never jumps to the finger.
  * - Double tap / double click toggles 0 dB.
  * - Shift + drag = fine; mouse wheel = 0.5 dB steps; keyboard arrows / PgUp / PgDn / Home / End.
  * - Horizontal swipes are left to the browser so the strip list can still scroll.

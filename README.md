@@ -6,8 +6,8 @@ same network.
 
 ![Mixer with custom fader names](./screenshots/mixer-fader-names.png)
 
-The UI is inspired by the Soundcraft Ui web mixers: touch-friendly faders, rotary knobs, an EQ
-graph, scenes and fader names that update live on every connected device.
+The UI is built for touch: faders, rotary knobs, an EQ graph, scenes and fader names that update
+live on every connected device.
 
 The project builds on the reverse-engineering and documentation work in
 👉 **https://github.com/wherget/ddx3216http**
@@ -241,7 +241,7 @@ location / {
 ## What's new in 2.0
 
 - **New mixer UI**: pointer-based faders that work on phones (no more rotated range inputs),
-  Soundcraft-style strips and a pinned Main strip.
+  redesigned channel strips and a pinned Main strip.
 - **Processing and FX redesign**: knobs, EQ and dynamics graphs, a categorised FX picker.
 - **MIDI setup panel**: port lists, channel grid, live status, unplugged/loopback warnings.
 - **Users, roles and login**; **scenes** with fader names and mixer snapshots.

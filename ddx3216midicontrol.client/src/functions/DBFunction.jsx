@@ -9,7 +9,7 @@ export const RAW_UNITY = (0 - DB_MIN) * 16; // 0 dB = 1280
 
 // Console-style taper: dB -> fader position (0 = bottom, 1 = top).
 // Piecewise linear between breakpoints so 0 dB sits at ~3/4 of the travel and
-// the useful -30..+10 range gets most of the throw (like a real console / Soundcraft Ui).
+// the useful -30..+10 range gets most of the throw (like a real console).
 const TAPER = [
   [-80, 0],
   [-60, 0.05],

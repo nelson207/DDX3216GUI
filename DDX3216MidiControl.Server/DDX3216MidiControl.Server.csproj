@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- ALSA sequencer interop (Midi/AlsaSequencer.cs) works on native event structs -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <SpaRoot>..\ddx3216midicontrol.client</SpaRoot>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
@@ -24,10 +26,6 @@
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
-
-    <PackageReference Include="RtMidi.Net" Version="1.3.0" />
-    <!-- no code uses RtMidi.Core: it ships the native rtmidi.dll / librtmidi.so that RtMidi.Net loads -->
-    <PackageReference Include="RtMidi.Core" Version="1.0.53" />
 
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>

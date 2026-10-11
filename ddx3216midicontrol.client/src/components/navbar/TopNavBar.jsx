@@ -6,6 +6,7 @@ import { useCurrentUser } from "../../router/useAuth";
 import MidiSettingsPanel, { MidiButton } from "./MidiSettingsPanel";
 import ScenesPanel from "../scenes/ScenesPanel";
 import AccountPanel from "../account/AccountPanel";
+import ViewSwitcher from "./ViewSwitcher";
 
 export default function TopNavBar({ activeView, setActiveView }) {
   const [panel, setPanel] = useState(null); // "midi" | "scenes" | "account"
@@ -18,6 +19,9 @@ export default function TopNavBar({ activeView, setActiveView }) {
     <>
       <nav className="topbar">
         <img src={headerLogoUrl} className="topbar-logo" alt="Behringer" />
+
+        {/* phones / small tablets: one labelled switcher instead of squeezed tabs (CSS picks one) */}
+        <ViewSwitcher activeView={activeView} setActiveView={setActiveView} />
 
         <div className="topbar-tabs" role="tablist">
           {Object.entries(DDX_VIEW_RANGES).map(([key, { label, short }]) => (

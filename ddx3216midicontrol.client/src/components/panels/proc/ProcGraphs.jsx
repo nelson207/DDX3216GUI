@@ -26,7 +26,7 @@ export function EqGraph({ values, bands }) {
   const { path, fill, markers } = useMemo(() => {
     const filters = bands.map(({ n, typeDef }) => ({
       n,
-      shape: eqShape(typeDef.labels?.[values[`eq${n}FilterType`]]),
+      shape: typeDef ? eqShape(typeDef.labels?.[values[`eq${n}FilterType`]]) : "peak",
       f: eqFreqHz(values[`eq${n}Freq`]),
       gain: eqGainDb(values[`eq${n}Gain`]),
       q: eqQ(values[`eq${n}Q`]),
@@ -84,7 +84,7 @@ export function EqGraph({ values, bands }) {
         <span
           key={m.n}
           className="band-dot"
-          style={{ ...pct(m.x, m.y), background: BAND_COLORS[m.n - 1] }}
+          style={{ ...pct(m.x, m.y), background: BAND_COLORS[m.n] }}
         />
       ))}
     </div>

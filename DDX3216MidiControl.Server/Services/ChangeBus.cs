@@ -15,7 +15,7 @@ namespace MidiInterface.Services
 
     /// <summary>
     /// Single ordered queue for every parameter change. Producers (WebSocket receive loops,
-    /// the RtMidi input thread) only enqueue; <see cref="ChangeDispatcher"/> is the only consumer,
+    /// the ALSA input thread) only enqueue; <see cref="ChangeDispatcher"/> is the only consumer,
     /// so state updates and broadcasts happen in arrival order.
     /// </summary>
     public sealed class ChangeBus

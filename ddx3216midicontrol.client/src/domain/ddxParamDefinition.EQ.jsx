@@ -1,4 +1,6 @@
 import { ParamKind } from "./ddxParamKind";
+// DDX3216 channel EQ: band 1 = High (Param / HC / HSh), bands 2-3 = mids (parametric only,
+// no filter-type parameter), band 4 = Low (Param / LC / LSh).
 export const EQ_PARAMS = [
   {
     id: 20,
@@ -56,16 +58,6 @@ export const EQ_PARAMS = [
     },
   },
   {
-    id: 25,
-    key: "eq2FilterType",
-    label: "EQ band 2 Filter type",
-    kind: ParamKind.ENUM,
-    values: [0, 1, 2],
-    labels: { 0: "Param", 1: "HC", 2: "HSh" },
-    defaultRaw: 0,
-    format: (v, def) => def.labels?.[v] ?? String(v),
-  },
-  {
     id: 26,
     key: "eq2Freq",
     label: "EQ band 2 Frequency",
@@ -100,16 +92,6 @@ export const EQ_PARAMS = [
       const q = 0.1 * Math.pow(100, v / 40);
       return `Q ${q.toFixed(2)}`;
     },
-  },
-  {
-    id: 29,
-    key: "eq3FilterType",
-    label: "EQ band 3 Filter type",
-    kind: ParamKind.ENUM,
-    values: [0, 1, 2],
-    labels: { 0: "Param", 1: "HC", 2: "HSh" },
-    defaultRaw: 0,
-    format: (v, def) => def.labels?.[v] ?? String(v),
   },
   {
     id: 30,
@@ -153,7 +135,7 @@ export const EQ_PARAMS = [
     label: "EQ band 4 Filter type",
     kind: ParamKind.ENUM,
     values: [0, 1, 2],
-    labels: { 0: "Param", 1: "HC", 2: "HSh" },
+    labels: { 0: "Param", 1: "LC", 2: "LSh" },
     defaultRaw: 0,
     format: (v, def) => def.labels?.[v] ?? String(v),
   },

@@ -3,18 +3,31 @@ import { PARAM_DEFS } from "../../../domain/ddxParamDefinition";
 import { EQ_PARAMS } from "../../../domain/ddxParamDefinition.EQ";
 import { COMPRESSOR_PARAMS } from "../../../domain/ddxParamDefinition.Compressor";
 import { GATE_PARAMS } from "../../../domain/ddxParamDefinition.Gate";
+import {
+  MAIN_MODULE,
+  MASTER_COMPRESSOR_PARAMS,
+  MASTER_EQ_PARAMS,
+} from "../../../domain/ddxParamDefinition.Master";
 import { FX_REGISTRY } from "../../../domain/FXMaster/ddxParamFXRegistry";
 import ParamControl, { Toggle } from "../../control/ParamControl";
 import { BAND_COLORS } from "../../../functions/ProcCurves";
 import { DynamicsGraph, EqGraph } from "./ProcGraphs";
 
-const P = Object.fromEntries(PARAM_DEFS.map((d) => [d.key, d]));
-const BAND_NAMES = ["Low", "Lo-Mid", "Hi-Mid", "High"];
-const BANDS = [1, 2, 3, 4].map((n) => ({ n, typeDef: P[`eq${n}FilterType`] }));
+const byKey = (defs) => Object.fromEntries(defs.map((d) => [d.key, d]));
+const P = byKey(PARAM_DEFS);
+// Main uses other parameter numbers for EQ/compressor (see ddxParamDefinition.Master)
+const P_MAIN = { ...P, ...byKey(MASTER_EQ_PARAMS), ...byKey(MASTER_COMPRESSOR_PARAMS) };
+const defsFor = (ch) => (ch === MAIN_MODULE ? P_MAIN : P);
 
-/** Bound control by param key */
+// DDX band numbers run high -> low (1 = High, 4 = Low); shown low -> high like the desk.
+// Only bands 1 and 4 have a filter type; the mids are parametric.
+const BAND_NAMES = { 4: "Low", 3: "Lo-Mid", 2: "Hi-Mid", 1: "High" };
+const bandsFor = (ch) => [4, 3, 2, 1].map((n) => ({ n, typeDef: defsFor(ch)[`eq${n}FilterType`] }));
+
+/** Bound control by param key (resolved for the module: channel or Main) */
 function C({ k, ch, label, size }) {
-  const def = P[k];
+  const def = defsFor(ch)[k];
+  if (!def) return null;
   return <ParamControl def={def} channelid={ch} processorid={def.id} label={label} size={size} />;
 }
 
@@ -33,7 +46,7 @@ export function Module({ title, ch, onKey, className = "", children, extra }) {
 }
 
 function HeaderSwitch({ k, ch }) {
-  const def = P[k];
+  const def = defsFor(ch)[k];
   const { value, update } = useParamValue({ channelid: ch, processorid: def.id, defaultRaw: def.defaultRaw });
   const on = Boolean(Number(value));
   return (
@@ -48,16 +61,25 @@ function HeaderSwitch({ k, ch }) {
 }
 
 export function EqPage({ ch }) {
-  const values = useParamSnapshot(ch, EQ_PARAMS);
+  const isMain = ch === MAIN_MODULE;
+  const values = useParamSnapshot(ch, isMain ? MASTER_EQ_PARAMS : EQ_PARAMS);
+  const bands = bandsFor(ch);
   return (
     <div className="proc-grid">
       <Module title="Equalizer" ch={ch} onKey="eqOn" className="span-2">
-        <EqGraph values={values} bands={BANDS} />
+        <EqGraph values={values} bands={bands} />
         <div className="eq-bands">
-          {BANDS.map(({ n }) => (
-            <div className="eq-band" key={n} style={{ "--band": BAND_COLORS[n - 1] }}>
-              <div className="eq-band-name">{BAND_NAMES[n - 1]}</div>
-              <C k={`eq${n}FilterType`} ch={ch} label="Type" />
+          {bands.map(({ n, typeDef }) => (
+            <div className="eq-band" key={n} style={{ "--band": BAND_COLORS[n] }}>
+              <div className="eq-band-name">{BAND_NAMES[n]}</div>
+              {typeDef ? (
+                <C k={`eq${n}FilterType`} ch={ch} label="Type" />
+              ) : (
+                <div className="pc-field">
+                  <div className="pc-label">Type</div>
+                  <div className="eq-band-fixed">Parametric</div>
+                </div>
+              )}
               <div className="knob-row">
                 <C k={`eq${n}Freq`} ch={ch} label="Freq" size={56} />
                 <C k={`eq${n}Gain`} ch={ch} label="Gain" size={56} />
@@ -67,11 +89,13 @@ export function EqPage({ ch }) {
           ))}
         </div>
       </Module>
-      <Module title="High-pass" ch={ch} onKey="highPassOn">
-        <div className="knob-row">
-          <C k="highPassFreq" ch={ch} label="Freq" />
-        </div>
-      </Module>
+      {!isMain && (
+        <Module title="High-pass" ch={ch} onKey="highPassOn">
+          <div className="knob-row">
+            <C k="highPassFreq" ch={ch} label="Freq" />
+          </div>
+        </Module>
+      )}
     </div>
   );
 }
@@ -79,7 +103,8 @@ export function EqPage({ ch }) {
 const ratioOf = (raw) => parseFloat(P.compRatio.labels?.[raw] ?? "1") || 1;
 
 export function CompressorPage({ ch }) {
-  const v = useParamSnapshot(ch, COMPRESSOR_PARAMS);
+  const isMain = ch === MAIN_MODULE;
+  const v = useParamSnapshot(ch, isMain ? MASTER_COMPRESSOR_PARAMS : COMPRESSOR_PARAMS);
   return (
     <div className="proc-grid">
       <Module title="Compressor" ch={ch} onKey="compOn" className="span-2 dyn-module">
@@ -102,7 +127,11 @@ export function CompressorPage({ ch }) {
             <C k="compAttack" ch={ch} label="Attack" />
             <C k="compRelease" ch={ch} label="Release" />
           </div>
-          <C k="compKey" ch={ch} label="Key source" />
+          {isMain ? (
+            <C k="faderPrePostComp" ch={ch} label="Fader" />
+          ) : (
+            <C k="compKey" ch={ch} label="Key source" />
+          )}
         </div>
       </Module>
     </div>

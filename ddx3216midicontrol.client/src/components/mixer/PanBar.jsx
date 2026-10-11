@@ -99,7 +99,7 @@ function PanBar({ def, componentid, channelid, channellabel, processorid }) {
       id={componentid}
       role="slider"
       tabIndex={0}
-      aria-label={`${channellabel} pan`}
+      aria-label={`${channellabel} ${(def.label ?? "pan").toLowerCase()}`}
       aria-valuemin={min}
       aria-valuemax={max}
       aria-valuenow={raw}

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using MidiInterface.Controllers;
@@ -63,6 +64,11 @@ builder.Services.AddRateLimiter(o =>
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1) }));
 });
 
+// Behind nginx on the Pi: take the real client IP / scheme from X-Forwarded-* (trusted only from
+// loopback proxies by default), so the login rate limit and logs see each device, not 127.0.0.1.
+builder.Services.Configure<ForwardedHeadersOptions>(o =>
+    o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost);
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -104,6 +110,7 @@ await using (var db = await app.Services.GetRequiredService<IDbContextFactory<Ap
 await app.Services.GetRequiredService<SceneService>().InitializeAsync();
 app.Logger.LogInformation("Database: {Path}", dbPath);
 
+app.UseForwardedHeaders();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseCors("AllowFrontend");

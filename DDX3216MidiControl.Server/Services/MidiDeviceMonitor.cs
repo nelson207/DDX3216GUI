@@ -1,8 +1,8 @@
 namespace MidiInterface.Services
 {
     /// <summary>
-    /// Reopens the saved MIDI ports at startup and watches for USB unplug / re-plug,
-    /// closing and reopening the selected ports as they disappear and come back.
+    /// Connects the saved MIDI ports at startup and re-checks them periodically. ALSA port
+    /// announcements already trigger an immediate re-check on USB plug/unplug; this is the fallback.
     /// </summary>
     public sealed class MidiDeviceMonitor : BackgroundService
     {
@@ -14,7 +14,7 @@ namespace MidiInterface.Services
         {
             _router = router;
             _logger = logger;
-            _interval = TimeSpan.FromSeconds(Math.Max(1, config.GetValue("Midi:PollSeconds", 3)));
+            _interval = TimeSpan.FromSeconds(Math.Max(1, config.GetValue("Midi:PollSeconds", 10)));
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

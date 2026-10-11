@@ -3,7 +3,8 @@
 
 const FS = 48000;
 
-export const BAND_COLORS = ["#f08c00", "#2fb344", "#3d8bfd", "#ae3ec9"];
+// keyed by DDX band number: 4 = Low, 3 = Lo-Mid, 2 = Hi-Mid, 1 = High
+export const BAND_COLORS = { 4: "#f08c00", 3: "#2fb344", 2: "#3d8bfd", 1: "#ae3ec9" };
 
 export const eqFreqHz = (raw) => 20 * Math.pow(1000, raw / 159);
 export const eqGainDb = (raw) => -18 + raw / 2;

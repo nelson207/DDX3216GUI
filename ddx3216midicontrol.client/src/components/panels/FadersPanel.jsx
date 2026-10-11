@@ -13,6 +13,8 @@ const PAN_PARAM = PARAM_DEFS.find((p) => p.key === "pan");
 const MUTE_PARAM = PARAM_DEFS.find((p) => p.key === "mute");
 const VOLUME_PARAM = PARAM_DEFS.find((p) => p.key === "volume");
 const MAIN_CHANNEL_ID = 64;
+// Main: the SysEx documentation lists only volume (1) and balance (3), no mute
+const BALANCE_PARAM = { ...PAN_PARAM, label: "Balance" };
 
 function stripKind(channelid) {
   if (channelid === MAIN_CHANNEL_ID) return "main";
@@ -27,6 +29,7 @@ function Strip({ label: defaultLabel, channelid, view, onRename }) {
   const label = custom?.name || defaultLabel;
   const common = { channelid, channellabel: label };
   const nameStyle = custom?.color ? { background: custom.color } : undefined;
+  const isMain = channelid === MAIN_CHANNEL_ID;
   const title = custom?.name ? `${custom.name} (${defaultLabel})` : defaultLabel;
   return (
     <div
@@ -49,7 +52,7 @@ function Strip({ label: defaultLabel, channelid, view, onRename }) {
         </div>
       )}
       <div className="strip-controls">
-        {view?.showMute && (
+        {view?.showMute && !isMain && (
           <StripButton
             {...common}
             def={MUTE_PARAM}
@@ -61,7 +64,7 @@ function Strip({ label: defaultLabel, channelid, view, onRename }) {
         {view?.showPan && (
           <PanBar
             {...common}
-            def={PAN_PARAM}
+            def={isMain ? BALANCE_PARAM : PAN_PARAM}
             componentid={`ch_${channelid}_${PAN_PARAM.key}`}
             processorid={PAN_PARAM.id}
           />

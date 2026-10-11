@@ -1,44 +1,36 @@
 using MidiInterface.Helpers;
+using MidiInterface.Midi;
 using MidiInterface.Models;
-using RtMidi.Net;
-using RtMidi.Net.Clients;
-using RtMidi.Net.Enums;
-using RtMidi.Net.Events;
 using System.Text.RegularExpressions;
 
 namespace MidiInterface.Services
 {
     /// <summary>
-    /// Owns the RtMidi ports. Ports are remembered by name (persisted), so the selection survives
-    /// restarts, rescans and USB re-plugs; <see cref="Reconcile"/> reopens them when they come back.
-    /// Every port operation and send runs under one lock, so a port is never closed mid-send.
+    /// MIDI over the ALSA sequencer (Linux / Raspberry Pi). Ports are remembered by name (persisted),
+    /// so the selection survives restarts and USB re-plugs: ALSA port announcements trigger
+    /// <see cref="PollDevices"/> immediately, which reconnects the saved ports when they come back.
+    /// All sequencer calls that use the output client run under one lock.
+    /// On other systems (e.g. Windows development) the server runs without MIDI.
     /// </summary>
     public sealed partial class MidiRouterService : IDisposable
     {
-        private readonly MidiApi _api = OperatingSystem.IsLinux() ? MidiApi.LinuxAlsa : MidiApi.WindowsMultimediaMidi;
+        private const string ClientName = "DDX3216 Remote";
+
         private readonly object _io = new();
         private readonly ChangeBus _bus;
         private readonly MidiSettingsStore _settingsStore;
         private readonly ILogger<MidiRouterService> _logger;
         private readonly bool _filterIncoming;
+        private readonly AlsaSequencer? _seq;
+        private readonly Timer _portsChangedDebounce;
 
-        private volatile List<MidiDeviceInfo> _devices = new();
+        private volatile List<AlsaPort> _ports = new();
         private MidiSettings _desired;
-        // lock-free copy for the RtMidi input thread (taking _io there could deadlock with CloseIn)
+        // lock-free copies for other threads (ALSA reader thread, dispatcher)
         private volatile int _channel = 1;
-        // lock-free "is an output open" for the dispatcher: _io is held during (slow) sends
         private volatile bool _outOpen;
-        // an open port must be missing from this many polls in a row before it is closed
-        // (a single enumeration can transiently miss a busy device)
-        private const int MissingPollsBeforeClose = 2;
-        private int _outMissingPolls;
-        private int _inMissingPolls;
-        private MidiOutputClient? _out;
-        private string? _outName;
-        private uint? _outPort; // index of the open (or last open) port: fallback when names are unreadable
-        private MidiInputClient? _in;
-        private string? _inName;
-        private uint? _inPort;
+        private AlsaPort? _out;
+        private AlsaPort? _in;
 
         /// <summary>Raised (outside the lock) when ports, selection, connection state or channel change.</summary>
         public event Action? StatusChanged;
@@ -51,11 +43,21 @@ namespace MidiInterface.Services
             _filterIncoming = config.GetValue("Midi:FilterIncomingChannel", true);
             _desired = settingsStore.Load();
             _channel = Math.Clamp(_desired.Channel, 1, 16);
-            _outPort = _desired.OutIndex;
-            _inPort = _desired.InIndex;
-            _devices = Enumerate();
+            _portsChangedDebounce = new Timer(_ => SafePoll(), null, Timeout.Infinite, Timeout.Infinite);
+
+            _seq = AlsaSequencer.TryCreate(ClientName, logger, out var error);
+            if (_seq == null)
+            {
+                _logger.LogWarning("MIDI disabled: {Reason}. (Linux: install libasound2 and add the user to the 'audio' group.)", error);
+                return;
+            }
+            _seq.SysExReceived += OnSysEx;
+            // a plug/unplug fires several announcements: react once, shortly after the last one
+            _seq.PortsChanged += () => _portsChangedDebounce.Change(300, Timeout.Infinite);
+            lock (_io) _ports = Enumerate();
         }
 
+        public bool Available => _seq != null;
         public int Channel => _channel;
         public bool HasOutput => _outOpen;
 
@@ -65,13 +67,13 @@ namespace MidiInterface.Services
         {
             lock (_io)
             {
-                var ins = Ports(MidiDeviceType.Input);
-                var outs = Ports(MidiDeviceType.Output);
+                var ins = _ports.Where(p => p.IsInput).Select(ToDto).ToList();
+                var outs = _ports.Where(p => p.IsOutput).Select(ToDto).ToList();
                 return new MidiDevices(
                     ins,
                     outs,
-                    _in != null ? (int?)Find(ins, _inName, _inPort)?.Index : null,
-                    _out != null ? (int?)Find(outs, _outName, _outPort)?.Index : null,
+                    _in?.Id,
+                    _out?.Id,
                     _desired.Channel,
                     _desired.InName,
                     _desired.OutName,
@@ -80,31 +82,39 @@ namespace MidiInterface.Services
             }
         }
 
+        private static MidiDeviceInfoPortName ToDto(AlsaPort p) => new((uint)p.Id, p.DisplayName);
+
         // ---------------- selection ----------------
 
-        public void SelectOut(int index)
+        public void SelectOut(int id)
         {
+            AlsaPort port;
             lock (_io)
             {
-                var port = FindPort(MidiDeviceType.Output, index);
-                if (_out == null || _outPort != port.Index) OpenOutLocked(port.Index, port.Name);
-                _desired = _desired with { OutName = port.Name, OutIndex = port.Index };
+                RequireSequencer();
+                port = _ports.FirstOrDefault(p => p.IsOutput && p.Id == id);
+                if (port == default) throw new ArgumentException($"No MIDI output port {id}. Rescan ports and try again.");
+                if (_out?.Id != port.Id) ConnectOutLocked(port);
+                _desired = _desired with { OutName = port.DisplayName, OutIndex = (uint)port.Id };
                 _settingsStore.Save(_desired);
             }
-            _logger.LogInformation("MIDI OUT selected: {Name}", _outName);
+            _logger.LogInformation("MIDI OUT selected: {Name}", port.DisplayName);
             RaiseStatusChanged();
         }
 
-        public void SelectIn(int index)
+        public void SelectIn(int id)
         {
+            AlsaPort port;
             lock (_io)
             {
-                var port = FindPort(MidiDeviceType.Input, index);
-                if (_in == null || _inPort != port.Index) OpenInLocked(port.Index, port.Name);
-                _desired = _desired with { InName = port.Name, InIndex = port.Index };
+                RequireSequencer();
+                port = _ports.FirstOrDefault(p => p.IsInput && p.Id == id);
+                if (port == default) throw new ArgumentException($"No MIDI input port {id}. Rescan ports and try again.");
+                if (_in?.Id != port.Id) ConnectInLocked(port);
+                _desired = _desired with { InName = port.DisplayName, InIndex = (uint)port.Id };
                 _settingsStore.Save(_desired);
             }
-            _logger.LogInformation("MIDI IN selected: {Name}", _inName);
+            _logger.LogInformation("MIDI IN selected: {Name}", port.DisplayName);
             RaiseStatusChanged();
         }
 
@@ -123,76 +133,84 @@ namespace MidiInterface.Services
 
         public void RefreshDevices()
         {
-            _devices = Enumerate();
+            lock (_io) _ports = Enumerate();
             Reconcile();
             RaiseStatusChanged();
         }
 
         /// <summary>
-        /// Re-enumerates ports and closes/reopens the selected ones to match what is plugged in.
-        /// Called periodically by <see cref="MidiDeviceMonitor"/>. Returns true when something changed.
+        /// Re-enumerates ports and reconnects/forgets the selected ones to match what is plugged in.
+        /// Runs on ALSA port announcements and periodically from <see cref="MidiDeviceMonitor"/>.
         /// </summary>
         public bool PollDevices()
         {
-            var fresh = Enumerate();
-            bool listChanged = !SameNames(fresh, _devices);
-            if (listChanged) _devices = fresh;
+            if (_seq == null) return false;
+            bool listChanged;
+            lock (_io)
+            {
+                var fresh = Enumerate();
+                listChanged = !fresh.SequenceEqual(_ports);
+                if (listChanged) _ports = fresh;
+            }
             bool changed = Reconcile() || listChanged;
             if (changed) RaiseStatusChanged();
             return changed;
         }
 
+        private void SafePoll()
+        {
+            try { PollDevices(); }
+            catch (Exception ex) { _logger.LogWarning(ex, "MIDI port refresh failed"); }
+        }
+
         private bool Reconcile()
         {
+            if (_seq == null) return false;
             bool changed = false;
             lock (_io)
             {
-                // OUT
-                _outMissingPolls = _out != null && FindByName(MidiDeviceType.Output, _outName, _outPort) == null ? _outMissingPolls + 1 : 0;
-                if (_outMissingPolls >= MissingPollsBeforeClose)
+                // OUT: gone, re-plugged under a new address, or back after an unplug
+                var outNow = FindByName(p => p.IsOutput, _out?.DisplayName ?? _desired.OutName);
+                if (_out is { } current && outNow == null)
                 {
-                    _outMissingPolls = 0;
-                    _logger.LogWarning("MIDI OUT disconnected: {Name}", _outName);
-                    CloseQuietly(_out);
-                    _out = null;
+                    _logger.LogWarning("MIDI OUT disconnected: {Name}", current.DisplayName);
+                    _out = null; // ALSA already removed the subscription with the port
                     _outOpen = false;
                     changed = true;
                 }
-                if (_out == null && _desired.OutName != null && FindByName(MidiDeviceType.Output, _desired.OutName, _outPort) is { } outPort)
+                else if (outNow is { } outPort && _out?.Id != outPort.Id && _desired.OutName != null)
                 {
                     try
                     {
-                        OpenOutLocked(outPort.Index, outPort.Name);
-                        _logger.LogInformation("MIDI OUT opened: {Name}", outPort.Name);
+                        ConnectOutLocked(outPort);
+                        _logger.LogInformation("MIDI OUT connected: {Name}", outPort.DisplayName);
                         changed = true;
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogDebug(ex, "MIDI OUT {Name} not available yet", outPort.Name);
+                        _logger.LogWarning(ex, "MIDI OUT {Name} could not be connected", outPort.DisplayName);
                     }
                 }
 
                 // IN
-                _inMissingPolls = _in != null && FindByName(MidiDeviceType.Input, _inName, _inPort) == null ? _inMissingPolls + 1 : 0;
-                if (_inMissingPolls >= MissingPollsBeforeClose && _in != null)
+                var inNow = FindByName(p => p.IsInput, _in?.DisplayName ?? _desired.InName);
+                if (_in is { } currentIn && inNow == null)
                 {
-                    _inMissingPolls = 0;
-                    _logger.LogWarning("MIDI IN disconnected: {Name}", _inName);
-                    CloseIn(_in);
+                    _logger.LogWarning("MIDI IN disconnected: {Name}", currentIn.DisplayName);
                     _in = null;
                     changed = true;
                 }
-                if (_in == null && _desired.InName != null && FindByName(MidiDeviceType.Input, _desired.InName, _inPort) is { } inPort)
+                else if (inNow is { } inPort && _in?.Id != inPort.Id && _desired.InName != null)
                 {
                     try
                     {
-                        OpenInLocked(inPort.Index, inPort.Name);
-                        _logger.LogInformation("MIDI IN opened: {Name}", inPort.Name);
+                        ConnectInLocked(inPort);
+                        _logger.LogInformation("MIDI IN connected: {Name}", inPort.DisplayName);
                         changed = true;
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogDebug(ex, "MIDI IN {Name} not available yet", inPort.Name);
+                        _logger.LogWarning(ex, "MIDI IN {Name} could not be connected", inPort.DisplayName);
                     }
                 }
             }
@@ -201,46 +219,35 @@ namespace MidiInterface.Services
 
         // ---------------- output ----------------
 
-        /// <summary>Sends one SysEx message. Returns false when no port is open or the send failed.</summary>
+        /// <summary>Sends one SysEx message. Returns false when no output is connected or ALSA refused it.</summary>
         public bool Send(byte[] data)
         {
-            if (data.Length == 0) return false;
-            bool faulted = false;
+            if (data.Length == 0 || !_outOpen || _seq == null) return false;
             lock (_io)
             {
                 if (_out == null) return false;
                 try
                 {
-                    _out.SendMessage(data);
+                    _seq.SendSysEx(data);
                     return true;
                 }
-                catch (Exception ex)
+                catch (IOException ex)
                 {
-                    // device probably unplugged: close it, the monitor reopens it when it is back
-                    _logger.LogWarning(ex, "MIDI OUT send failed on {Name}; closing port", _outName);
-                    CloseQuietly(_out);
-                    _out = null;
-                    _outOpen = false;
-                    faulted = true;
+                    _logger.LogWarning("MIDI OUT send failed on {Name}: {Error}", _out?.DisplayName, ex.Message);
+                    return false;
                 }
             }
-            if (faulted) RaiseStatusChanged();
-            return false;
         }
 
-        // ---------------- input (RtMidi thread) ----------------
+        // ---------------- input (ALSA reader thread) ----------------
 
-        private void OnMidiInMessage(object? sender, MidiMessageReceivedEventArgs e)
+        private void OnSysEx(byte[] message)
         {
             try
             {
-                if (e.Message is not MidiMessageSystemExclusive { Type: MidiMessageType.SystemExclusive } message)
-                    return;
-
-                int? channel = _filterIncoming ? Channel : null;
-                var changes = BehringerUtilities.SysExDecode(message.Data, channel);
+                int? channel = _filterIncoming ? _channel : null;
+                var changes = BehringerUtilities.SysExDecode(message, channel);
                 if (changes == null) return;
-
                 var valid = changes.Where(c => c.IsValid()).ToArray();
                 if (valid.Length > 0) _bus.Publish(valid, ChangeSource.Midi);
             }
@@ -252,104 +259,51 @@ namespace MidiInterface.Services
 
         // ---------------- helpers (call with _io held) ----------------
 
-        private void OpenOutLocked(uint port, string name)
+        private void ConnectOutLocked(AlsaPort port)
         {
-            var info = MidiManager.GetDeviceInfo(port, MidiDeviceType.Output, _api);
-            var client = new MidiOutputClient(info);
-            try
-            {
-                client.Open();
-            }
-            catch
-            {
-                CloseQuietly(client);
-                throw;
-            }
-            var old = _out;
-            _out = client;
-            _outName = name;
-            _outPort = port;
+            RequireSequencer();
+            _seq!.ConnectOutput(port); // throws when ALSA refuses: the previous connection stays
+            if (_out is { } old && old.Id != port.Id) _seq.DisconnectOutput(old);
+            _out = port;
             _outOpen = true;
-            CloseQuietly(old);
         }
 
-        private void OpenInLocked(uint port, string name)
+        private void ConnectInLocked(AlsaPort port)
         {
-            var info = MidiManager.GetDeviceInfo(port, MidiDeviceType.Input, _api);
-            var client = new MidiInputClient(info) { IgnoreSysexMessages = false };
-            client.OnMessageReceived += OnMidiInMessage;
+            RequireSequencer();
+            _seq!.ConnectInput(port);
+            if (_in is { } old && old.Id != port.Id) _seq.DisconnectInput(old);
+            _in = port;
+        }
+
+        private void RequireSequencer()
+        {
+            if (_seq == null) throw new InvalidOperationException("MIDI is not available on this system (ALSA sequencer not found).");
+        }
+
+        private List<AlsaPort> Enumerate()
+        {
+            if (_seq == null) return new();
             try
             {
-                client.ActivateMessageReceivedEvent();
-                client.Open();
-            }
-            catch
-            {
-                CloseIn(client);
-                throw;
-            }
-            var old = _in;
-            _in = client;
-            _inName = name;
-            _inPort = port;
-            if (old != null) CloseIn(old);
-        }
-
-        private void CloseIn(MidiInputClient client)
-        {
-            client.OnMessageReceived -= OnMidiInMessage;
-            try { client.DeactivateMessageReceivedEvent(); } catch { }
-            CloseQuietly(client);
-        }
-
-        private static void CloseQuietly(MidiClient? client)
-        {
-            if (client == null) return;
-            try { client.Close(); } catch { }
-            try { client.Dispose(); } catch { }
-        }
-
-        private List<MidiDeviceInfo> Enumerate()
-        {
-            try
-            {
-                return MidiManager.GetAvailableDevices(_api);
+                return _seq.ListPorts();
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Could not enumerate MIDI devices");
-                return _devices;
+                _logger.LogWarning(ex, "Could not enumerate MIDI ports");
+                return _ports;
             }
         }
 
-        private IReadOnlyList<MidiDeviceInfoPortName> Ports(MidiDeviceType type) =>
-            _devices.Where(d => d.Type == type).Select(d => new MidiDeviceInfoPortName(d.Port, d.Name)).ToList();
-
-        private MidiDeviceInfoPortName FindPort(MidiDeviceType type, int index) =>
-            Ports(type).FirstOrDefault(p => p.Index == index)
-            ?? throw new ArgumentException($"No MIDI {(type == MidiDeviceType.Input ? "input" : "output")} port {index}. Rescan ports and try again.");
-
-        private MidiDeviceInfoPortName? FindByName(MidiDeviceType type, string? name, uint? lastIndex) =>
-            Find(Ports(type), name, lastIndex);
-
-        /// <summary>
-        /// Port with the same (normalized) name. Some drivers report unreadable names (RtMidi.Net
-        /// on Windows returns garbage that changes between enumerations): when either name is
-        /// unreadable, fall back to the port at the last known index.
-        /// </summary>
-        private static MidiDeviceInfoPortName? Find(IReadOnlyList<MidiDeviceInfoPortName> ports, string? name, uint? lastIndex)
+        private AlsaPort? FindByName(Func<AlsaPort, bool> kind, string? name)
         {
             if (name == null) return null;
-            var byName = ports.FirstOrDefault(p => !IsUnreadable(p.Name) && SameDevice(p.Name, name));
-            if (byName != null || lastIndex == null) return byName;
-            var atIndex = ports.FirstOrDefault(p => p.Index == lastIndex);
-            return atIndex != null && (IsUnreadable(atIndex.Name) || IsUnreadable(name)) ? atIndex : null;
+            foreach (var p in _ports)
+                if (kind(p) && SameDevice(p.DisplayName, name)) return p;
+            return null;
         }
 
-        private static bool IsUnreadable(string name) =>
-            string.IsNullOrWhiteSpace(name) || name.Any(ch => ch == '�' || char.IsControl(ch));
-
-        // ALSA names end with the client:port address ("UM-ONE:UM-ONE MIDI 1 20:0"), which can
+        // Names end with the ALSA client:port address ("UM-ONE:UM-ONE MIDI 1 20:0"), which can
         // change when the device is re-plugged: compare without it.
         [GeneratedRegex(@"\s+\d+:\d+$")]
         private static partial Regex AlsaAddress();
@@ -359,9 +313,6 @@ namespace MidiInterface.Services
         private static bool SameDevice(string a, string b) =>
             string.Equals(Normalize(a), Normalize(b), StringComparison.OrdinalIgnoreCase);
 
-        private static bool SameNames(List<MidiDeviceInfo> a, List<MidiDeviceInfo> b) =>
-            a.Count == b.Count && a.Zip(b).All(x => x.First.Type == x.Second.Type && x.First.Name == x.Second.Name && x.First.Port == x.Second.Port);
-
         private void RaiseStatusChanged()
         {
             try { StatusChanged?.Invoke(); }
@@ -370,14 +321,19 @@ namespace MidiInterface.Services
 
         public void Dispose()
         {
+            _portsChangedDebounce.Dispose();
             lock (_io)
             {
-                if (_in != null) CloseIn(_in);
-                CloseQuietly(_out);
-                _in = null;
+                if (_seq != null)
+                {
+                    if (_out is { } o) _seq.DisconnectOutput(o);
+                    if (_in is { } i) _seq.DisconnectInput(i);
+                }
                 _out = null;
+                _in = null;
                 _outOpen = false;
             }
+            _seq?.Dispose();
         }
     }
 }

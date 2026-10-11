@@ -7,6 +7,7 @@ import {
   RoutingPage,
   SendsPage,
 } from "./proc/ProcPages";
+import { MAIN_PROCESSORS } from "../../domain/ddxParamDefinition.Master";
 
 const MAIN_CHANNEL_ID = 64;
 // selectable channels: 1..32 + Main
@@ -49,6 +50,9 @@ function ProcPanel({ selectedChannel, onSelectChannel, selectedProcessor, onSele
   const idx = CHANNELS.indexOf(selectedChannel);
   const step = (d) => onSelectChannel(CHANNELS[(idx + d + CHANNELS.length) % CHANNELS.length]);
   const isMain = selectedChannel === "Main";
+  // Main only has EQ and compressor (DDX3216 SysEx documentation)
+  const processors = isMain ? PROCESSORS.filter((p) => MAIN_PROCESSORS.includes(p.key)) : PROCESSORS;
+  const processor = processors.some((p) => p.key === selectedProcessor) ? selectedProcessor : processors[0].key;
   const labels = useSelector((s) => s.ws.scene?.labels);
   const optionLabel = (c) => {
     const base = c === "Main" ? "Main" : `CH ${c}`;
@@ -83,13 +87,13 @@ function ProcPanel({ selectedChannel, onSelectChannel, selectedProcessor, onSele
         </div>
 
         <div className="proc-tabs" role="tablist" aria-label="Processor">
-          {PROCESSORS.map((p) => (
+          {processors.map((p) => (
             <button
               key={p.key}
               type="button"
               role="tab"
-              aria-selected={selectedProcessor === p.key}
-              className={`proc-tab${selectedProcessor === p.key ? " active" : ""}`}
+              aria-selected={processor === p.key}
+              className={`proc-tab${processor === p.key ? " active" : ""}`}
               onClick={() => onSelectProcessor(p.key)}
             >
               {p.label}
@@ -100,7 +104,7 @@ function ProcPanel({ selectedChannel, onSelectChannel, selectedProcessor, onSele
 
       <div className="proc-content" role="tabpanel">
         {/* key: remount per channel so held-control state never leaks between channels */}
-        <ProcessorPage key={`${ch}_${selectedProcessor}`} processor={selectedProcessor} ch={ch} />
+        <ProcessorPage key={`${ch}_${processor}`} processor={processor} ch={ch} />
       </div>
     </div>
   );

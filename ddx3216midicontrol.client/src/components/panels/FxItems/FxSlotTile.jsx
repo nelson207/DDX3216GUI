@@ -1,88 +1,37 @@
-import { useEffect, useState } from "react";
 import { PARAM_DEFS } from "../../../domain/ddxParamDefinition";
 import { FX_REGISTRY } from "../../../domain/FXMaster/ddxParamFXRegistry";
-import { useReceiver, useSender } from "../../../router/MidiControl";
+import { useParamValue } from "../../../router/useParamValue";
 import ParamCell, { EmptyCell } from "../../control/ParamCell";
 import ParamKindSwitchTile from "../../control/ParamKindSwitchTile";
-import { useGetApiMidiStatusByModuleAndParamDefaultValueQuery } from "../../../router/apis/MidiApi";
+
+const MAX_CELLS = 8;
+const FX_TYPE_PARAM = 90;
+const FX_SEND_BASE = 52; // FX 1..4 send modules 52..55
+const FX_RETURN_BASE = 56; // FX n return L/R = 56 + 2(n-1) / +1 (see ChannelFunction)
+const MUTE_PARAM = PARAM_DEFS.find((p) => p.key === "mute");
+
+// FX send module -> FX return (left) module
+function mapFxChannelSendToReturn(channelid) {
+  return FX_RETURN_BASE + (channelid - FX_SEND_BASE) * 2;
+}
 
 export function FxSlotTile({ channelid }) {
-  const MAX_CELLS = 8;
-  const MUTE_PARAM = PARAM_DEFS.find((p) => p.key === "mute");
-  const [cValue, setCValue] = useState();
-  const { send } = useSender();
-  const { lastMsg } = useReceiver();
+  // FX type loaded in this slot (0 = empty), synced through the store
+  const { value, update, loading } = useParamValue({
+    channelid,
+    processorid: FX_TYPE_PARAM,
+    defaultRaw: 0,
+  });
 
-  const { data, isLoading, isFetching } =
-    useGetApiMidiStatusByModuleAndParamDefaultValueQuery({
-      module: channelid,
-      param: 90,
-      defaultValue: 0,
-    });
-
-  useEffect(() => {
-    if (data !== undefined) {
-      assignFxToSlot(data, false);
-    }
-  }, [data]);
-
-  // Send whenever cValue changes (but not before it exists)
-  const updateAndSendValue = (updater) => {
-    setCValue((prev) => {
-      const next = typeof updater === "function" ? updater(prev) : updater;
-
-      if (next === undefined || next === prev) {
-        return prev;
-      }
-      send([
-        {
-          Module: channelid,
-          Param: 90,
-          Value: Number(next),
-        },
-      ]);
-
-      return next;
-    });
-  };
-
-  useEffect(() => {
-    if (!lastMsg || !Array.isArray(lastMsg)) return;
-
-    for (const change of lastMsg) {
-      if (change.Module === channelid && change.Param === 90) {
-        assignFxToSlot(change.Value, false);
-        break;
-      }
-    }
-  }, [lastMsg]);
-
-  function mapFxChannelSendToReturn() {
-    // ch is 51..54
-    const base = 55 + (channelid - 51) * 2;
-    return base;
-  }
-
-  const getFxByType = (type) => {
-    const defs = FX_REGISTRY[type];
-    return defs;
-  };
-
-  const [fxDef, setFxDef] = useState(getFxByType(cValue));
+  const fxDef = FX_REGISTRY[value];
   const params = fxDef?.params ?? [];
   const cells = Array.from({ length: MAX_CELLS }, (_, i) => params[i] ?? null);
 
-  const assignFxToSlot = (fxType, sendToMidi = true) => {
-    if (sendToMidi) updateAndSendValue(fxType);
-    else setCValue(fxType);
-    setFxDef(getFxByType(fxType));
-  };
+  const assignFxToSlot = (fxType) => update(fxType, { immediate: true });
 
   const clearSlot = () => {
     assignFxToSlot(0);
   };
-
-  const loading = isLoading || isFetching; // isFetching catches refetches too
 
   return (
     <div
@@ -104,10 +53,25 @@ export function FxSlotTile({ channelid }) {
         {/* Header */}
         <div className="d-flex justify-content-between align-items-start gap-2">
           <div>
-            <div className="fw-bold">{`FX ${channelid - 51}`}</div>
-            <div className="small text-secondary">
-              {fxDef ? fxDef.name : "Drop FX here"}
-            </div>
+            <div className="fw-bold">{`FX ${channelid - FX_SEND_BASE + 1}`}</div>
+            {/* drag & drop doesn't exist on touch screens: pick from a list too */}
+            <select
+              className="form-select form-select-sm bg-dark text-light mt-1"
+              aria-label={`FX ${channelid - FX_SEND_BASE + 1} type`}
+              value={fxDef ? value : ""}
+              onChange={(e) => assignFxToSlot(Number(e.target.value))}
+            >
+              {!fxDef && (
+                <option value="" disabled>
+                  Choose / drop FX
+                </option>
+              )}
+              {Object.entries(FX_REGISTRY).map(([type, fx]) => (
+                <option key={type} value={type}>
+                  {fx.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           {fxDef ? (

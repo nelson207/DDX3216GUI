@@ -84,12 +84,25 @@ namespace MidiInterface.Helpers
             return (byte)((flags | ch) & 0x7F);
         }
 
+        // One DDX parameter-change SysEx carries at most 23 changes
+        public const int MaxChangesPerSysEx = 23;
+
+        // Splits any number of changes into as many SysEx messages as needed
+        public static IEnumerable<byte[]> SysExEncodeAll(BehringerChange[] changes, MidiRouterService router)
+        {
+            for (int i = 0; i < changes.Length; i += MaxChangesPerSysEx)
+                yield return SysExEncode(changes.Skip(i).Take(MaxChangesPerSysEx).ToArray(), router);
+        }
+
         public static byte[] SysExEncode(BehringerChange[] changes, MidiRouterService router)
         {
-            if (changes != null)
+            if (changes != null && changes.Length > 0)
             {
+                if (changes.Length > MaxChangesPerSysEx)
+                    throw new ArgumentException($"At most {MaxChangesPerSysEx} changes per SysEx; use SysExEncodeAll");
+
                 byte[] header = BuildHeader(PackIC(router.Channel));
-                int nn = Math.Clamp(changes?.Length ?? 0, 1, 23);
+                int nn = changes.Length;
 
                 // body = [0x20, nn]
                 // payload: nn * (module, param, value14 hi, value14 lo)

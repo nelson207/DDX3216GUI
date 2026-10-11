@@ -10,10 +10,13 @@ namespace MidiInterface.Services
 {
     public sealed class MidiRouterService : IDisposable
     {
-        private static MidiApi _midiApi = MidiApi.LinuxAlsa;
-        private static List<MidiDeviceInfo> _availableDevices = MidiManager.GetAvailableDevices(_midiApi);
+        private static MidiApi _midiApi = OperatingSystem.IsLinux() ? MidiApi.LinuxAlsa : MidiApi.WindowsMultimediaMidi;
+        private static List<MidiDeviceInfo> _availableDevices = new();
         private MidiOutputClient? _midiOut;
-        private MidiInputClient? _midiIn;      
+        private MidiInputClient? _midiIn;
+        // RtMidi output is not thread safe: SysEx from different clients must not interleave
+        private readonly SemaphoreSlim _sendLock = new(1, 1);
+        private readonly object _deviceLock = new();
 
         public WebSocketService? WebSocketHandler { get; set; }
         private BehringerStateStoreService _behringerStateStoreService;
@@ -24,7 +27,6 @@ namespace MidiInterface.Services
         public MidiRouterService(BehringerStateStoreService behringerStateStoreService)
         {
             _behringerStateStoreService = behringerStateStoreService;
-            _midiApi = OperatingSystem.IsLinux() ? MidiApi.LinuxAlsa : MidiApi.WindowsMultimediaMidi;
             _availableDevices = MidiManager.GetAvailableDevices(_midiApi);
         }
 
@@ -61,23 +63,57 @@ namespace MidiInterface.Services
         }
 
         // -------- Select devices --------
+        // Re-selecting closes the previous port first, otherwise ports leak and
+        // MIDI IN handlers stack up (every console change would be broadcast twice).
         public void SelectOut(int deviceIndex)
         {
-            var device = MidiManager.GetDeviceInfo((uint)deviceIndex, MidiDeviceType.Output);
-            _midiOut = new MidiOutputClient(device);
-            _midiOut.Open();
-            SelectedOutDevice = deviceIndex;
+            lock (_deviceLock)
+            {
+                var device = MidiManager.GetDeviceInfo((uint)deviceIndex, MidiDeviceType.Output);
+                var newOut = new MidiOutputClient(device);
+                newOut.Open();
+
+                var oldOut = _midiOut;
+                _midiOut = newOut;
+                SelectedOutDevice = deviceIndex;
+                CloseQuietly(oldOut);
+            }
         }
 
         public void SelectIn(int deviceIndex)
         {
-            var deviceIn = MidiManager.GetDeviceInfo((uint)deviceIndex, MidiDeviceType.Input);
-            _midiIn = new MidiInputClient(deviceIn);
-            _midiIn.IgnoreSysexMessages = false;
-            _midiIn.OnMessageReceived += OnMidiInSysexMessageReceived;
-            _midiIn.ActivateMessageReceivedEvent();
-            _midiIn.Open();
-            SelectedInDevice = deviceIndex;
+            lock (_deviceLock)
+            {
+                var deviceIn = MidiManager.GetDeviceInfo((uint)deviceIndex, MidiDeviceType.Input);
+                var newIn = new MidiInputClient(deviceIn);
+                newIn.IgnoreSysexMessages = false;
+                newIn.OnMessageReceived += OnMidiInSysexMessageReceived;
+                newIn.ActivateMessageReceivedEvent();
+                newIn.Open();
+
+                var oldIn = _midiIn;
+                _midiIn = newIn;
+                SelectedInDevice = deviceIndex;
+                if (oldIn != null)
+                {
+                    oldIn.OnMessageReceived -= OnMidiInSysexMessageReceived;
+                    CloseQuietly(oldIn);
+                }
+            }
+        }
+
+        private static void CloseQuietly(MidiOutputClient? client)
+        {
+            if (client == null) return;
+            try { client.Close(); } catch { }
+            try { client.Dispose(); } catch { }
+        }
+
+        private static void CloseQuietly(MidiInputClient? client)
+        {
+            if (client == null) return;
+            try { client.Close(); } catch { }
+            try { client.Dispose(); } catch { }
         }
 
         // -------- Channel --------
@@ -92,9 +128,17 @@ namespace MidiInterface.Services
         {
             if (data.Length == 0) return;
 
-            if (_midiOut != null)
+            var midiOut = _midiOut;
+            if (midiOut == null) return;
+
+            await _sendLock.WaitAsync(ct);
+            try
             {
-                await Task.Run(() => _midiOut.SendMessage(data), ct);
+                await Task.Run(() => midiOut.SendMessage(data), ct);
+            }
+            finally
+            {
+                _sendLock.Release();
             }
         }
 

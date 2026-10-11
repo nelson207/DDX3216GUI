@@ -7,7 +7,7 @@ export function FxPaletteItem({ fx }) {
         e.dataTransfer.setData("fx/type", String(fx.type));
         e.dataTransfer.effectAllowed = "copy";
       }}
-      title="Drag to a slot"
+      title="Drag to a slot (or pick it from the slot list)"
       style={{ cursor: "grab", userSelect: "none" }}
     >
       <div className="card-body py-2">

@@ -55,7 +55,7 @@ export const GATE_PARAMS = [
     defaultRaw: 0,
     format: (v) => {
       if (v === 61) return "-∞ dB";
-      return `-${v} dB`;
+      return v === 0 ? "0 dB" : `-${v} dB`;
     },
   },
   {

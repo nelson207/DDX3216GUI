@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useSender } from "./MidiControl";
 import { useGetApiMidiStatusByModuleAndParamDefaultValueQuery } from "./apis/MidiApi";
 import { paramKey, paramSet } from "./slices/wsSlice";
@@ -81,4 +81,19 @@ export function useParamValue({ channelid, processorid, defaultRaw }) {
     setHolding,
     loading: isLoading || isFetching,
   };
+}
+
+/**
+ * Read-only snapshot of several params of one module, keyed by def.key
+ * (falls back to defaultRaw). For graphs that depend on many values.
+ */
+export function useParamSnapshot(channelid, defs) {
+  return useSelector((s) => {
+    const out = {};
+    for (const def of defs) {
+      const v = s.ws.values[paramKey(channelid, def.id)];
+      out[def.key] = v ?? def.defaultRaw ?? 0;
+    }
+    return out;
+  }, shallowEqual);
 }

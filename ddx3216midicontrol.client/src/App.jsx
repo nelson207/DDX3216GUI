@@ -3,8 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./App.css";
 import TopNavBar from "./components/navbar/TopNavBar";
-import ChannelSelectNavBar from "./components/navbar/ChannelSelectNavBar";
-import ChannelProcNavBar from "./components/navbar/ChannelProcNavBar";
 import ChannelFXPanel from "./components/panels/FxPanel";
 import FadersPanel from "./components/panels/FadersPanel";
 import ProcPanel from "./components/panels/ProcPanel";
@@ -24,25 +22,15 @@ function App() {
       <header className="app-top">
         <TopNavBar activeView={activeView} setActiveView={setActiveView} />
       </header>
-      {isChannelProcessorMenu && (
-        <div className="app-subnav">
-          <ChannelSelectNavBar
-            selected={channelSelected}
-            onSelect={setChannelSelected}
-          />
-          <ChannelProcNavBar
-            selected={processorSelected}
-            onSelect={setProcessorSelected}
-          />
-        </div>
-      )}
       <main className={`app-main${showFaders ? " app-main-mixer" : ""}`}>
         {showFaders && <FadersPanel activeView={activeView} />}
 
         {isChannelProcessorMenu && (
           <ProcPanel
             selectedChannel={channelSelected}
+            onSelectChannel={setChannelSelected}
             selectedProcessor={processorSelected}
+            onSelectProcessor={setProcessorSelected}
           />
         )}
         {isChannelFXMenu && <ChannelFXPanel />}

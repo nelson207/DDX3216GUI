@@ -43,7 +43,7 @@ const midiSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // GET /api/Midi/devices -> MidiDevicesRead
+    // GET /api/Midi/devices -> MidiDevices
     builder.addMatcher(
       MidiApi.endpoints.getApiMidiDevices.matchFulfilled,
       (state, action) => {

@@ -33,3 +33,6 @@ bin
 *.sw?
 
 
+
+# runtime data written by the server (database, login keys, MIDI settings)
+DDX3216MidiControl.Server/App_Data/

@@ -92,7 +92,7 @@ export const BASE_PARAMS = [
     min: 0,
     max: 60,
     defaultRaw: 30,
-    format: (v) => `${(-30 + v).toFixed(0)} dB`,
+    format: (v) => (v === 30 ? "Center" : v < 30 ? `${30 - v} L` : `${v - 30} R`),
   },
   {
     id: 9,

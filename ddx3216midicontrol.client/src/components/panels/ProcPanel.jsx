@@ -1,84 +1,112 @@
-import { PARAM_DEFS } from "../../domain/ddxParamDefinition";
-import { AUX_PARAMS } from "../../domain/ddxParamDefinition.Aux";
-import { BASE_PARAMS } from "../../domain/ddxParamDefinition.Base";
-import { COMPRESSOR_PARAMS } from "../../domain/ddxParamDefinition.Compressor";
-import { DELAY_PARAMS } from "../../domain/ddxParamDefinition.Delay";
-import { EQ_PARAMS } from "../../domain/ddxParamDefinition.EQ";
-import { FX_PARAMS } from "../../domain/ddxParamDefinition.FX";
-import { GATE_PARAMS } from "../../domain/ddxParamDefinition.Gate";
-import ParamCell from "../control/ParamCell";
+import { useSelector } from "react-redux";
+import {
+  CompressorPage,
+  DelayPage,
+  EqPage,
+  GatePage,
+  RoutingPage,
+  SendsPage,
+} from "./proc/ProcPages";
+import { MAIN_PROCESSORS } from "../../domain/ddxParamDefinition.Master";
 
-// "EQ", "Compressor", "Gate", "Delay", "Routing"
+const MAIN_CHANNEL_ID = 64;
+// selectable channels: 1..32 + Main
+const CHANNELS = [...Array.from({ length: 32 }, (_, i) => i + 1), "Main"];
 
-function ProcPanel({ selectedChannel, selectedProcessor }) {
-  const params = (() => {
-    switch (selectedProcessor) {
-      case "EQ":
-        return EQ_PARAMS;
-      case "Compressor":
-        return COMPRESSOR_PARAMS;
-      case "Gate":
-        return GATE_PARAMS;
-      case "Delay":
-        return DELAY_PARAMS;
-      case "Routing":
-        return [
-          ...PARAM_DEFS.filter((p) => p.group === "routing"),
-          ...BASE_PARAMS.filter((p) => p.group === "bus"),
-        ];
-      case "Aux":
-        return AUX_PARAMS;
-      case "Fx":
-        return FX_PARAMS;
+const PROCESSORS = [
+  { key: "EQ", label: "EQ" },
+  { key: "Compressor", label: "Comp" },
+  { key: "Gate", label: "Gate" },
+  { key: "Delay", label: "Delay" },
+  { key: "Routing", label: "Routing" },
+  { key: "Aux", label: "Aux sends" },
+  { key: "Fx", label: "FX sends" },
+];
 
-      case "Bus":
-      default:
-        return [];
-    }
-  })();
+function ProcessorPage({ processor, ch }) {
+  switch (processor) {
+    case "EQ":
+      return <EqPage ch={ch} />;
+    case "Compressor":
+      return <CompressorPage ch={ch} />;
+    case "Gate":
+      return <GatePage ch={ch} />;
+    case "Delay":
+      return <DelayPage ch={ch} />;
+    case "Routing":
+      return <RoutingPage ch={ch} />;
+    case "Aux":
+      return <SendsPage ch={ch} kind="aux" />;
+    case "Fx":
+      return <SendsPage ch={ch} kind="fx" />;
+    default:
+      return null;
+  }
+}
+
+function ProcPanel({ selectedChannel, onSelectChannel, selectedProcessor, onSelectProcessor }) {
+  // "Main" -> module 64, channel N -> index N-1
+  const ch = selectedChannel === "Main" ? MAIN_CHANNEL_ID : selectedChannel - 1;
+  const idx = CHANNELS.indexOf(selectedChannel);
+  const step = (d) => onSelectChannel(CHANNELS[(idx + d + CHANNELS.length) % CHANNELS.length]);
+  const isMain = selectedChannel === "Main";
+  // Main only has EQ and compressor (DDX3216 SysEx documentation)
+  const processors = isMain ? PROCESSORS.filter((p) => MAIN_PROCESSORS.includes(p.key)) : PROCESSORS;
+  const processor = processors.some((p) => p.key === selectedProcessor) ? selectedProcessor : processors[0].key;
+  const labels = useSelector((s) => s.ws.scene?.labels);
+  const optionLabel = (c) => {
+    const base = c === "Main" ? "Main" : `CH ${c}`;
+    const custom = labels?.[c === "Main" ? MAIN_CHANNEL_ID : c - 1]?.name;
+    return custom ? `${base} · ${custom}` : base;
+  };
 
   return (
-    <>
-      <label className="px-2 py-1 fw-bold text-white">{`Channel ${selectedChannel} - ${selectedProcessor}`}</label>
-      <div className="row g-2 p-2">
-
-        {params.map((def) => (
-          <div
-            key={`${selectedChannel}-${def.id ?? def.key}`}
-            className="col-12 col-md-6 col-lg-4 col-xl-3"
+    <div className="proc-panel">
+      <div className="proc-head">
+        <div className={`ch-stepper${isMain ? " main" : ""}`}>
+          <button type="button" className="ch-step" onClick={() => step(-1)} aria-label="Previous channel">
+            ‹
+          </button>
+          <select
+            className="ch-select"
+            aria-label="Channel"
+            value={String(selectedChannel)}
+            onChange={(e) =>
+              onSelectChannel(e.target.value === "Main" ? "Main" : Number(e.target.value))
+            }
           >
-            <ParamCell
-              def={def}
-              value={def.defaultRaw}
-              componentid={`ch_${String(selectedChannel)}_${def.key}`}
-              channelid={selectedChannel - 1} //Channel Index
-              channellabel={""}
-              processorid={def.id}
-            />
-          </div>
-        ))}
-        {params.map((def) => {
-          const value = def.defaultRaw;
-          const componentId = `ch_${String(selectedChannel)}_${def.key}`;
+            {CHANNELS.map((c) => (
+              <option key={c} value={String(c)}>
+                {optionLabel(c)}
+              </option>
+            ))}
+          </select>
+          <button type="button" className="ch-step" onClick={() => step(1)} aria-label="Next channel">
+            ›
+          </button>
+        </div>
 
-          return (
-            <div
-              key={`${selectedChannel}-${def.id ?? def.key}`}
-              className="col-12 col-md-6 .col-lg-4 col-xl-3"
+        <div className="proc-tabs" role="tablist" aria-label="Processor">
+          {processors.map((p) => (
+            <button
+              key={p.key}
+              type="button"
+              role="tab"
+              aria-selected={processor === p.key}
+              className={`proc-tab${processor === p.key ? " active" : ""}`}
+              onClick={() => onSelectProcessor(p.key)}
             >
-              <ParamCell
-                def={def}
-                value={value}
-                componentid={componentId}
-                channelid={selectedChannel - 1} //Channel Index
-                channellabel={""}
-                processorid={def.id}
-              />
-            </div>
-          );
-        })}
+              {p.label}
+            </button>
+          ))}
+        </div>
       </div>
-    </>
+
+      <div className="proc-content" role="tabpanel">
+        {/* key: remount per channel so held-control state never leaks between channels */}
+        <ProcessorPage key={`${ch}_${processor}`} processor={processor} ch={ch} />
+      </div>
+    </div>
   );
 }
 

@@ -50,6 +50,8 @@ export const COMPRESSOR_PARAMS = [
     key: "compRatio",
     label: "Compressor Ratio",
     kind: ParamKind.ENUM,
+    control: "knob",
+    format: (v, def) => `${def.labels?.[v] ?? v}:1`,
     values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
     labels: {
       0: "1.0",

@@ -3,8 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./App.css";
 import TopNavBar from "./components/navbar/TopNavBar";
-import ChannelSelectNavBar from "./components/NavBar/ChannelSelectNavBar";
-import ChannelProcNavBar from "./components/NavBar/ChannelProcNavBar";
 import ChannelFXPanel from "./components/panels/FxPanel";
 import FadersPanel from "./components/panels/FadersPanel";
 import ProcPanel from "./components/panels/ProcPanel";
@@ -20,36 +18,27 @@ function App() {
   const showFaders = !isChannelFXMenu && !isChannelProcessorMenu;
 
   return (
-    <>
-      <div className="NavBar h-top-nav-area">
+    <div className="app-shell">
+      <header className="app-top">
         <TopNavBar activeView={activeView} setActiveView={setActiveView} />
-      </div>
-      <div className="SecondNav h-second-nav-area">
-        {isChannelProcessorMenu && (
-          <ChannelSelectNavBar
-            selected={channelSelected}
-            onSelect={setChannelSelected}
-          />
-        )}
-        {isChannelProcessorMenu && (
-          <ChannelProcNavBar
-            selected={processorSelected}
-            onSelect={setProcessorSelected}
-          ></ChannelProcNavBar>
-        )}
-      </div>
-      <div className="Mixer h-mixer-area">
-        {showFaders && <FadersPanel activeView={activeView}></FadersPanel>}
+      </header>
+      <main className={`app-main${showFaders ? " app-main-mixer" : ""}`}>
+        {showFaders && <FadersPanel activeView={activeView} />}
 
         {isChannelProcessorMenu && (
           <ProcPanel
             selectedChannel={channelSelected}
+            onSelectChannel={setChannelSelected}
             selectedProcessor={processorSelected}
+            onSelectProcessor={setProcessorSelected}
           />
         )}
         {isChannelFXMenu && <ChannelFXPanel />}
+      </main>
+      <div className="rotate-hint" aria-hidden="true">
+        Rotate your device to landscape for the mixer view
       </div>
-    </>
+    </div>
   );
 }
 

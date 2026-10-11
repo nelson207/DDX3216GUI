@@ -1,9 +1,11 @@
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetApiMidiDevicesQuery } from "../router/apis/MidiApi";
+import "../router/apis/MidiApiTags";
 import { connectWs, disconnectWs } from "../router/websocket/WebSocket";
 
 export function ApiPoller() {
+  const dispatch = useDispatch();
   const status = useSelector((s) => s.ws.connected);
   const prevStatusRef = useRef(status);
 
@@ -15,12 +17,12 @@ export function ApiPoller() {
     const prev = prevStatusRef.current;
     const becameOnline = status === true && prev !== true;
 
-    if (becameOnline) refetch();
+    if (becameOnline) {
+      refetch();
+    }
 
     prevStatusRef.current = status;
-  }, [status, refetch]);
-
-  const dispatch = useDispatch();
+  }, [status, refetch, dispatch]);
 
   useEffect(() => {
     dispatch(connectWs());

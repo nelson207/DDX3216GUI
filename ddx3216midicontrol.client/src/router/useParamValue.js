@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useSender } from "./MidiControl";
-import { useGetApiMidiStatusByModuleAndParamDefaultValueQuery } from "./apis/MidiApi";
 import { paramKey, paramSet } from "./slices/wsSlice";
 
 // Minimum time between two websocket sends for the same param while dragging.
@@ -9,8 +8,8 @@ const SEND_INTERVAL_MS = 30;
 
 /**
  * Shared state for one mixer parameter (module + param):
- * - value comes from the store (REST status + websocket + local changes),
- *   falling back to defaultRaw when the backend is offline
+ * - value comes from the store (server snapshot on connect + websocket changes
+ *   + local changes), falling back to defaultRaw when the server doesn't know it
  * - while the user holds the control, a local override wins so incoming
  *   echoes don't make it jitter
  * - sends are throttled; pass { immediate: true } to flush the final value
@@ -18,12 +17,6 @@ const SEND_INTERVAL_MS = 30;
 export function useParamValue({ channelid, processorid, defaultRaw }) {
   const dispatch = useDispatch();
   const { send } = useSender();
-  const { isLoading, isFetching } =
-    useGetApiMidiStatusByModuleAndParamDefaultValueQuery({
-      module: channelid,
-      param: processorid,
-      defaultValue: defaultRaw,
-    });
   const stored = useSelector(
     (s) => s.ws.values[paramKey(channelid, processorid)],
   );
@@ -35,6 +28,12 @@ export function useParamValue({ channelid, processorid, defaultRaw }) {
   const pendingRef = useRef(null);
 
   useEffect(() => () => clearTimeout(pendingRef.current), []);
+
+  // value changed elsewhere (console / other client / snapshot): forget what we last sent,
+  // so setting it back to that value is sent again instead of being skipped as a duplicate
+  useEffect(() => {
+    if (stored !== lastSentRef.current) lastSentRef.current = undefined;
+  }, [stored]);
 
   const flush = useCallback(
     (next) => {
@@ -79,7 +78,6 @@ export function useParamValue({ channelid, processorid, defaultRaw }) {
     value: override ?? stored ?? defaultRaw,
     update,
     setHolding,
-    loading: isLoading || isFetching,
   };
 }
 

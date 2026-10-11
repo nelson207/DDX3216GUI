@@ -19,13 +19,11 @@ namespace MidiInterface.Controllers
             _stateStore = stateStore;
         }
 
-        // List devices
+        /// <summary>Ports, selection (resolved from the saved names), connection state and channel.</summary>
         [HttpGet("devices")]
-        public ActionResult<MidiDevices> GetDevices()
-        {
-            return Ok(new MidiDevices(_router.SelectedInDevice, _router.SelectedOutDevice, _router.Channel));
-        }
+        public ActionResult<MidiDevices> GetDevices() => Ok(_router.GetStatus());
 
+        /// <summary>Last known value of one parameter, or <paramref name="defaultValue"/> when unknown.</summary>
         [HttpGet("status/{module:int}/{param:int}/{defaultValue:int}")]
         public ActionResult<double> GetModuleStatus([FromRoute] int module, [FromRoute] int param, [FromRoute] int defaultValue)
         {
@@ -34,62 +32,38 @@ namespace MidiInterface.Controllers
             return Ok(defaultValue);
         }
 
-        // Select MIDI OUT
+        /// <summary>Every known parameter value (same data the WebSocket "snapshot" carries).</summary>
+        [HttpGet("state")]
+        public ActionResult<IEnumerable<BehringerChange>> GetState() =>
+            Ok(_stateStore.Snapshot().Select(kv => new BehringerChange(kv.Key.Module, kv.Key.Param, kv.Value)));
+
         [HttpPost("out/select/{index:int}")]
-        public IActionResult SelectOut([FromRoute] int index)
-        {
-            try
-            {
-                _router.SelectOut(index);
-                return Ok(new { selectedOut = index });
+        public IActionResult SelectOut([FromRoute] int index) => Run(() => _router.SelectOut(index), new { selectedOut = index }, "select MIDI OUT");
 
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // Select MIDI IN
         [HttpPost("in/select/{index:int}")]
-        public IActionResult SelectIn([FromRoute] int index)
-        {
-            try
-            {
-                _router.SelectIn(index);
-                return Ok(new { selectedIn = index });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        public IActionResult SelectIn([FromRoute] int index) => Run(() => _router.SelectIn(index), new { selectedIn = index }, "select MIDI IN");
 
-        // Set channel (1..16)
         [HttpPost("channel/{channel:int}")]
-        public IActionResult SetChannel([FromRoute] int channel)
-        {
-            try
-            {
-                _router.SetChannel(channel);
-                return Ok(new { channel });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        public IActionResult SetChannel([FromRoute] int channel) => Run(() => _router.SetChannel(channel), new { channel }, "set MIDI channel");
+
         [HttpPost("devices/refresh")]
-        public IActionResult RefreshDevices()
+        public IActionResult RefreshDevices() => Run(_router.RefreshDevices, new { }, "refresh MIDI devices");
+
+        private IActionResult Run(Action action, object result, string what)
         {
             try
             {
-                MidiRouterService.RefreshDeviceList();
-                return Ok();
+                action();
+                return Ok(result);
+            }
+            catch (Exception ex) when (ex is ArgumentException or InvalidOperationException)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                _logger.LogError(ex, "Failed to {What}", what);
+                return BadRequest($"Failed to {what}: {ex.Message}");
             }
         }
     }

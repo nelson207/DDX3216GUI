@@ -2,17 +2,12 @@
 import { MidiApi } from "./MidiApi";
 
 export const MidiApiTagged = MidiApi.enhanceEndpoints({
-  addTagTypes: ["Status", "Devices"],
+  addTagTypes: ["Devices"],
   endpoints: {
     getApiMidiDevices: { providesTags: ["Devices"] },
-    getApiMidiStatusByModuleAndParamDefaultValue: { providesTags: ["Status"] },
-    postApiMidiInSelectByIndex: { invalidatesTags: ["Devices", "Status"] },
-    postApiMidiOutSelectByIndex: { invalidatesTags: ["Devices", "Status"] },
+    postApiMidiInSelectByIndex: { invalidatesTags: ["Devices"] },
+    postApiMidiOutSelectByIndex: { invalidatesTags: ["Devices"] },
     postApiMidiChannelByChannel: { invalidatesTags: ["Devices"] },
     postApiMidiDevicesRefresh: { invalidatesTags: ["Devices"] },
   },
 });
-
-// Re-read every mounted parameter from the server (e.g. after a reconnect)
-export const resyncAllParams = () =>
-  MidiApiTagged.util.invalidateTags(["Status"]);

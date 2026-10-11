@@ -1,13 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { MidiApi } from "../apis/MidiApi";
 
 export const paramKey = (module, param) => `${module}:${param}`;
 
 const initialState = {
   connected: false,
-  lastMessage: null, // last JSON message
-  error: null,
-  // latest known value per "module:param" (REST status, websocket or local changes)
+  error: null, // last error (connection or reported by the server)
+  // latest known value per "module:param" (server snapshot, websocket or local changes)
   values: {},
 };
 
@@ -34,8 +32,13 @@ const wsSlice = createSlice({
     wsError(state, action) {
       state.error = action.payload ?? "WebSocket error";
     },
+    // full state sent by the server on (re)connect: it is the source of truth
+    wsSnapshot(state, action) {
+      state.values = {};
+      applyChanges(state, action.payload);
+    },
+    // incremental changes from the console or other clients
     wsMessage(state, action) {
-      state.lastMessage = action.payload;
       applyChanges(state, action.payload);
     },
     // local change made by this client
@@ -43,20 +46,14 @@ const wsSlice = createSlice({
       applyChanges(state, [action.payload]);
     },
   },
-  extraReducers: (builder) => {
-    builder.addMatcher(
-      MidiApi.endpoints.getApiMidiStatusByModuleAndParamDefaultValue
-        .matchFulfilled,
-      (state, action) => {
-        const args = action.meta.arg.originalArgs;
-        if (action.payload !== undefined && action.payload !== null) {
-          state.values[paramKey(args.module, args.param)] = action.payload;
-        }
-      },
-    );
-  },
 });
 
-export const { wsConnected, wsDisconnected, wsError, wsMessage, paramSet } =
-  wsSlice.actions;
+export const {
+  wsConnected,
+  wsDisconnected,
+  wsError,
+  wsSnapshot,
+  wsMessage,
+  paramSet,
+} = wsSlice.actions;
 export default wsSlice.reducer;

@@ -1,5 +1,4 @@
 ﻿using MidiInterface.Models;
-using MidiInterface.Services;
 
 namespace MidiInterface.Helpers
 {
@@ -88,20 +87,23 @@ namespace MidiInterface.Helpers
         public const int MaxChangesPerSysEx = 23;
 
         // Splits any number of changes into as many SysEx messages as needed
-        public static IEnumerable<byte[]> SysExEncodeAll(BehringerChange[] changes, MidiRouterService router)
+        public static IEnumerable<byte[]> SysExEncodeAll(IReadOnlyList<BehringerChange> changes, int midiChannel)
         {
-            for (int i = 0; i < changes.Length; i += MaxChangesPerSysEx)
-                yield return SysExEncode(changes.Skip(i).Take(MaxChangesPerSysEx).ToArray(), router);
+            for (int i = 0; i < changes.Count; i += MaxChangesPerSysEx)
+                yield return SysExEncode(changes.Skip(i).Take(MaxChangesPerSysEx).ToArray(), midiChannel);
         }
 
-        public static byte[] SysExEncode(BehringerChange[] changes, MidiRouterService router)
+        public static byte[] SysExEncode(BehringerChange[] changes, int midiChannel)
         {
             if (changes != null && changes.Length > 0)
             {
                 if (changes.Length > MaxChangesPerSysEx)
                     throw new ArgumentException($"At most {MaxChangesPerSysEx} changes per SysEx; use SysExEncodeAll");
 
-                byte[] header = BuildHeader(PackIC(router.Channel));
+                if (changes.Any(c => !c.IsValid()))
+                    throw new ArgumentOutOfRangeException(nameof(changes), "Module/param must be 0..127 and value 0..16383");
+
+                byte[] header = BuildHeader(PackIC(midiChannel));
                 int nn = changes.Length;
 
                 // body = [0x20, nn]
@@ -134,7 +136,12 @@ namespace MidiInterface.Helpers
             throw new ArgumentNullException();
         }
 
-        public static BehringerChange[]? SysExDecode(byte[] data)
+        /// <summary>
+        /// Decodes a DDX3216 parameter-change SysEx. When <paramref name="expectedChannel"/> is set,
+        /// messages for another MIDI channel or another device type are ignored (unless the
+        /// sender set the "ignore" flags in the high nibble of the IC byte).
+        /// </summary>
+        public static BehringerChange[]? SysExDecode(byte[] data, int? expectedChannel = null)
         {
             if (!IsBehringerDDXSysEx(data)) return null;
             if (data.Length < 9) return null;                 // must at least have header+func+nn+F7
@@ -146,6 +153,13 @@ namespace MidiInterface.Helpers
             int nn = data[7];
 
             if ((func & 0x3F) != 0x20) return null;
+
+            if (expectedChannel is int ch)
+            {
+                bool flagged = (ic & 0x70) != 0; // ignore-channel / ignore-apparatus flags
+                if (!flagged && ((ic & 0x0F) != Math.Clamp(ch - 1, 0, 15) || apparatusId != DEFAULT_APPARATUS_ID))
+                    return null;
+            }
 
             int idx = 8;
             int needed = idx + nn * 4 + 1;                  

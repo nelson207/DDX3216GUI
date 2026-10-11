@@ -1,9 +1,13 @@
 import { useSelector } from "react-redux";
 import { useGetApiMidiDevicesQuery } from "./apis/MidiApi";
 
+// some drivers (RtMidi on Windows) report garbage names: show "Port N" instead
+// eslint-disable-next-line no-control-regex
+const unreadable = (name) => !name?.trim() || /[\u0000-\u001f\ufffd]/.test(name);
+
 /** Full port name as reported by the server (used for tooltips) */
 export const portFullName = (port) =>
-  port?.name?.trim() || `Port ${port?.index ?? "?"}`;
+  unreadable(port?.name) ? `Port ${port?.index ?? "?"}` : port.name.trim();
 
 /**
  * Short display name. ALSA reports "Client:Port 14:0":
@@ -38,11 +42,16 @@ export function useMidiStatus() {
   const outIndex = data?.selectedOutDevice ?? null;
   const inIndex = data?.selectedInDevice ?? null;
   const outPort = outPorts.find((p) => p.index === outIndex) ?? null;
+  // saved port that is currently unplugged (the server reopens it when it comes back)
+  const outMissing =
+    connected && !!data?.selectedOutName && data?.outConnected === false;
+  const inMissing =
+    connected && !!data?.selectedInName && data?.inConnected === false;
 
   // ok = changes reach a real MIDI port; warn = they go nowhere / to a loopback
   const state = !connected
     ? "offline"
-    : outIndex === null || isLoopback(outPort)
+    : outIndex === null || outMissing || isLoopback(outPort)
       ? "warn"
       : "ok";
 
@@ -55,6 +64,10 @@ export function useMidiStatus() {
     outIndex,
     inIndex,
     outPort,
+    outMissing,
+    inMissing,
+    outName: data?.selectedOutName ?? null,
+    inName: data?.selectedInName ?? null,
     inPort: inPorts.find((p) => p.index === inIndex) ?? null,
     channel: data?.channel ?? 1,
   };

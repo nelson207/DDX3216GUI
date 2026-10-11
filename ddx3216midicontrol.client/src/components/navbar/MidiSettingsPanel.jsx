@@ -25,12 +25,14 @@ function errorText(error) {
 
 /** Top bar trigger: LED + short status, opens the panel */
 export function MidiButton({ onClick, expanded }) {
-  const { state, outPort, channel } = useMidiStatus();
+  const { state, outPort, outMissing, channel } = useMidiStatus();
   const label =
     state === "offline"
       ? "Offline"
       : state === "warn"
-        ? outPort
+        ? outMissing
+          ? "Output unplugged"
+          : outPort
           ? "Loopback only"
           : "Set up MIDI"
         : `${portName(outPort)} · Ch ${channel}`;
@@ -184,13 +186,25 @@ export default function MidiSettingsPanel({ open, onClose }) {
               label="Output"
               ok={outIndex !== null && !isLoopback(midi.outPort)}
               warn={connected && (outIndex === null || isLoopback(midi.outPort))}
-              value={outIndex !== null ? portName(midi.outPort) : "Not selected"}
+              value={
+                outIndex !== null
+                  ? portName(midi.outPort)
+                  : midi.outMissing
+                    ? `${portName({ name: midi.outName })} · unplugged`
+                    : "Not selected"
+              }
               title={midi.outPort ? portFullName(midi.outPort) : undefined}
             />
             <SummaryRow
               label="Input"
               ok={inIndex !== null}
-              value={inIndex !== null ? portName(midi.inPort) : "Not selected"}
+              value={
+                inIndex !== null
+                  ? portName(midi.inPort)
+                  : midi.inMissing
+                    ? `${portName({ name: midi.inName })} · unplugged`
+                    : "Not selected"
+              }
               title={midi.inPort ? portFullName(midi.inPort) : undefined}
             />
             <SummaryRow label="Channel" ok={connected} value={channel} />
@@ -202,7 +216,13 @@ export default function MidiSettingsPanel({ open, onClose }) {
               it's back.
             </div>
           )}
-          {connected && outIndex === null && (
+          {midi.outMissing && (
+            <div className="midi-note midi-note-warn">
+              The output <b>{portName({ name: midi.outName })}</b> is unplugged.
+              It reconnects automatically when it's plugged back in.
+            </div>
+          )}
+          {connected && outIndex === null && !midi.outMissing && (
             <div className="midi-note midi-note-warn">
               Select an output port — until then fader and button changes are
               not sent to the console.

@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { sendWsJson } from "./websocket/WebSocket";
 
 export function useSender() {
@@ -17,9 +17,3 @@ export function useSender() {
   };
 }
 
-export function useReceiver() {
-  const lastMsg = useSelector((s) => s.ws.lastMessage);
-  return {
-    lastMsg,
-  };
-}

@@ -11,8 +11,11 @@ export function StatusLed() {
   const text = status === true ? "Connected" : "Disconnected";
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }} title={text}>
-      <span className="text-white fw-bold m-2">{text}</span>
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}
+      title={text}
+      role="status"
+      aria-label={text}>
+      <span className="text-white fw-bold small d-none d-md-inline">{text}</span>
       <span
         style={{
           width: 10,

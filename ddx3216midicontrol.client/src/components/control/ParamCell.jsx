@@ -4,16 +4,8 @@ import ParamKindEnumTile from "./ParamKindEnumTile";
 import ParamKindRangeTile from "./ParamKindRangeTile";
 import ParamKindSwitchTile from "./ParamKindSwitchTile";
 
-function ParamCell(
-  props = {
-    def,
-    value,
-    componentid,
-    channelid,
-    channellabel,
-    processorid,
-  },
-) {
+// props: def, value, componentid, channelid, channellabel, processorid
+function ParamCell(props) {
   return (
     <div className="card bg-dark text-light border-secondary h-100">
       <div className="card-body py-2 d-flex flex-column gap-2">

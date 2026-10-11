@@ -1,18 +1,15 @@
-function ChannelSelectNavBar({ selected, onSelect }) {
-  const channels = [...Array.from({ length: 16 }, (_, i) => i + 1), "Main"];
+// Channel number (1..32) or "Main"
+const CHANNELS = [...Array.from({ length: 32 }, (_, i) => i + 1), "Main"];
 
+function ChannelSelectNavBar({ selected, onSelect }) {
   return (
-    <nav
-      className="d-flex h-50 w-100 px-2 py-1 gap-1"
-      aria-label="Channel selector"
-    >
-      {channels.map((ch) => (
+    <nav className="subnav-row" aria-label="Channel selector">
+      {CHANNELS.map((ch) => (
         <button
           key={ch}
           type="button"
-          className={`btn btn-sm flex-fill text-white fw-bold ${
-            selected === ch ? "btn-warning" : "btn-outline-secondary"
-          }`}
+          className={`subnav-btn${selected === ch ? " active" : ""}`}
+          aria-pressed={selected === ch}
           onClick={() => onSelect(ch)}
         >
           {ch}

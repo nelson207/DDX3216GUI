@@ -1,0 +1,84 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useSender } from "./MidiControl";
+import { useGetApiMidiStatusByModuleAndParamDefaultValueQuery } from "./apis/MidiApi";
+import { paramKey, paramSet } from "./slices/wsSlice";
+
+// Minimum time between two websocket sends for the same param while dragging.
+const SEND_INTERVAL_MS = 30;
+
+/**
+ * Shared state for one mixer parameter (module + param):
+ * - value comes from the store (REST status + websocket + local changes),
+ *   falling back to defaultRaw when the backend is offline
+ * - while the user holds the control, a local override wins so incoming
+ *   echoes don't make it jitter
+ * - sends are throttled; pass { immediate: true } to flush the final value
+ */
+export function useParamValue({ channelid, processorid, defaultRaw }) {
+  const dispatch = useDispatch();
+  const { send } = useSender();
+  const { isLoading, isFetching } =
+    useGetApiMidiStatusByModuleAndParamDefaultValueQuery({
+      module: channelid,
+      param: processorid,
+      defaultValue: defaultRaw,
+    });
+  const stored = useSelector(
+    (s) => s.ws.values[paramKey(channelid, processorid)],
+  );
+
+  const [override, setOverride] = useState(undefined);
+  const holdingRef = useRef(false);
+  const lastSentRef = useRef(undefined);
+  const lastSendTimeRef = useRef(0);
+  const pendingRef = useRef(null);
+
+  useEffect(() => () => clearTimeout(pendingRef.current), []);
+
+  const flush = useCallback(
+    (next) => {
+      clearTimeout(pendingRef.current);
+      pendingRef.current = null;
+      // NaN/null would make the server's JSON deserializer throw and drop the socket
+      if (!Number.isFinite(Number(next))) return;
+      if (next === lastSentRef.current) return;
+      lastSentRef.current = next;
+      lastSendTimeRef.current = performance.now();
+      send([{ Module: channelid, Param: processorid, Value: Number(next) }]);
+    },
+    [send, channelid, processorid],
+  );
+
+  const update = useCallback(
+    (next, { immediate = false } = {}) => {
+      if (next === undefined || next === null) return;
+      if (holdingRef.current) setOverride(next);
+      dispatch(paramSet({ Module: channelid, Param: processorid, Value: next }));
+
+      const elapsed = performance.now() - lastSendTimeRef.current;
+      if (immediate || elapsed >= SEND_INTERVAL_MS) {
+        flush(next);
+      } else {
+        clearTimeout(pendingRef.current);
+        pendingRef.current = setTimeout(
+          () => flush(next),
+          SEND_INTERVAL_MS - elapsed,
+        );
+      }
+    },
+    [dispatch, flush, channelid, processorid],
+  );
+
+  const setHolding = useCallback((holding) => {
+    holdingRef.current = holding;
+    if (!holding) setOverride(undefined);
+  }, []);
+
+  return {
+    value: override ?? stored ?? defaultRaw,
+    update,
+    setHolding,
+    loading: isLoading || isFetching,
+  };
+}

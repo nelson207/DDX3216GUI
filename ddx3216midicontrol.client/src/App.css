@@ -1,207 +1,499 @@
+/* ------------------------------------------------------------
+   App shell: header / optional sub nav / main fills the rest.
+   100dvh so mobile browser toolbars don't push the faders off screen.
+------------------------------------------------------------ */
 #root {
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
   height: 100vh;
-  width: 100vw;
+  height: 100dvh;
+  width: 100%;
 }
 
-.h-top-nav-area {
-  position: absolute;
-  top: 0%;
-  height: 5% !important;
-  width: 100% !important;
-}
-
-.h-second-nav-area {
-  position: absolute;
-  top: 5%;
-  height: 10% !important;
-  width: 100% !important;
-}
-
-.h-mixer-area {
-  position: absolute;
-  top: 15%;
-  height: 85% !important;
-  width: 100% !important;
-}
-
-<<<<<<< HEAD
-.mixer-top {
-  position: absolute;
-  top: 10%;
-  height: 85% !important;
-  width: 100% !important;
-}
-
-=======
->>>>>>> 4cc5cafa7afe3325d95da46839077f2761b768a9
-.btn-channel-selected {
-  background-color: #800020 !important;
-}
-
-/* a channel strip fills height */
-.channel {
-  flex: 1 1 0;
+.app-shell {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0
+    env(safe-area-inset-left);
 }
 
-.fader-input {
-  container-type: size;
+.app-top {
+  flex: 0 0 auto;
+}
+
+.app-subnav {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 6px;
+  background: var(--mx-panel);
+  border-bottom: 1px solid var(--mx-strip-edge);
+}
+
+.app-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.app-main-mixer {
+  overflow: hidden;
+}
+
+.rotate-hint {
+  display: none;
+}
+
+@media (orientation: portrait) and (max-width: 600px) {
+  .app-shell:has(.app-main-mixer) .rotate-hint {
+    display: block;
+    flex: 0 0 auto;
+    padding: 4px 8px;
+    font-size: 12px;
+    text-align: center;
+    color: var(--mx-text-dim);
+    background: var(--mx-panel);
+  }
+}
+
+/* ------------------------------------------------------------
+   Top bar: logo | view tabs (scrollable) | status + MIDI
+------------------------------------------------------------ */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 8px;
+  background: #0d0e10;
+  border-bottom: 1px solid var(--mx-strip-edge);
+}
+
+.topbar-logo {
+  height: 22px;
+  flex: 0 0 auto;
+}
+
+.topbar-tabs {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  gap: 2px;
+  height: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.topbar-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.topbar-tab {
+  flex: 0 0 auto;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--mx-text-dim);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+.topbar-tab:hover {
+  color: var(--mx-text);
+}
+.topbar-tab.active {
+  color: var(--mx-text);
+  border-bottom-color: var(--mx-accent);
+}
+
+.topbar-right {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ------------------------------------------------------------
+   Sub nav (processing view)
+------------------------------------------------------------ */
+.subnav-row {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.subnav-btn {
+  flex: 1 0 36px;
+  min-height: 34px;
+  padding: 0 6px;
+  border: 1px solid var(--mx-strip-edge);
+  border-radius: 4px;
+  background: var(--mx-strip);
+  color: var(--mx-text);
+  font-weight: 700;
+  font-size: 13px;
+}
+.subnav-btn-wide {
+  flex-basis: 90px;
+}
+.subnav-btn.active {
+  background: var(--mx-accent);
+  border-color: var(--mx-accent);
+  color: #111;
+}
+
+/* ------------------------------------------------------------
+   Mixer: scrollable strips + fixed master on the right
+------------------------------------------------------------ */
+.mixer {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  background: var(--mx-bg);
+
+  --strip-min: 62px;
+  --cap-h: clamp(30px, 7dvh, 52px);
+  --cap-w: clamp(30px, 70%, 46px);
+}
+
+.mixer-strips {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  gap: 2px;
+  padding: 4px 2px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mixer-master {
+  flex: 0 0 auto;
+  display: flex;
+  padding: 4px 4px 4px 2px;
+  border-left: 2px solid #000;
+  box-shadow: -6px 0 10px rgba(0, 0, 0, 0.45);
+}
+.mixer-master .strip {
+  width: calc(var(--strip-min) + 16px);
+}
+
+.strip {
+  flex: 1 0 var(--strip-min);
+  min-width: var(--strip-min);
+  max-width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 0 4px;
+  background: var(--mx-strip);
+  border: 1px solid var(--mx-strip-edge);
+  border-radius: 4px;
+  scroll-snap-align: start;
+  user-select: none;
+  --strip-color: var(--mx-input);
+}
+.strip-bus {
+  --strip-color: var(--mx-bus);
+}
+.strip-aux {
+  --strip-color: var(--mx-aux);
+}
+.strip-fx {
+  --strip-color: var(--mx-fx);
+}
+.strip-main {
+  --strip-color: var(--mx-main);
+}
+
+.strip-name {
+  padding: 3px 2px;
+  border-radius: 3px 3px 0 0;
+  background: var(--strip-color);
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.strip-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 4px;
+}
+.strip-controls:empty {
+  display: none;
+}
+
+.strip-btn {
+  width: 100%;
+  min-height: 30px;
+  padding: 0;
+  border: 1px solid #444a52;
+  border-radius: 3px;
+  background: #1a1c1f;
+  color: var(--mx-text-dim);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  touch-action: manipulation;
+}
+.strip-btn-mute.on {
+  background: var(--mx-mute);
+  border-color: var(--mx-mute);
+  color: #fff;
+  box-shadow: 0 0 8px rgba(229, 56, 59, 0.6);
+}
+.strip-btn:focus-visible {
+  outline: 2px solid var(--mx-accent);
+  outline-offset: 1px;
+}
+
+/* ---------- Pan bar ---------- */
+.pan-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 4px 0 0;
+  cursor: ew-resize;
+  touch-action: pan-y;
+  outline: none;
+}
+.pan-bar:focus-visible .pan-track {
+  outline: 2px solid var(--mx-accent);
+  outline-offset: 2px;
+}
+.pan-track {
   position: relative;
-  width: 100%; /* your channel width */
-  height: 100%; /* IMPORTANT: parent must have a real height */
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #121315;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
 }
-
-.fader-db {
-  height: 5% !important;
-}
-
-LEFT
-  SCALE
-  ------------------------------------------------------------
-  .fader-scale {
+.pan-center {
   position: absolute;
-  left: 8px; /* gutter from panel edge */
-  top: 0;
-  bottom: 0;
-  width: 40px; /* space for ticks + labels */
-  pointer-events: none;
+  left: 50%;
+  top: -2px;
+  bottom: -2px;
+  width: 1px;
+  background: var(--mx-text-dim);
 }
-
-.fader-scale .scale-row {
+.pan-fill {
   position: absolute;
-  left: 0;
-  transform: translateY(-50%); /* align by center */
-  height: 0;
+  top: 2px;
+  bottom: 2px;
+  background: var(--mx-accent);
+  border-radius: 2px;
 }
-
-.fader-scale .tick {
+.pan-dot {
   position: absolute;
-  left: 0;
-  width: 10px;
-  height: 1px;
-  background: rgba(240, 246, 252, 0.45);
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #f1f3f5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  transform: translate(-50%, -50%);
 }
-
-.fader-scale .tick.major {
-  width: 14px;
-  height: 1.5px;
-  background: rgba(240, 246, 252, 0.75);
-}
-
-.fader-scale .label {
-  position: absolute;
-  left: 18px;
-  top: -8px;
+.pan-label {
   font-size: 10px;
   line-height: 1;
-  color: #aab3bd;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
-  font-feature-settings: "tnum"; /* tabular lining if available */
+  color: var(--mx-text-dim);
+  font-variant-numeric: tabular-nums;
 }
 
-/* scale fills height */
-.scale {
-  height: 50px;
+/* ---------- Fader ---------- */
+.fader {
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #fff;
+  gap: 4px;
+  padding: 0 4px;
 }
 
-.vertical-range {
-  -webkit-appearance: none;
-  appearance: none;
-  background: transparent;
+.fader-body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 80px;
+  cursor: ns-resize;
+  /* vertical drags drive the fader, horizontal swipes scroll the strip list */
+  touch-action: pan-x;
+  outline: none;
+}
+.fader-body:focus-visible {
+  outline: 2px solid var(--mx-accent);
+  outline-offset: 1px;
+  border-radius: 3px;
+}
 
-  /* track thickness (responsive) */
-  --track-h: clamp(4px, 0.35vmin, 8px);
+/* scale and track share the same vertical insets (half a cap) so
+   the cap centre lines up with the dB marks */
+.fader-scale,
+.fader-track {
+  position: absolute;
+  top: calc(var(--cap-h) / 2);
+  bottom: calc(var(--cap-h) / 2);
+}
 
-  /* thumb height driven by fader height + viewport clamp */
-  --thumb-h: clamp(
-    28px,
-    calc(var(--vr-h, 260px) * var(--thumb-h-ratio, 0.14)),
-    96px
+.fader-scale {
+  left: 0;
+  width: 22px;
+  pointer-events: none;
+}
+.fader-mark {
+  position: absolute;
+  right: 0;
+  transform: translateY(50%);
+  font-size: 9px;
+  line-height: 1;
+  color: var(--mx-text-dim);
+  font-variant-numeric: tabular-nums;
+}
+.fader-mark::after {
+  content: "";
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  width: 4px;
+  height: 1px;
+  background: currentColor;
+}
+.fader-mark.unity {
+  color: var(--mx-text);
+  font-weight: 700;
+}
+
+.fader-track {
+  left: 22px;
+  right: 0;
+}
+.fader-slot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  transform: translateX(-50%);
+  border-radius: 3px;
+  background: #0b0c0d;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+.fader-fill {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  background: var(--strip-color);
+  opacity: 0.8;
+}
+.fader-cap {
+  position: absolute;
+  left: 50%;
+  width: var(--cap-w);
+  height: var(--cap-h);
+  transform: translate(-50%, 50%);
+  border-radius: 4px;
+  background: linear-gradient(
+    to bottom,
+    #e9ecef 0%,
+    #adb5bd 18%,
+    #868e96 48%,
+    #495057 50%,
+    #868e96 52%,
+    #6c757d 82%,
+    #495057 100%
   );
-
-  /* thumb width tied to channel width */
-  --thumb-w: clamp(18px, calc(var(--vr-w, 46px) * 1.1), 100px);
-
-  /* WebKit centering: (thumbHeight - trackHeight)/2, negative */
-  --thumb-center-offset: calc((var(--thumb-h) - var(--track-h)) / -2);
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+.fader-cap::after {
+  /* indicator line */
+  content: "";
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: #fff;
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
 }
 
-/* TRACK */
-.vertical-range::-webkit-slider-runnable-track {
-  height: clamp(4px, var(--track-h), 1080px);
-  border-radius: 999px;
-  background: var(--bs-secondary-bg, #dee2e6);
+.fader-value {
+  display: block;
+  padding: 2px 0;
+  border-radius: 3px;
+  background: #0b0c0d;
+  color: var(--mx-accent);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.vertical-range::-moz-range-track {
-  height: clamp(4px, var(--track-h), 1080px);
-  border-radius: 999px;
-  background: var(--bs-secondary-bg, #dee2e6);
+/* Short landscape phones: tighten everything */
+@media (max-height: 420px) {
+  .topbar {
+    height: 38px;
+  }
+  .strip-name {
+    font-size: 11px;
+    padding: 1px 2px;
+  }
+  .strip-btn {
+    min-height: 24px;
+  }
+  .fader-mark {
+    font-size: 8px;
+  }
 }
 
-/* THUMB (SVG) */
-.vertical-range::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-
-  width: var(--thumb-w);
-  height: var(--thumb-h);
-  border: 0;
-  border-radius: 0;
-
-  background-image: url("assets/fader_knob.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-color: transparent;
-
-  /* Centers SVG box; then we can nudge optically with --thumb-svg-shift */
-  background-position: 50% calc(50% + var(--thumb-svg-shift, 0px));
-
-  /* Center thumb on track */
-  /* margin-top: var(--thumb-center-offset); */
-
-  cursor: pointer;
+/* ------------------------------------------------------------
+   Processing / FX panels
+------------------------------------------------------------ */
+.proc-panel {
+  padding: 8px;
+}
+.proc-title {
+  padding: 2px 4px 8px;
+  font-weight: 700;
+  color: var(--mx-text);
 }
 
-.vertical-range::-moz-range-thumb {
-  width: var(--thumb-w);
-  height: var(--thumb-h);
-  border: 0;
-  border-radius: 0;
-
-  background-image: url("assets/fader_knob.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: 50% calc(50% + var(--thumb-svg-shift, 0px));
-  background-color: transparent;
-
-  cursor: pointer;
+.param-range {
+  touch-action: pan-y;
+}
+.param-value {
+  display: block;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
-.vertical-range::-webkit-slider-thumb:active {
-  background-color: transparent;
-  border: none;
-  box-shadow: none;
-  outline: none;
+.multi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
 }
 
-.vertical-range:active::-moz-range-thumb {
-  background-color: transparent;
-  border: none;
-  box-shadow: none;
-  outline: none;
-}
-
-/* Optional: ensure the clickable hit area is nice on touch */
-.vertical-range {
-  padding: 6px 0;
+.btn-channel-selected {
+  background-color: #800020 !important;
 }

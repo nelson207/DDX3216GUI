@@ -1,12 +1,16 @@
+import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sendWsJson } from "./websocket/WebSocket";
 
 export function useSender() {
   const dispatch = useDispatch();
 
-  async function send(changes) {
-    dispatch(sendWsJson(changes));
-  }
+  const send = useCallback(
+    (changes) => {
+      dispatch(sendWsJson(changes));
+    },
+    [dispatch],
+  );
 
   return {
     send,

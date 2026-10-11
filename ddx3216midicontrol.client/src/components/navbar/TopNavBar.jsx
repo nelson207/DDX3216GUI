@@ -9,7 +9,7 @@ import {
   usePostApiMidiOutSelectByIndexMutation,
   usePostApiMidiChannelByChannelMutation,
   usePostApiMidiDevicesRefreshMutation,
-} from "../../router/apis/MidiApi"; // <-- adjust path
+} from "../../router/apis/MidiApi";
 
 import { DDX_VIEW_RANGES } from "../../domain/ddxViewRanges";
 
@@ -62,73 +62,45 @@ export default function TopNavBar({ activeView, setActiveView }) {
     refreshDevicesState.isLoading;
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark px-3 bg-dark z-3 h-100 w-100">
-      <a className="navbar-brand fw-semibold" href="#">
-        <img
-          src={headerLogoUrl}
-          height="32"
-          className="d-inline-block align-text-top text-white"
-        />
-      </a>
+    <nav className="topbar">
+      <img src={headerLogoUrl} className="topbar-logo" alt="Behringer" />
 
-      <button
-        className="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#topNav"
-        aria-controls="topNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span className="navbar-toggler-icon" />
-      </button>
-
-      <div className="collapse navbar-collapse" id="topNav">
-        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-          {Object.entries(DDX_VIEW_RANGES).map(([key, { label }]) => (
-            <li className="nav-item" key={key}>
-              <button
-                type="button"
-                className={`nav-link btn btn-link text-decoration-none fw-bold m-2 ${
-                  activeView === key ? "active" : ""
-                }`}
-                onClick={() => setActiveView(key)}
-              >
-                {label}
-              </button>
-            </li>
-          ))}
-        </ul>
-
-        <div className="d-flex align-items-center">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              padding: 12,
-            }}
+      <div className="topbar-tabs" role="tablist">
+        {Object.entries(DDX_VIEW_RANGES).map(([key, { label, short }]) => (
+          <button
+            key={key}
+            type="button"
+            role="tab"
+            aria-selected={activeView === key}
+            className={`topbar-tab${activeView === key ? " active" : ""}`}
+            onClick={() => setActiveView(key)}
+            title={label}
           >
-            <div className="d-flex align-items-center">
-              <StatusLed />
-            </div>
-          </div>
+            <span className="d-none d-xl-inline">{label}</span>
+            <span className="d-xl-none">{short ?? label}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="topbar-right">
+        <StatusLed />
 
           <div className="dropdown">
             <button
-              className="btn btn-outline-light dropdown-toggle fw-bold"
+              className="btn btn-sm btn-outline-light dropdown-toggle fw-bold"
               type="button"
               id="midiDropdown"
               data-bs-toggle="dropdown"
               aria-expanded="false"
               disabled={!isConnected || busy}
             >
-              MIDI Settings
+              MIDI
             </button>
 
             <div
               className="dropdown-menu dropdown-menu-end p-3 text-white bg-dark fw-bold"
               aria-labelledby="midiDropdown"
-              style={{ minWidth: 320 }}
+              style={{ width: "min(320px, 92vw)" }}
             >
               {isError && (
                 <div className="alert alert-danger py-2">
@@ -139,7 +111,7 @@ export default function TopNavBar({ activeView, setActiveView }) {
               <div className="mb-3">
                 <label className="form-label mb-1">MIDI In</label>
                 <select
-                  className="form-select text-white"
+                  className="form-select bg-dark text-white"
                   value={selectedMidiDeviceIn ?? ""}
                   onChange={(e) =>
                     selectMidiIn({ index: Number(e.target.value) })
@@ -159,7 +131,7 @@ export default function TopNavBar({ activeView, setActiveView }) {
               <div className="mb-3">
                 <label className="form-label mb-1">MIDI Out</label>
                 <select
-                  className="form-select text-white"
+                  className="form-select bg-dark text-white"
                   value={selectedMidiDeviceOut ?? ""}
                   onChange={(e) =>
                     selectMidiOut({ index: Number(e.target.value) })
@@ -179,7 +151,7 @@ export default function TopNavBar({ activeView, setActiveView }) {
               <div className="mb-2">
                 <label className="form-label mb-1">MIDI Channel</label>
                 <select
-                  className="form-select text-white"
+                  className="form-select bg-dark text-white"
                   value={selectedMidiChannel}
                   onChange={(e) =>
                     setMidiChannel({ channel: Number(e.target.value) })
@@ -218,7 +190,6 @@ export default function TopNavBar({ activeView, setActiveView }) {
             </div>
           </div>
         </div>
-      </div>
     </nav>
   );
 }

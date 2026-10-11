@@ -1,28 +1,16 @@
-function ChannelProcNavBar({ selected, onSelect }) {
-  const processors = [
-    "EQ",
-    "Compressor",
-    "Gate",
-    "Delay",
-    "Routing",
-    "Aux",
-    "Fx",
-  ];
+const PROCESSORS = ["EQ", "Compressor", "Gate", "Delay", "Routing", "Aux", "Fx"];
 
+function ChannelProcNavBar({ selected, onSelect }) {
   return (
-    <nav
-      className="d-flex h-50 w-100 px-2 py-1 gap-1"
-      aria-label="Channel selector"
-    >
-      {processors.map((processor) => (
+    <nav className="subnav-row" aria-label="Processor selector">
+      {PROCESSORS.map((processor) => (
         <button
           key={processor}
           type="button"
-          className={`btn btn-sm flex-fill text-white fw-bold ${
-            selected === processor
-              ? "btn-channel-selected"
-              : "btn-outline-secondary"
+          className={`subnav-btn subnav-btn-wide${
+            selected === processor ? " active" : ""
           }`}
+          aria-pressed={selected === processor}
           onClick={() => onSelect(processor)}
         >
           {processor}

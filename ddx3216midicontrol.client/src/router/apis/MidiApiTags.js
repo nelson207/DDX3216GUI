@@ -1,13 +1,37 @@
 // Cache tags for the generated MidiApi (kept separate so codegen can overwrite MidiApi.ts)
 import { MidiApi } from "./MidiApi";
 
+const invalidates = (...tags) => ({ invalidatesTags: tags });
+
 export const MidiApiTagged = MidiApi.enhanceEndpoints({
-  addTagTypes: ["Devices"],
   endpoints: {
+    // auth
+    getApiAuthState: { providesTags: ["Auth"] },
+    postApiAuthSetup: invalidates("Auth"),
+    postApiAuthLogin: invalidates("Auth"),
+    postApiAuthLogout: invalidates("Auth"),
+    postApiAuthPassword: invalidates("Auth"),
+
+    // MIDI
     getApiMidiDevices: { providesTags: ["Devices"] },
-    postApiMidiInSelectByIndex: { invalidatesTags: ["Devices"] },
-    postApiMidiOutSelectByIndex: { invalidatesTags: ["Devices"] },
-    postApiMidiChannelByChannel: { invalidatesTags: ["Devices"] },
-    postApiMidiDevicesRefresh: { invalidatesTags: ["Devices"] },
+    postApiMidiInSelectByIndex: invalidates("Devices"),
+    postApiMidiOutSelectByIndex: invalidates("Devices"),
+    postApiMidiChannelByChannel: invalidates("Devices"),
+    postApiMidiDevicesRefresh: invalidates("Devices"),
+
+    // scenes (the active scene itself arrives over the WebSocket)
+    getApiScenes: { providesTags: ["Scenes"] },
+    postApiScenes: invalidates("Scenes"),
+    putApiScenesById: invalidates("Scenes"),
+    deleteApiScenesById: invalidates("Scenes"),
+    postApiScenesByIdCapture: invalidates("Scenes"),
+    postApiScenesByIdActivate: invalidates("Scenes"),
+    putApiScenesByIdLabelsAndModule: invalidates("Scenes"),
+
+    // users
+    getApiUsers: { providesTags: ["Users"] },
+    postApiUsers: invalidates("Users"),
+    putApiUsersById: invalidates("Users"),
+    deleteApiUsersById: invalidates("Users"),
   },
 });

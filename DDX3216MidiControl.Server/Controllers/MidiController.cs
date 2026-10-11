@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MidiInterface.Models;
 using MidiInterface.Services;
@@ -6,6 +7,7 @@ namespace MidiInterface.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class MidiController : ControllerBase
     {
         private readonly ILogger<MidiController> _logger;
@@ -38,15 +40,19 @@ namespace MidiInterface.Controllers
             Ok(_stateStore.Snapshot().Select(kv => new BehringerChange(kv.Key.Module, kv.Key.Param, kv.Value)));
 
         [HttpPost("out/select/{index:int}")]
+        [Authorize(Policy = Policies.CanOperate)]
         public IActionResult SelectOut([FromRoute] int index) => Run(() => _router.SelectOut(index), new { selectedOut = index }, "select MIDI OUT");
 
         [HttpPost("in/select/{index:int}")]
+        [Authorize(Policy = Policies.CanOperate)]
         public IActionResult SelectIn([FromRoute] int index) => Run(() => _router.SelectIn(index), new { selectedIn = index }, "select MIDI IN");
 
         [HttpPost("channel/{channel:int}")]
+        [Authorize(Policy = Policies.CanOperate)]
         public IActionResult SetChannel([FromRoute] int channel) => Run(() => _router.SetChannel(channel), new { channel }, "set MIDI channel");
 
         [HttpPost("devices/refresh")]
+        [Authorize(Policy = Policies.CanOperate)]
         public IActionResult RefreshDevices() => Run(_router.RefreshDevices, new { }, "refresh MIDI devices");
 
         private IActionResult Run(Action action, object result, string what)

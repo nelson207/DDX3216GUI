@@ -3,6 +3,7 @@ import {
   wsDisconnected,
   wsError,
   wsMessage,
+  wsScene,
   wsSnapshot,
 } from "../slices/wsSlice";
 import { MidiApi } from "../apis/MidiApi";
@@ -57,6 +58,11 @@ function handleMessage(dispatch, payload) {
       // same shape as GET /api/Midi/devices: refresh that cache in place
       dispatch(MidiApi.util.upsertQueryData("getApiMidiDevices", undefined, payload.status));
       break;
+    case "scene":
+      dispatch(wsScene(payload.scene));
+      // scene list (active flag, label counts) may have changed too
+      dispatch(MidiApi.util.invalidateTags(["Scenes"]));
+      break;
     case "error":
       console.warn("[WS] server:", payload.message);
       dispatch(wsError(payload.message));
@@ -98,6 +104,9 @@ export const connectWs = () => (dispatch) => {
     stopPing();
     dispatch(wsDisconnected());
     console.log("[WS] closed:", ev.code, ev.reason || "");
+    // the server refuses the socket when the login expired or the account changed:
+    // re-check the session (the app shows the login screen if it is gone)
+    dispatch(MidiApi.util.invalidateTags(["Auth"]));
 
     if (wanted) {
       reconnectTimer = setTimeout(() => dispatch(connectWs()), reconnectDelay);

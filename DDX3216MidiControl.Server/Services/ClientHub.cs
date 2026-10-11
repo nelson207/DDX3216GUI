@@ -2,6 +2,8 @@ using MidiInterface.Models;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Net.WebSockets;
+using System.Security.Claims;
+using MidiInterface.Data;
 using System.Text.Json;
 using System.Threading.Channels;
 
@@ -20,6 +22,7 @@ namespace MidiInterface.Services
         private readonly ChangeBus _bus;
         private readonly MidiRouterService _router;
         private readonly BehringerStateStoreService _state;
+        private readonly SceneService _scenes;
         private readonly ILogger<ClientHub> _logger;
 
         private readonly int _maxMessageBytes;
@@ -27,11 +30,13 @@ namespace MidiInterface.Services
         private readonly TimeSpan _sendTimeout;
         private readonly TimeSpan _idleTimeout;
 
-        public ClientHub(ChangeBus bus, MidiRouterService router, BehringerStateStoreService state, IConfiguration config, ILogger<ClientHub> logger)
+        public ClientHub(ChangeBus bus, MidiRouterService router, BehringerStateStoreService state, SceneService scenes,
+            UserService users, IConfiguration config, ILogger<ClientHub> logger)
         {
             _bus = bus;
             _router = router;
             _state = state;
+            _scenes = scenes;
             _logger = logger;
             _maxMessageBytes = config.GetValue("WebSocket:MaxMessageBytes", 64 * 1024);
             _queueCapacity = config.GetValue("WebSocket:QueueCapacity", 512);
@@ -39,6 +44,8 @@ namespace MidiInterface.Services
             _idleTimeout = TimeSpan.FromSeconds(config.GetValue("WebSocket:IdleTimeoutSeconds", 30));
 
             _router.StatusChanged += () => Broadcast(new WsStatusMessage(_router.GetStatus()));
+            _scenes.ActiveSceneChanged += scene => Broadcast(new WsSceneMessage(scene));
+            users.SessionsInvalidated += DisconnectUser;
         }
 
         public int Count => _clients.Count;
@@ -110,13 +117,17 @@ namespace MidiInterface.Services
 
         // ---------------- connection ----------------
 
-        public async Task HandleAsync(WebSocket socket, CancellationToken requestAborted)
+        public async Task HandleAsync(WebSocket socket, ClaimsPrincipal user, CancellationToken requestAborted)
         {
             var client = new WsClient(socket, Channel.CreateBounded<byte[]>(new BoundedChannelOptions(_queueCapacity)
             {
                 SingleReader = false, // the writer loop reads; Enqueue drains it on overflow
                 FullMode = BoundedChannelFullMode.Wait, // TryWrite fails when full -> resync
-            }), CancellationTokenSource.CreateLinkedTokenSource(requestAborted));
+            }), CancellationTokenSource.CreateLinkedTokenSource(requestAborted))
+            {
+                UserId = int.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out var uid) ? uid : 0,
+                CanWrite = Roles.CanOperate(user.FindFirstValue(ClaimTypes.Role)),
+            };
 
             _clients[client.Id] = client;
             _logger.LogInformation("Client {Client} connected ({Count} total)", client.Id, _clients.Count);
@@ -124,6 +135,7 @@ namespace MidiInterface.Services
             // initial state: everything the server knows + MIDI status
             Enqueue(client, SnapshotBytes());
             Send(client.Id, new WsStatusMessage(_router.GetStatus()));
+            Send(client.Id, new WsSceneMessage(_scenes.Active));
 
             var writer = Task.Run(() => WriterLoop(client));
             try
@@ -235,6 +247,12 @@ namespace MidiInterface.Services
 
             if (changes == null || changes.Length == 0) return;
 
+            if (!client.CanWrite)
+            {
+                Send(client.Id, new WsErrorMessage("Read-only account: changes are not allowed."));
+                return;
+            }
+
             if (changes.Any(c => c == null || !c.IsValid()))
             {
                 Send(client.Id, new WsErrorMessage("Rejected changes: module/param must be 0..127 and value 0..16383"));
@@ -242,6 +260,19 @@ namespace MidiInterface.Services
             }
 
             _bus.Publish(changes, ChangeSource.Client, client.Id);
+        }
+
+        /// <summary>Closes every connection of a user (deleted, role or password changed).</summary>
+        public void DisconnectUser(int userId)
+        {
+            foreach (var client in _clients.Values)
+            {
+                if (client.UserId == userId)
+                {
+                    _logger.LogInformation("Closing connection {Client} of user {User}", client.Id, userId);
+                    Kick(client);
+                }
+            }
         }
 
         // ---------------- liveness ----------------
@@ -290,6 +321,8 @@ namespace MidiInterface.Services
             }
 
             public Guid Id { get; } = Guid.NewGuid();
+            public int UserId { get; init; }
+            public bool CanWrite { get; init; }
             public WebSocket Socket { get; }
             public Channel<byte[]> Outbound { get; }
             public CancellationTokenSource Cts { get; }

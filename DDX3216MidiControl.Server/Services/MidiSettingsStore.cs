@@ -16,7 +16,8 @@ namespace MidiInterface.Services
             _logger = logger;
             _path = config["Midi:SettingsPath"] is { Length: > 0 } p
                 ? p
-                : Path.Combine(env.ContentRootPath, "data", "midi-settings.json");
+                : Path.Combine(config["DataDirectory"] is { Length: > 0 } d ? d : Path.Combine(env.ContentRootPath, "App_Data"),
+                    "midi-settings.json");
         }
 
         public MidiSettings Load()

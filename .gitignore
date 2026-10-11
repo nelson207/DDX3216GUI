@@ -34,5 +34,5 @@ bin
 
 
 
-# runtime MIDI settings written by the server
-DDX3216MidiControl.Server/data/
+# runtime data written by the server (database, login keys, MIDI settings)
+DDX3216MidiControl.Server/App_Data/

@@ -3,7 +3,7 @@
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 # RtMidi needs the ALSA runtime library. Run the container with access to the MIDI devices:
-#   docker run --device /dev/snd --group-add audio -p 8080:8080 -v ddx-data:/app/data <image>
+#   docker run --device /dev/snd --group-add audio -p 8080:8080 -v ddx-data:/app/App_Data <image>
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libasound2 \
     && rm -rf /var/lib/apt/lists/*

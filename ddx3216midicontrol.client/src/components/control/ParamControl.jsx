@@ -14,7 +14,7 @@ import Knob from "./Knob";
  *  ENUMMULTI        -> bitmask button grid
  */
 export default function ParamControl({ def, channelid, processorid, label, size }) {
-  const { value, update, setHolding } = useParamValue({
+  const { value, update, setHolding, readOnly } = useParamValue({
     channelid,
     processorid,
     defaultRaw: def.defaultRaw ?? 0,
@@ -34,6 +34,7 @@ export default function ParamControl({ def, channelid, processorid, label, size 
         defaultValue={def.defaultRaw ?? def.min ?? 0}
         display={formatParam(def, raw)}
         size={size}
+        disabled={readOnly}
         onChange={update}
         onHold={setHolding}
       />
@@ -52,6 +53,7 @@ export default function ParamControl({ def, channelid, processorid, label, size 
           defaultValue={def.defaultRaw ?? values[0]}
           display={formatParam(def, raw)}
           size={size}
+          disabled={readOnly}
           onChange={update}
           onHold={setHolding}
         />

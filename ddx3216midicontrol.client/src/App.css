@@ -1501,3 +1501,420 @@
     flex-basis: 100%;
   }
 }
+
+/* ------------------------------------------------------------
+   Login / first-run setup
+------------------------------------------------------------ */
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 16px;
+  background: var(--mx-bg);
+}
+.login-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(360px, 100%);
+  padding: 24px;
+  border: 1px solid var(--mx-strip-edge);
+  border-radius: 12px;
+  background: var(--mx-panel);
+  color: var(--mx-text);
+}
+.login-logo {
+  height: 26px;
+  align-self: flex-start;
+}
+.login-card h1 {
+  margin: 4px 0 0;
+  font-size: 20px;
+  font-weight: 800;
+}
+.login-hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--mx-text-dim);
+}
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mx-text-dim);
+}
+.login-field input,
+.account-form input,
+.scene-new input,
+.scene-rename input,
+.dialog input {
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--mx-strip-edge);
+  border-radius: 8px;
+  background: #121315;
+  color: var(--mx-text);
+  font-size: 16px; /* 16px: no zoom-on-focus on iOS */
+}
+.login-field input:focus,
+.account-form input:focus,
+.scene-new input:focus,
+.scene-rename input:focus,
+.dialog input:focus {
+  outline: 2px solid var(--mx-accent);
+  outline-offset: 0;
+}
+.login-error {
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+.login-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--mx-accent);
+  color: #111;
+  font-weight: 800;
+}
+.login-submit:disabled {
+  opacity: 0.6;
+}
+
+/* ------------------------------------------------------------
+   Top bar: scene + account buttons, read-only badge
+------------------------------------------------------------ */
+.scene-btn-top {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 34px;
+  max-width: 180px;
+  padding: 0 10px;
+  border: 1px solid var(--mx-strip-edge);
+  border-radius: 6px;
+  background: var(--mx-strip);
+  color: var(--mx-text);
+  text-align: left;
+  line-height: 1.1;
+}
+.scene-btn-top-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mx-text-dim);
+}
+.scene-btn-top-name {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.account-btn {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--mx-strip-edge);
+  color: var(--mx-text);
+  font-weight: 800;
+}
+.scene-btn-top:focus-visible,
+.account-btn:focus-visible {
+  outline: 2px solid var(--mx-accent);
+  outline-offset: 1px;
+}
+.readonly-badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #fcd34d;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .scene-btn-top {
+    max-width: 96px;
+  }
+  .scene-btn-top-label {
+    display: none;
+  }
+  .readonly-badge {
+    display: none;
+  }
+}
+
+/* strip name as a button (tap to rename) */
+button.strip-name {
+  display: block;
+  width: 100%;
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+button.strip-name:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+.ch-select {
+  width: auto;
+  min-width: 86px;
+  max-width: 200px;
+  padding: 0 8px;
+}
+
+/* ------------------------------------------------------------
+   Scenes + account sheets
+------------------------------------------------------------ */
+.scene-current {
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--mx-strip);
+  border: 1px solid var(--mx-strip-edge);
+}
+.scene-current-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--mx-text-dim);
+}
+.scene-current-name {
+  margin: 2px 0 4px;
+  font-size: 18px;
+  font-weight: 800;
+}
+.scene-meta {
+  font-size: 12px;
+  color: var(--mx-text-dim);
+}
+.scene-note-ok {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.scene-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.scene-row,
+.user-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--mx-strip-edge);
+  border-radius: 8px;
+  background: var(--mx-strip);
+}
+.scene-row.active {
+  border-color: var(--mx-accent);
+}
+.scene-row-main,
+.user-row-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.scene-row-text {
+  flex: 1;
+  min-width: 0;
+}
+.scene-name,
+.user-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.scene-badge {
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  background: var(--mx-accent);
+  color: #111;
+}
+.scene-more {
+  width: 36px;
+  height: 32px;
+  border: 1px solid var(--mx-strip-edge);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--mx-text);
+  font-size: 18px;
+  line-height: 1;
+}
+.scene-actions,
+.scene-extra {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.scene-btn {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--mx-strip-edge);
+  border-radius: 6px;
+  background: #1a1c1f;
+  color: var(--mx-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+.scene-btn:disabled {
+  opacity: 0.5;
+}
+.scene-btn-primary {
+  border-color: var(--mx-accent);
+  background: rgba(245, 166, 35, 0.15);
+}
+.scene-btn-danger {
+  color: #fca5a5;
+}
+.scene-btn.armed {
+  border-color: var(--mx-mute);
+  background: var(--mx-mute);
+  color: #fff;
+}
+.scene-btn:focus-visible,
+.scene-more:focus-visible {
+  outline: 2px solid var(--mx-accent);
+  outline-offset: 1px;
+}
+.scene-rename {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+.scene-rename input {
+  flex: 1 1 160px;
+  min-height: 34px;
+  font-size: 14px;
+}
+
+.scene-new,
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px dashed var(--mx-strip-edge);
+  border-radius: 8px;
+}
+.scene-new h3,
+.account-form h3,
+.account-section > h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.account-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.scene-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.scene-check input {
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  accent-color: var(--mx-accent);
+}
+.user-row .pc-select {
+  max-width: 140px;
+}
+
+/* ------------------------------------------------------------
+   Centered dialog (fader name)
+------------------------------------------------------------ */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1060;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.6);
+}
+.dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(380px, 100%);
+  padding: 16px;
+  border: 1px solid var(--mx-strip-edge);
+  border-radius: 12px;
+  background: var(--mx-panel);
+  color: var(--mx-text);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+.dialog h2 {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+}
+.dialog-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mx-text-dim);
+}
+.dialog-actions {
+  display: flex;
+  gap: 6px;
+}
+.color-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+}
+.color-swatch.none {
+  background: repeating-linear-gradient(45deg, #2a2d31 0 6px, #3a3f46 6px 12px);
+}
+.color-swatch.on {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px var(--mx-panel) inset;
+}
+.color-swatch:focus-visible {
+  outline: 2px solid var(--mx-accent);
+  outline-offset: 2px;
+}

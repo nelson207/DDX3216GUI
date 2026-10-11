@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import {
   CompressorPage,
   DelayPage,
@@ -48,6 +49,12 @@ function ProcPanel({ selectedChannel, onSelectChannel, selectedProcessor, onSele
   const idx = CHANNELS.indexOf(selectedChannel);
   const step = (d) => onSelectChannel(CHANNELS[(idx + d + CHANNELS.length) % CHANNELS.length]);
   const isMain = selectedChannel === "Main";
+  const labels = useSelector((s) => s.ws.scene?.labels);
+  const optionLabel = (c) => {
+    const base = c === "Main" ? "Main" : `CH ${c}`;
+    const custom = labels?.[c === "Main" ? MAIN_CHANNEL_ID : c - 1]?.name;
+    return custom ? `${base} · ${custom}` : base;
+  };
 
   return (
     <div className="proc-panel">
@@ -66,7 +73,7 @@ function ProcPanel({ selectedChannel, onSelectChannel, selectedProcessor, onSele
           >
             {CHANNELS.map((c) => (
               <option key={c} value={String(c)}>
-                {c === "Main" ? "Main" : `CH ${c}`}
+                {optionLabel(c)}
               </option>
             ))}
           </select>

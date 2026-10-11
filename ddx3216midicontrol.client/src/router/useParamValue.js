@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useSender } from "./MidiControl";
 import { paramKey, paramSet } from "./slices/wsSlice";
+import { useCurrentUser } from "./useAuth";
 
 // Minimum time between two websocket sends for the same param while dragging.
 const SEND_INTERVAL_MS = 30;
@@ -17,6 +18,11 @@ const SEND_INTERVAL_MS = 30;
 export function useParamValue({ channelid, processorid, defaultRaw }) {
   const dispatch = useDispatch();
   const { send } = useSender();
+  const { canOperate } = useCurrentUser();
+  const canOperateRef = useRef(canOperate);
+  useEffect(() => {
+    canOperateRef.current = canOperate;
+  }, [canOperate]);
   const stored = useSelector(
     (s) => s.ws.values[paramKey(channelid, processorid)],
   );
@@ -52,6 +58,7 @@ export function useParamValue({ channelid, processorid, defaultRaw }) {
   const update = useCallback(
     (next, { immediate = false } = {}) => {
       if (next === undefined || next === null) return;
+      if (!canOperateRef.current) return; // read-only account (the server refuses it too)
       if (holdingRef.current) setOverride(next);
       dispatch(paramSet({ Module: channelid, Param: processorid, Value: next }));
 
@@ -76,6 +83,7 @@ export function useParamValue({ channelid, processorid, defaultRaw }) {
 
   return {
     value: override ?? stored ?? defaultRaw,
+    readOnly: !canOperate,
     update,
     setHolding,
   };

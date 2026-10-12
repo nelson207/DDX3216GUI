@@ -4,18 +4,29 @@ import {
   usePutApiScenesByIdLabelsAndModuleMutation,
   usePutApiScenesByIdPairsAndModuleMutation,
 } from "../../router/apis/MidiApi";
-import { isPairable, oddOf, usePair } from "../../router/usePair";
+import { isPairable, oddOf, partnerOf, usePair } from "../../router/usePair";
 import { apiErrorText } from "../../functions/ApiErrors";
 
 const COLORS = ["#3d8bfd", "#f08c00", "#2fb344", "#ae3ec9", "#e5383b", "#f5c400", "#20c997", "#868e96"];
 
-/** Rename / recolour one strip in the active scene (empty name = back to the default name). */
+/**
+ * Rename / recolour one strip in the active scene (empty name = back to the default name).
+ * Input channels also get the stereo-pair switch; like the name, it only applies on Save
+ * (pairing copies the odd channel to the even one, so it must not happen on a stray tap).
+ * Paired channels share their name and colour: Save applies them to both.
+ */
 export default function FaderNameDialog({ module, defaultName, onClose }) {
   const scene = useSelector((s) => s.ws.scene);
   const current = scene?.labels?.[module];
   const [name, setName] = useState(current?.name ?? "");
   const [color, setColor] = useState(current?.color ?? null);
   const [save, saveState] = usePutApiScenesByIdLabelsAndModuleMutation();
+  const pairable = isPairable(module);
+  const paired = Boolean(usePair(module));
+  const [pairDraft, setPairDraft] = useState(paired);
+  const [setPair, pairState] = usePutApiScenesByIdPairsAndModuleMutation();
+  const [pairNote, setPairNote] = useState(null);
+  const busy = saveState.isLoading || pairState.isLoading;
   const inputRef = useRef(null);
   const onCloseRef = useRef(onClose);
   useEffect(() => {
@@ -30,10 +41,24 @@ export default function FaderNameDialog({ module, defaultName, onClose }) {
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
-  const submit = async (label) => {
+  // the new name / pairing arrive for everyone over the WebSocket
+  const submit = async (label, { withPair = true } = {}) => {
     if (!scene) return;
+    setPairNote(null);
     const res = await save({ id: scene.id, module, setLabelRequest: label });
-    if (!res.error) onClose(); // the new name arrives for everyone over the WebSocket
+    if (res.error) return;
+    let note = null;
+    if (withPair && pairable && pairDraft !== paired) {
+      const pr = await setPair({ id: scene.id, module, setPairRequest: { paired: pairDraft } });
+      if (pr.error) return setPairNote(apiErrorText(pr.error));
+      note = pr.data.note; // paired, but nothing was copied: let the user read why
+    }
+    if (pairable && (withPair ? pairDraft : paired)) {
+      const pl = await save({ id: scene.id, module: partnerOf(module), setLabelRequest: label });
+      if (pl.error) return setPairNote(apiErrorText(pl.error));
+    }
+    if (note) return setPairNote(note);
+    onClose();
   };
 
   return (
@@ -83,17 +108,22 @@ export default function FaderNameDialog({ module, defaultName, onClose }) {
             />
           ))}
         </div>
-        {isPairable(module) && <PairSection module={module} sceneId={scene?.id} />}
+        {pairable && <PairSection module={module} paired={paired} draft={pairDraft} onChange={setPairDraft} disabled={!scene || busy} />}
         {saveState.error && <div className="midi-note midi-note-error">{apiErrorText(saveState.error)}</div>}
+        {pairNote && (
+          <div className="midi-note midi-note-error" role="status">
+            {pairNote}
+          </div>
+        )}
         <div className="dialog-actions">
-          <button type="button" className="scene-btn" onClick={() => submit({ name: "", color: null })} disabled={saveState.isLoading || !current}>
+          <button type="button" className="scene-btn" onClick={() => submit({ name: "", color: null }, { withPair: false })} disabled={busy || !current}>
             Reset
           </button>
           <span style={{ flex: 1 }} />
           <button type="button" className="scene-btn" onClick={onClose}>
             Cancel
           </button>
-          <button type="submit" className="scene-btn scene-btn-primary" disabled={saveState.isLoading}>
+          <button type="submit" className="scene-btn scene-btn-primary" disabled={busy}>
             Save
           </button>
         </div>
@@ -102,45 +132,30 @@ export default function FaderNameDialog({ module, defaultName, onClose }) {
   );
 }
 
-/** Stereo pairing of an input channel with its neighbour (C1+C2, C3+C4 …) in the active scene. */
-function PairSection({ module, sceneId }) {
-  const pair = usePair(module);
-  const [setPair, state] = usePutApiScenesByIdPairsAndModuleMutation();
-  const [note, setNote] = useState(null);
+/** Stereo-pair switch (C1+C2, C3+C4 …): only a draft, applied by the dialog's Save. */
+function PairSection({ module, paired, draft, onChange, disabled }) {
   const odd = oddOf(module);
   const names = `C ${odd + 1} + C ${odd + 2}`;
-
-  const toggle = async () => {
-    setNote(null);
-    const res = await setPair({ id: sceneId, module, setPairRequest: { paired: !pair } });
-    if (res.error) setNote({ ok: false, text: apiErrorText(res.error) });
-    else if (res.data.note) setNote({ ok: false, text: res.data.note });
-    else if (res.data.paired) setNote({ ok: true, text: `Paired: C ${odd + 1} left, C ${odd + 2} right; settings copied.` });
-    else setNote({ ok: true, text: "Unpaired: the channels are independent again." });
-  };
+  let help;
+  if (draft && !paired)
+    help = `On Save: C ${odd + 2} takes the settings of C ${odd + 1} (left/right) and both get this name; then every change applies to both.`;
+  else if (!draft && paired) help = "On Save: the channels become independent again (their settings stay as they are).";
+  else if (draft) help = "Every change on one channel also applies to the other; pan is mirrored (left/right). The name applies to both.";
+  else help = `Links ${names} as left/right. Nothing changes until you press Save.`;
 
   return (
     <div className="pair-section">
       <button
         type="button"
-        className={`pc-toggle${pair ? " on" : ""}`}
-        aria-pressed={Boolean(pair)}
-        disabled={!sceneId || state.isLoading}
-        onClick={toggle}
+        className={`pc-toggle${draft ? " on" : ""}`}
+        aria-pressed={draft}
+        disabled={disabled}
+        onClick={() => onChange(!draft)}
       >
         <span className="pc-toggle-led" aria-hidden="true" />
         Stereo pair {names}
       </button>
-      <p className="pair-help">
-        {pair
-          ? "Every change on one channel also applies to the other; pan is mirrored (left/right)."
-          : `Links ${names} as left/right: C ${odd + 2} takes the settings of C ${odd + 1}, then every change applies to both.`}
-      </p>
-      {note && (
-        <div className={`midi-note ${note.ok ? "scene-note-ok" : "midi-note-error"}`} role="status">
-          {note.text}
-        </div>
-      )}
+      <p className="pair-help">{help}</p>
     </div>
   );
 }

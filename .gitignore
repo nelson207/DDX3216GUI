@@ -1,5 +1,43 @@
+# ------------------------------------------------------------
+# Build output
+# ------------------------------------------------------------
+**/bin/
+**/obj/
+**/dist/
+**/dist-ssr/
+**/publish/
+*.tsbuildinfo
+
+# ------------------------------------------------------------
+# Dependencies / tool caches
+# ------------------------------------------------------------
+**/node_modules/
+.eslintcache
+.npm/
+coverage/
+TestResults/
+
+# ------------------------------------------------------------
+# Runtime data written by the server (database, login keys, MIDI settings)
+# ------------------------------------------------------------
+DDX3216MidiControl.Server/App_Data/
+*.db
+*.db-shm
+*.db-wal
+
+# ------------------------------------------------------------
+# Local configuration / secrets
+# ------------------------------------------------------------
+*.local
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+
+# ------------------------------------------------------------
 # Logs
-logs
+# ------------------------------------------------------------
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,32 +45,31 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-
-
-node_modules
-dist
-dist-ssr
-obj
-bin
-*.local
-
-**/bin/
-**/obj/
-**/dist/
-**/node_modules/
-
-# Editor directories and files
-.vscode/*
-.vs/*
-!.vscode/extensions.json
-.idea
-.DS_Store
+# ------------------------------------------------------------
+# Visual Studio / IDE (per-user files)
+# ------------------------------------------------------------
+.vs/
+*.user
 *.suo
+*.rsuser
+*.userosscache
+*.sln.docstates
 *.ntvs*
 *.njsproj
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
 *.sw?
 
+# ------------------------------------------------------------
+# OS files
+# ------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
 
-
-# runtime data written by the server (database, login keys, MIDI settings)
-DDX3216MidiControl.Server/App_Data/
+# ------------------------------------------------------------
+# Claude Code (personal settings)
+# ------------------------------------------------------------
+.claude/settings.local.json

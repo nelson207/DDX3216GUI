@@ -87,6 +87,7 @@ function Strip({ label: defaultLabel, channelid, view, onRename }) {
         def={VOLUME_PARAM}
         componentid={`ch_${channelid}_${VOLUME_PARAM.key}`}
         processorid={VOLUME_PARAM.id}
+        doubleTap={!isMain}
       />
     </div>
   );

@@ -22,11 +22,12 @@ const FINE_FACTOR = 0.25;
  * Console-style vertical fader (pointer events, works with mouse, touch and pen).
  * - Relative drag: grabbing anywhere on the track moves the cap from where it is,
  *   it never jumps to the finger.
- * - Double tap / double click toggles 0 dB.
+ * - Double tap / double click toggles 0 dB (off with doubleTap={false}, e.g. on Main, where a
+ *   stray double tap must never jump the PA to 0 dB or silence it).
  * - Shift + drag = fine; mouse wheel = 0.5 dB steps; keyboard arrows / PgUp / PgDn / Home / End.
  * - Horizontal swipes are left to the browser so the strip list can still scroll.
  */
-function Fader({ def, componentid, channelid, channellabel, processorid }) {
+function Fader({ def, componentid, channelid, channellabel, processorid, doubleTap = true }) {
   const { value, update, setHolding } = useParamValue({
     channelid,
     processorid,
@@ -89,7 +90,7 @@ function Fader({ def, componentid, channelid, channellabel, processorid }) {
       lastTapRef.current = 0;
       return;
     }
-    if (e.type === "pointercancel") return;
+    if (e.type === "pointercancel" || !doubleTap) return;
 
     const now = performance.now();
     if (now - lastTapRef.current < DOUBLE_TAP_MS) {

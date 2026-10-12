@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+# librespot (raspotify) event hook: forwards Spotify player events to the DDX3216 server on this Pi,
+# which shows "now playing" in the app. Install:
+#   sudo install -m 755 ddx3216-spotify-event /usr/local/bin/
+#   /etc/raspotify/conf:  LIBRESPOT_ONEVENT=/usr/local/bin/ddx3216-spotify-event
+#   sudo systemctl restart raspotify
+# Never fails librespot: errors (server down, timeout) are ignored.
+import json
+import os
+import urllib.request
+
+KEYS = ("PLAYER_EVENT", "TRACK_ID", "URI", "ITEM_TYPE", "NAME", "ARTISTS", "ALBUM", "COVERS",
+        "DURATION_MS", "POSITION_MS", "SHOW_NAME", "CLIENT_NAME")
+URL = os.environ.get("DDX3216_URL", "http://127.0.0.1:5000") + "/api/nowplaying/events"
+
+data = {k: os.environ[k] for k in KEYS if os.environ.get(k)}
+if data.get("PLAYER_EVENT"):
+    try:
+        req = urllib.request.Request(URL, json.dumps(data).encode(), {"Content-Type": "application/json"})
+        urllib.request.urlopen(req, timeout=2).close()
+    except Exception:
+        pass

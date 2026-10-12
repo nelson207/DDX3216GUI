@@ -4,6 +4,7 @@ namespace MidiInterface.Models
     /// WebSocket protocol (JSON, camelCase envelope):
     ///   client -> server: {type:"changes", changes:[{Module,Param,Value}]} | {type:"ping"}
     ///   server -> client: {type:"snapshot"|"changes", changes:[...]} | {type:"status", status:{...}}
+    ///                     {type:"scene", scene} | {type:"nowPlaying", nowPlaying} (null = nothing playing)
     ///                     {type:"error", message} | {type:"pong"}
     /// </summary>
     public static class WsMessageTypes

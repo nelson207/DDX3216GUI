@@ -10,6 +10,10 @@ const initialState = {
   // active scene (same for everyone):
   //   { id, name, labels: { [module]: { name, color } }, pairs: { [oddChannelModule]: true } }
   scene: null,
+  // Spotify on the Pi: { state, title, artists, album, covers, durationMs, positionMs, device } or null;
+  // nowPlayingAt = local time it arrived (positionMs is the position at that moment)
+  nowPlaying: null,
+  nowPlayingAt: 0,
 };
 
 function applyChanges(state, changes) {
@@ -57,6 +61,10 @@ const wsSlice = createSlice({
       for (const odd of s.pairs ?? []) pairs[odd] = true;
       state.scene = { id: s.id, name: s.name, labels, pairs };
     },
+    wsNowPlaying(state, action) {
+      state.nowPlaying = action.payload ?? null;
+      state.nowPlayingAt = Date.now();
+    },
     // logout: forget everything that belonged to the session
     wsReset() {
       return initialState;
@@ -72,6 +80,7 @@ export const {
   wsMessage,
   paramSet,
   wsScene,
+  wsNowPlaying,
   wsReset,
 } = wsSlice.actions;
 export default wsSlice.reducer;

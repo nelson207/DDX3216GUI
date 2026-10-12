@@ -82,6 +82,7 @@ builder.Services.AddSingleton<MidiRouterService>();
 builder.Services.AddSingleton<MidiOutputQueue>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<SceneService>();
+builder.Services.AddSingleton<NowPlayingService>();
 builder.Services.AddSingleton<ClientHub>();
 builder.Services.AddSingleton<ChangeDispatcher>();
 builder.Services.AddSingleton<MidiDeviceMonitor>();

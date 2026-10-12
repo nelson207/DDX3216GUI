@@ -7,9 +7,10 @@ import MidiSettingsPanel, { MidiButton } from "./MidiSettingsPanel";
 import ScenesPanel from "../scenes/ScenesPanel";
 import AccountPanel from "../account/AccountPanel";
 import ViewSwitcher from "./ViewSwitcher";
+import NowPlaying from "./NowPlaying";
 
 export default function TopNavBar({ activeView, setActiveView }) {
-  const [panel, setPanel] = useState(null); // "midi" | "scenes" | "account"
+  const [panel, setPanel] = useState(null); // "midi" | "scenes" | "account" | "spotify"
   const close = useCallback(() => setPanel(null), []);
   const toggle = (name) => setPanel((p) => (p === name ? null : name));
   const sceneName = useSelector((s) => s.ws.scene?.name);
@@ -46,6 +47,7 @@ export default function TopNavBar({ activeView, setActiveView }) {
               View only
             </span>
           )}
+          <NowPlaying expanded={panel === "spotify"} onToggle={() => toggle("spotify")} onClose={close} />
           <button
             type="button"
             className="scene-btn-top"

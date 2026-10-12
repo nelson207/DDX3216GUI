@@ -23,6 +23,7 @@ namespace MidiInterface.Services
         private readonly MidiRouterService _router;
         private readonly BehringerStateStoreService _state;
         private readonly SceneService _scenes;
+        private readonly NowPlayingService _nowPlaying;
         private readonly ILogger<ClientHub> _logger;
 
         private readonly int _maxMessageBytes;
@@ -31,12 +32,13 @@ namespace MidiInterface.Services
         private readonly TimeSpan _idleTimeout;
 
         public ClientHub(ChangeBus bus, MidiRouterService router, BehringerStateStoreService state, SceneService scenes,
-            UserService users, IConfiguration config, ILogger<ClientHub> logger)
+            NowPlayingService nowPlaying, UserService users, IConfiguration config, ILogger<ClientHub> logger)
         {
             _bus = bus;
             _router = router;
             _state = state;
             _scenes = scenes;
+            _nowPlaying = nowPlaying;
             _logger = logger;
             _maxMessageBytes = config.GetValue("WebSocket:MaxMessageBytes", 64 * 1024);
             _queueCapacity = config.GetValue("WebSocket:QueueCapacity", 512);
@@ -45,6 +47,7 @@ namespace MidiInterface.Services
 
             _router.StatusChanged += () => Broadcast(new WsStatusMessage(_router.GetStatus()));
             _scenes.ActiveSceneChanged += scene => Broadcast(new WsSceneMessage(scene));
+            _nowPlaying.Changed += np => Broadcast(new WsNowPlayingMessage(np));
             users.SessionsInvalidated += DisconnectUser;
         }
 
@@ -132,10 +135,11 @@ namespace MidiInterface.Services
             _clients[client.Id] = client;
             _logger.LogInformation("Client {Client} connected ({Count} total)", client.Id, _clients.Count);
 
-            // initial state: everything the server knows + MIDI status
+            // initial state: everything the server knows + MIDI status, scene and Spotify
             Enqueue(client, SnapshotBytes());
             Send(client.Id, new WsStatusMessage(_router.GetStatus()));
             Send(client.Id, new WsSceneMessage(_scenes.Active));
+            Send(client.Id, new WsNowPlayingMessage(_nowPlaying.Current));
 
             var writer = Task.Run(() => WriterLoop(client));
             try

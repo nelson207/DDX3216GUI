@@ -2140,3 +2140,153 @@ button.strip-name:focus-visible {
   background: var(--mx-accent);
   color: #111;
 }
+
+/* ------------------------------------------------------------
+   Spotify now playing (raspotify on the Pi)
+------------------------------------------------------------ */
+.np-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  max-width: 220px;
+  padding: 0 10px 0 3px;
+  overflow: hidden;
+  border: 1px solid var(--mx-strip-edge);
+  border-radius: 6px;
+  background: var(--mx-strip);
+  color: var(--mx-text);
+  text-align: left;
+  line-height: 1.15;
+}
+.np-btn:focus-visible {
+  outline: 2px solid var(--mx-accent);
+  outline-offset: 1px;
+}
+.np-btn-cover {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 3px;
+  object-fit: cover;
+}
+.np-cover-empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #1db954;
+  color: #000;
+  font-weight: 800;
+}
+.np-btn-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.np-btn-title,
+.np-btn-artist {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.np-btn-title {
+  font-size: 12px;
+  font-weight: 700;
+}
+.np-btn-artist {
+  font-size: 11px;
+  color: var(--mx-text-dim);
+}
+.np-btn-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  background: #1db954;
+  transition: width 1s linear;
+}
+.np-btn.paused .np-btn-cover {
+  opacity: 0.5;
+}
+.np-btn.paused .np-btn-progress {
+  background: var(--mx-text-dim);
+}
+.np-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.np-detail-cover {
+  width: min(280px, 100%);
+  aspect-ratio: 1;
+  height: auto;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  font-size: 64px;
+}
+.np-detail-title {
+  font-size: 18px;
+  font-weight: 800;
+}
+.np-detail-artist {
+  font-size: 14px;
+  color: var(--mx-text);
+}
+.np-detail-album {
+  font-size: 13px;
+  color: var(--mx-text-dim);
+}
+.np-bar {
+  width: 100%;
+  height: 4px;
+  margin-top: 10px;
+  border-radius: 2px;
+  background: var(--mx-strip-edge);
+  overflow: hidden;
+}
+.np-bar span {
+  display: block;
+  height: 100%;
+  background: #1db954;
+  transition: width 1s linear;
+}
+.np-times {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 12px;
+  color: var(--mx-text-dim);
+  font-variant-numeric: tabular-nums;
+}
+.np-state {
+  font-weight: 800;
+  color: #1db954;
+}
+.np-state.paused {
+  color: var(--mx-text-dim);
+}
+.np-help {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--mx-text-dim);
+}
+/* the view tabs need the room below 1400px: cover only (title and artist are in the tooltip) */
+@media (max-width: 1399px) {
+  .np-btn {
+    padding: 0 3px;
+  }
+  .np-btn-text {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .np-btn-progress,
+  .np-bar span {
+    transition: none;
+  }
+}

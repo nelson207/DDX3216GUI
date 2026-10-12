@@ -57,6 +57,9 @@ The project builds on the reverse-engineering and documentation work in
 - 🔌 **USB MIDI plug/unplug is detected instantly** (ALSA announcements). The saved ports reconnect
   automatically, also after a reboot.
 - 💾 **Mixer values survive restarts** (stored in SQLite).
+- 🎵 **Spotify now playing** (optional): with [raspotify](https://github.com/dtcooper/raspotify) on
+  the same Pi, the top bar shows the cover, title and artist of what is playing; tap it for the
+  album, progress and the device that controls it. See [Spotify (raspotify)](#6-optional-spotify-raspotify).
 
 <p>
   <img src="./screenshots/processing-eq.png" alt="Processing: EQ with graph" width="49%">
@@ -210,6 +213,24 @@ location / {
 - Open `http://<pi-address>/` and **create the admin account**.
 - In the **MIDI** panel, select your USB MIDI interface as output and input, and set the MIDI
   channel to match the desk.
+
+### 6. Optional: Spotify (raspotify)
+
+If raspotify (librespot 0.5 or later) runs on the same Pi, its event hook can tell the app what is
+playing. Copy [`deploy/raspotify/ddx3216-spotify-event`](deploy/raspotify/ddx3216-spotify-event) to the
+Pi, then:
+
+```bash
+sudo install -m 755 ddx3216-spotify-event /usr/local/bin/
+# in /etc/raspotify/conf:
+#   LIBRESPOT_ONEVENT=/usr/local/bin/ddx3216-spotify-event
+sudo systemctl restart raspotify
+```
+
+The hook posts each player event to `http://127.0.0.1:5000/api/nowplaying/events` (set
+`DDX3216_URL` if the server listens elsewhere). The endpoint only accepts requests from the Pi
+itself, not through nginx. The app shows what is playing but can't control playback: use the
+Spotify app for that.
 
 ---
 

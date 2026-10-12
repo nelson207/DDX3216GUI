@@ -4,6 +4,7 @@ import {
   wsError,
   wsMessage,
   wsScene,
+  wsNowPlaying,
   wsSnapshot,
 } from "../slices/wsSlice";
 import { MidiApi } from "../apis/MidiApi";
@@ -57,6 +58,9 @@ function handleMessage(dispatch, payload) {
       dispatch(wsScene(payload.scene));
       // scene list (active flag, label counts) may have changed too
       dispatch(MidiApi.util.invalidateTags(["Scenes"]));
+      break;
+    case "nowPlaying":
+      dispatch(wsNowPlaying(payload.nowPlaying));
       break;
     case "error":
       console.warn("[WS] server:", payload.message);

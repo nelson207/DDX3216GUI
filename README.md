@@ -69,7 +69,7 @@ The project builds on the reverse-engineering and documentation work in
 ## How it works
 
 ```
- Browser (React)  ──WebSocket JSON──►  ASP.NET Core 8 server  ──SysEx──►  ALSA sequencer ──► USB MIDI ──► DDX3216
+ Browser (React)  ──WebSocket JSON──►  ASP.NET Core 10 server  ──SysEx──►  ALSA sequencer ──► USB MIDI ──► DDX3216
   phones/tablets  ◄── live changes ──   (Raspberry Pi)          ◄─SysEx──   (libasound)    ◄──          ◄──
                                          │
                                          └── SQLite: users, scenes, fader names, last mixer values
@@ -94,16 +94,16 @@ The project builds on the reverse-engineering and documentation work in
 | Part | Technology |
 | --- | --- |
 | Client | React 19, Redux Toolkit + RTK Query, Vite, Bootstrap 5 |
-| Server | ASP.NET Core 8, WebSockets, cookie authentication |
+| Server | ASP.NET Core 10, WebSockets, cookie authentication |
 | MIDI | ALSA sequencer via P/Invoke (`libasound.so.2`) |
-| Storage | SQLite with EF Core 8 (migrations applied at startup) |
+| Storage | SQLite with EF Core 10 (migrations applied at startup) |
 | Target | Raspberry Pi (linux-arm64), behind nginx |
 
 ---
 
 ## Development
 
-Prerequisites: **.NET 8 SDK**, **Node.js 18+**.
+Prerequisites: **.NET 10 SDK**, **Node.js 18+**.
 
 ```bash
 # server (MIDI is only available on Linux; elsewhere it runs without MIDI)
@@ -135,7 +135,7 @@ To develop the UI against a server that's already running (e.g. the Pi), set
 
 ```powershell
 cd DDX3216MidiControl.Server
-dotnet publish -c Release -p:PublishProfile=FolderProfile -o bin/Release/net8.0/publish
+dotnet publish -c Release -p:PublishProfile=FolderProfile -o bin/Release/net10.0/publish
 ```
 
 This produces a **self-contained single file** for `linux-arm64`, so the Pi doesn't need .NET
@@ -145,7 +145,7 @@ installed. The web client is in `wwwroot`, and SQLite is bundled.
 
 ```powershell
 ssh pi@raspberrypi "rm -rf ~/ddx3216-new && mkdir ~/ddx3216-new"
-scp -r .\bin\Release\net8.0\publish\* pi@raspberrypi:~/ddx3216-new/
+scp -r .\bin\Release\net10.0\publish\* pi@raspberrypi:~/ddx3216-new/
 ```
 
 ```bash

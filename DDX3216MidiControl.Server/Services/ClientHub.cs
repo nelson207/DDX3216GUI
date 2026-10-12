@@ -214,11 +214,7 @@ namespace MidiInterface.Services
                 using var doc = JsonDocument.ParseValue(ref reader);
                 var root = doc.RootElement;
 
-                if (root.ValueKind == JsonValueKind.Array)
-                {
-                    changes = root.Deserialize<BehringerChange[]>(Json); // legacy bare array
-                }
-                else if (root.ValueKind == JsonValueKind.Object && root.TryGetProperty("type", out var type))
+                if (root.ValueKind == JsonValueKind.Object && root.TryGetProperty("type", out var type))
                 {
                     switch (type.GetString())
                     {

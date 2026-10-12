@@ -43,12 +43,6 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.changePasswordRequest,
       }),
     }),
-    getRoutes: build.query<GetRoutesApiResponse, GetRoutesApiArg>({
-      query: () => ({ url: `/_routes` }),
-    }),
-    getApiDebug: build.query<GetApiDebugApiResponse, GetApiDebugApiArg>({
-      query: () => ({ url: `/api/_debug` }),
-    }),
     getHealth: build.query<GetHealthApiResponse, GetHealthApiArg>({
       query: () => ({ url: `/health` }),
     }),
@@ -57,14 +51,6 @@ const injectedRtkApi = api.injectEndpoints({
       GetApiMidiDevicesApiArg
     >({
       query: () => ({ url: `/api/Midi/devices` }),
-    }),
-    getApiMidiStatusByModuleAndParamDefaultValue: build.query<
-      GetApiMidiStatusByModuleAndParamDefaultValueApiResponse,
-      GetApiMidiStatusByModuleAndParamDefaultValueApiArg
-    >({
-      query: (queryArg) => ({
-        url: `/api/Midi/status/${queryArg["module"]}/${queryArg.param}/${queryArg.defaultValue}`,
-      }),
     }),
     getApiMidiState: build.query<
       GetApiMidiStateApiResponse,
@@ -221,21 +207,10 @@ export type PostApiAuthPasswordApiResponse = unknown;
 export type PostApiAuthPasswordApiArg = {
   changePasswordRequest: ChangePasswordRequest;
 };
-export type GetRoutesApiResponse = /** status 200 OK */ string[];
-export type GetRoutesApiArg = void;
-export type GetApiDebugApiResponse = unknown;
-export type GetApiDebugApiArg = void;
 export type GetHealthApiResponse = unknown;
 export type GetHealthApiArg = void;
 export type GetApiMidiDevicesApiResponse = /** status 200 OK */ MidiDevices;
 export type GetApiMidiDevicesApiArg = void;
-export type GetApiMidiStatusByModuleAndParamDefaultValueApiResponse =
-  /** status 200 OK */ number;
-export type GetApiMidiStatusByModuleAndParamDefaultValueApiArg = {
-  module: number;
-  param: number;
-  defaultValue: number;
-};
 export type GetApiMidiStateApiResponse = /** status 200 OK */ BehringerChange[];
 export type GetApiMidiStateApiArg = void;
 export type PostApiMidiOutSelectByIndexApiResponse = unknown;
@@ -400,11 +375,8 @@ export const {
   usePostApiAuthLoginMutation,
   usePostApiAuthLogoutMutation,
   usePostApiAuthPasswordMutation,
-  useGetRoutesQuery,
-  useGetApiDebugQuery,
   useGetHealthQuery,
   useGetApiMidiDevicesQuery,
-  useGetApiMidiStatusByModuleAndParamDefaultValueQuery,
   useGetApiMidiStateQuery,
   usePostApiMidiOutSelectByIndexMutation,
   usePostApiMidiInSelectByIndexMutation,

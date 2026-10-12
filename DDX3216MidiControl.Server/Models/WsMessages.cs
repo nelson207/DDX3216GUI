@@ -3,7 +3,6 @@ namespace MidiInterface.Models
     /// <summary>
     /// WebSocket protocol (JSON, camelCase envelope):
     ///   client -> server: {type:"changes", changes:[{Module,Param,Value}]} | {type:"ping"}
-    ///                     (a bare [{Module,Param,Value}] array is still accepted)
     ///   server -> client: {type:"snapshot"|"changes", changes:[...]} | {type:"status", status:{...}}
     ///                     {type:"error", message} | {type:"pong"}
     /// </summary>

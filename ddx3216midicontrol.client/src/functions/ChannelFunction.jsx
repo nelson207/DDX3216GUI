@@ -21,7 +21,7 @@ export function buildFadersForView(activeView) {
   }
 
   // 2) Bus view: Bus 1..16 mapped to indices 32..47
-  if (activeView === "ch33_49" || activeView === "bus1_16") {
+  if (activeView === "bus1_16") {
     return [
       ...Array.from({ length: 16 }, (_, i) => item(`B ${i + 1}`, 32 + i)),
       item(`Main`, 64),
@@ -30,7 +30,7 @@ export function buildFadersForView(activeView) {
 
   // 3) “Higher” view: Aux + FX Send + FX Return
   // Adjust base indices if your protocol uses different ones.
-  if (activeView === "ch50_66" || activeView === "aux_fx") {
+  if (activeView === "aux_fx") {
     const auxBase = 48; // Aux 1..4 => 48..51
     const fxSendBase = 52; // Fx Send 1..4 => 52..55
     const fxReturnBase = 56; // Fx Return 1..4 => 56..64

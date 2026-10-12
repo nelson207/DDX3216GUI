@@ -130,8 +130,5 @@ namespace MidiInterface.Controllers
     {
         public static int GetUserId(this ClaimsPrincipal user) =>
             int.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0;
-
-        public static bool CanOperate(this ClaimsPrincipal user) =>
-            Roles.CanOperate(user.FindFirstValue(ClaimTypes.Role));
     }
 }

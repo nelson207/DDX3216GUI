@@ -12,8 +12,6 @@ namespace MidiInterface.Services
         private readonly ConcurrentDictionary<ModuleParamKey, double> _values = new();
         private readonly ConcurrentDictionary<ModuleParamKey, byte> _dirty = new();
 
-        public void Set(BehringerChange change) => SetMany([change]);
-
         public void SetMany(IEnumerable<BehringerChange> changes)
         {
             foreach (var c in changes)
@@ -29,9 +27,6 @@ namespace MidiInterface.Services
         {
             foreach (var kv in values) _values[kv.Key] = kv.Value;
         }
-
-        public bool TryGet(int module, int param, out double value)
-            => _values.TryGetValue(new ModuleParamKey(module, param), out value);
 
         public IReadOnlyDictionary<ModuleParamKey, double> Snapshot()
             => new Dictionary<ModuleParamKey, double>(_values);

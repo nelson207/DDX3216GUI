@@ -148,7 +148,7 @@ export default function ParamControl({ def, channelid, processorid, label, size 
   return null;
 }
 
-export function Segmented({ id, label, options, value, onChange }) {
+function Segmented({ id, label, options, value, onChange }) {
   return (
     <div className="pc-field">
       {label && (

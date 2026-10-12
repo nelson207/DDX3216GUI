@@ -42,11 +42,6 @@ function startPing(ws) {
 }
 
 function handleMessage(dispatch, payload) {
-  // legacy servers send a bare array of changes
-  if (Array.isArray(payload)) {
-    dispatch(wsMessage(payload));
-    return;
-  }
   switch (payload?.type) {
     case "changes":
       dispatch(wsMessage(payload.changes));

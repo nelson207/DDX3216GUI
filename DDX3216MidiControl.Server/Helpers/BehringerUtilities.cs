@@ -39,11 +39,6 @@ namespace MidiInterface.Helpers
             return (hi & 0x7F) << 7 | lo & 0x7F;
         }
 
-        public static string ToHex(byte[] bytes)
-        {
-            return string.Join(" ", bytes.Select(b => b.ToString("X2")));
-        }
-
         public static byte[] BuildHeader(byte ic)
         {
             var result = new byte[1 + MFR_ID.Length + 2];
@@ -86,19 +81,12 @@ namespace MidiInterface.Helpers
         // One DDX parameter-change SysEx carries at most 23 changes
         public const int MaxChangesPerSysEx = 23;
 
-        // Splits any number of changes into as many SysEx messages as needed
-        public static IEnumerable<byte[]> SysExEncodeAll(IReadOnlyList<BehringerChange> changes, int midiChannel)
-        {
-            for (int i = 0; i < changes.Count; i += MaxChangesPerSysEx)
-                yield return SysExEncode(changes.Skip(i).Take(MaxChangesPerSysEx).ToArray(), midiChannel);
-        }
-
         public static byte[] SysExEncode(BehringerChange[] changes, int midiChannel)
         {
             if (changes != null && changes.Length > 0)
             {
                 if (changes.Length > MaxChangesPerSysEx)
-                    throw new ArgumentException($"At most {MaxChangesPerSysEx} changes per SysEx; use SysExEncodeAll");
+                    throw new ArgumentException($"At most {MaxChangesPerSysEx} changes per SysEx");
 
                 if (changes.Any(c => !c.IsValid()))
                     throw new ArgumentOutOfRangeException(nameof(changes), "Module/param must be 0..127 and value 0..16383");

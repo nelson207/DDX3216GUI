@@ -3,8 +3,8 @@ import { clamp } from "./ChannelFunction";
 // DDX3216 fader raw value: 0..1472, linear in dB (raw / 16 - 80) => -80..+12 dB
 export const RAW_MIN = 0;
 export const RAW_MAX = 1472;
-export const DB_MIN = -80;
-export const DB_MAX = 12;
+const DB_MIN = -80;
+const DB_MAX = 12;
 export const RAW_UNITY = (0 - DB_MIN) * 16; // 0 dB = 1280
 
 // Console-style taper: dB -> fader position (0 = bottom, 1 = top).
@@ -46,7 +46,7 @@ export function dbToPos(db) {
   return 1;
 }
 
-export function posToDb(pos) {
+function posToDb(pos) {
   pos = clamp(pos, 0, 1);
   for (let i = 0; i < TAPER.length - 1; i++) {
     const [d0, p0] = TAPER[i];
@@ -64,10 +64,4 @@ export function formatDb(raw) {
   if (raw <= RAW_MIN) return "-∞";
   const db = rawToDb(raw);
   return `${db > 0 ? "+" : ""}${db.toFixed(1)}`;
-}
-
-export function parseDb(db) {
-  if (typeof db === "number") return db;
-  if (typeof db !== "string") return NaN;
-  return parseFloat(db.trim().replace(",", "."));
 }

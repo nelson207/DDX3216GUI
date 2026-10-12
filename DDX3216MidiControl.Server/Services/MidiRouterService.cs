@@ -57,7 +57,6 @@ namespace MidiInterface.Services
             lock (_io) _ports = Enumerate();
         }
 
-        public bool Available => _seq != null;
         public int Channel => _channel;
         public bool HasOutput => _outOpen;
 

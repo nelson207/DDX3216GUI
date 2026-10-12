@@ -73,3 +73,5 @@ desktop.ini
 # Claude Code (personal settings)
 # ------------------------------------------------------------
 .claude/settings.local.json
+SystemDocumentation.md
+*.docx

@@ -1,11 +1,12 @@
 # See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-# The MIDI backend talks to the ALSA sequencer (libasound2). Run the container with access to the MIDI devices:
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+# The MIDI backend talks to the ALSA sequencer (libasound). The .NET 10 images are Ubuntu 24.04 based,
+# where the package is libasound2t64. Run the container with access to the MIDI devices:
 #   docker run --device /dev/snd --group-add audio -p 8080:8080 -v ddx-data:/app/App_Data <image>
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libasound2 \
+    && apt-get install -y --no-install-recommends libasound2t64 \
     && rm -rf /var/lib/apt/lists/*
 USER $APP_UID
 WORKDIR /app
@@ -13,7 +14,7 @@ EXPOSE 8080
 
 
 # This stage is used to build the service project
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS with-node
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS with-node
 RUN apt-get update && apt-get install -y curl
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
 RUN apt-get -y install nodejs

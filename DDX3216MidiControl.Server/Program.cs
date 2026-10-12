@@ -125,10 +125,6 @@ app.UseRateLimiter();
 // Protocol-level pings keep NAT/Wi-Fi mappings alive; app-level ping/pong (ClientHub) detects dead peers
 app.UseWebSockets(new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(15) });
 
-app.MapGet("/_routes", (IEnumerable<EndpointDataSource> sources) =>
-    sources.SelectMany(s => s.Endpoints).Select(e => e.DisplayName));
-app.MapGet("/api/_debug", () => Results.Text("API OK FROM PI", "text/plain"));
-
 app.MapGet("/health", (MidiRouterService router, ClientHub hub, MidiOutputQueue midiOut, SceneService scenes) =>
 {
     var status = router.GetStatus();

@@ -1174,10 +1174,6 @@
   stroke: #3d434a;
   stroke-dasharray: 4 4;
 }
-.proc-graph .grid-label {
-  fill: var(--mx-text-dim);
-  font-size: 11px;
-}
 .proc-graph .curve {
   fill: none;
   stroke: var(--mx-accent);

@@ -3,7 +3,8 @@ import { MidiApi } from "./MidiApi";
 
 const invalidates = (...tags) => ({ invalidatesTags: tags });
 
-export const MidiApiTagged = MidiApi.enhanceEndpoints({
+// side effect only: adds cache tags to the generated endpoints
+MidiApi.enhanceEndpoints({
   endpoints: {
     // auth
     getApiAuthState: { providesTags: ["Auth"] },

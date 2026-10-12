@@ -25,15 +25,6 @@ namespace MidiInterface.Controllers
         [HttpGet("devices")]
         public ActionResult<MidiDevices> GetDevices() => Ok(_router.GetStatus());
 
-        /// <summary>Last known value of one parameter, or <paramref name="defaultValue"/> when unknown.</summary>
-        [HttpGet("status/{module:int}/{param:int}/{defaultValue:int}")]
-        public ActionResult<double> GetModuleStatus([FromRoute] int module, [FromRoute] int param, [FromRoute] int defaultValue)
-        {
-            if (_stateStore.TryGet(module, param, out double value))
-                return Ok(value);
-            return Ok(defaultValue);
-        }
-
         /// <summary>Every known parameter value (same data the WebSocket "snapshot" carries).</summary>
         [HttpGet("state")]
         public ActionResult<IEnumerable<BehringerChange>> GetState() =>

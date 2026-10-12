@@ -32,7 +32,7 @@ function C({ k, ch, label, size }) {
 }
 
 /** Card with a title and an optional on/off switch in the header */
-export function Module({ title, ch, onKey, className = "", children, extra }) {
+function Module({ title, ch, onKey, className = "", children, extra }) {
   return (
     <section className={`module ${className}`}>
       <header className="module-head">

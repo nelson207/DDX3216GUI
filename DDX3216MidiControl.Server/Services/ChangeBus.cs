@@ -11,7 +11,9 @@ namespace MidiInterface.Services
         Midi,
     }
 
-    public record ChangeBatch(BehringerChange[] Changes, ChangeSource Source, Guid? OriginClient);
+    /// <param name="Link">Apply stereo-pair linking (false for batches that already contain both
+    /// channels explicitly, e.g. a scene recall or the copy made when pairing).</param>
+    public record ChangeBatch(BehringerChange[] Changes, ChangeSource Source, Guid? OriginClient, bool Link = true);
 
     /// <summary>
     /// Single ordered queue for every parameter change. Producers (WebSocket receive loops,
@@ -25,7 +27,7 @@ namespace MidiInterface.Services
 
         public ChannelReader<ChangeBatch> Reader => _channel.Reader;
 
-        public bool Publish(BehringerChange[] changes, ChangeSource source, Guid? originClient = null)
-            => changes.Length > 0 && _channel.Writer.TryWrite(new ChangeBatch(changes, source, originClient));
+        public bool Publish(BehringerChange[] changes, ChangeSource source, Guid? originClient = null, bool link = true)
+            => changes.Length > 0 && _channel.Writer.TryWrite(new ChangeBatch(changes, source, originClient, link));
     }
 }

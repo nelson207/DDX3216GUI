@@ -187,7 +187,7 @@ function NewSceneForm({ activeId, notice }) {
       />
       <label className="scene-check">
         <input type="checkbox" checked={copyNames} onChange={(e) => setCopyNames(e.target.checked)} />
-        Copy fader names from the active scene
+        Copy fader names and stereo pairs from the active scene
       </label>
       <label className="scene-check">
         <input type="checkbox" checked={captureMixer} onChange={(e) => setCaptureMixer(e.target.checked)} />

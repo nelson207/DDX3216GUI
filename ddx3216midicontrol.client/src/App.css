@@ -2077,3 +2077,66 @@ button.strip-name:focus-visible {
     padding: 0 10px;
   }
 }
+
+/* ------------------------------------------------------------
+   Stereo pairs
+------------------------------------------------------------ */
+.pair-badge {
+  display: inline-block;
+  min-width: 15px;
+  margin-right: 4px;
+  padding: 0 3px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 15px;
+  text-align: center;
+  vertical-align: 1px;
+}
+/* a pair reads as one wide strip: joined edges and a shared top line */
+.strip-paired {
+  box-shadow: inset 0 3px 0 var(--mx-accent);
+}
+.strip-paired-L {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right-color: transparent;
+}
+.strip-paired-R {
+  margin-left: -2px; /* close the gap between the strips */
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left-color: transparent;
+}
+.pair-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 4px;
+  border-top: 1px solid var(--mx-strip-edge);
+}
+.pair-section .pc-toggle {
+  align-self: flex-start;
+}
+.pair-help {
+  margin: 0;
+  font-size: 12px;
+  color: var(--mx-text-dim);
+}
+.pair-note {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  color: var(--mx-text);
+  background: rgba(245, 166, 35, 0.12);
+  border-bottom: 1px solid rgba(245, 166, 35, 0.4);
+}
+.pair-note .pair-badge {
+  background: var(--mx-accent);
+  color: #111;
+}

@@ -28,6 +28,7 @@ MidiApi.enhanceEndpoints({
     postApiScenesByIdCapture: invalidates("Scenes"),
     postApiScenesByIdActivate: invalidates("Scenes"),
     putApiScenesByIdLabelsAndModule: invalidates("Scenes"),
+    putApiScenesByIdPairsAndModule: invalidates("Scenes"),
 
     // users
     getApiUsers: { providesTags: ["Users"] },

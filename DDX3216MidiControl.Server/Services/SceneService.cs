@@ -24,7 +24,9 @@ namespace MidiInterface.Services
         private readonly ILogger<SceneService> _logger;
         private readonly SemaphoreSlim _gate = new(1, 1); // serialises writes that affect the active scene
 
-        private volatile ActiveSceneDto _active = new(0, DefaultSceneName, []);
+        private volatile ActiveSceneDto _active = new(0, DefaultSceneName, [], []);
+        // odd-channel modules of the active scene's stereo pairs (read by the dispatcher for every batch)
+        private volatile IReadOnlySet<int> _activePairs = new HashSet<int>();
 
         /// <summary>Raised after the active scene or its labels change.</summary>
         public event Action<ActiveSceneDto>? ActiveSceneChanged;
@@ -41,6 +43,9 @@ namespace MidiInterface.Services
         }
 
         public ActiveSceneDto Active => _active;
+
+        /// <summary>Stereo pairs of the active scene, as odd-channel modules (0, 2 … 30).</summary>
+        public IReadOnlySet<int> ActivePairs => _activePairs;
 
         /// <summary>Makes sure a scene exists and is active, then caches it.</summary>
         public async Task InitializeAsync(CancellationToken ct = default)
@@ -64,7 +69,7 @@ namespace MidiInterface.Services
                 state.ActiveSceneId = scene.Id;
             }
             await db.SaveChangesAsync(ct);
-            _active = await LoadActiveAsync(db, state.ActiveSceneId!.Value, ct);
+            SetActive(await LoadActiveAsync(db, state.ActiveSceneId!.Value, ct));
         }
 
         public async Task<List<SceneSummaryDto>> ListAsync(CancellationToken ct = default)
@@ -89,8 +94,12 @@ namespace MidiInterface.Services
             var scene = new Scene { Name = name, UpdatedByUserId = userId };
             if (request.CopyLabelsFromSceneId is int from)
             {
+                // the channel setup travels together: fader names and stereo pairs
                 scene.Labels = await db.SceneLabels.AsNoTracking().Where(l => l.SceneId == from)
                     .Select(l => new SceneLabel { Module = l.Module, Name = l.Name, Color = l.Color })
+                    .ToListAsync(ct);
+                scene.Pairs = await db.SceneChannelPairs.AsNoTracking().Where(p => p.SceneId == from)
+                    .Select(p => new SceneChannelPair { Module = p.Module })
                     .ToListAsync(ct);
             }
             if (request.CaptureParameters)
@@ -205,8 +214,9 @@ namespace MidiInterface.Services
                 await db.SaveChangesAsync(ct);
                 await RefreshActiveAsync(db, ct);
 
-                // through the normal pipeline: state store, paced MIDI OUT, broadcast to every client
-                if (changes.Length > 0) _bus.Publish(changes, ChangeSource.Client);
+                // through the normal pipeline: state store, paced MIDI OUT, broadcast to every client.
+                // The snapshot already holds both channels of every pair: no linking.
+                if (changes.Length > 0) _bus.Publish(changes, ChangeSource.Client, link: false);
 
                 _logger.LogInformation("Scene {Name} activated ({Mode}, {Count} parameters sent)", _active.Name, recall ? "all" : "labels", changes.Length);
                 return new ActivateSceneResult(changes.Length, EstimateSeconds(changes.Length));
@@ -257,6 +267,74 @@ namespace MidiInterface.Services
             }
         }
 
+        /// <summary>
+        /// Pairs (or unpairs) an input channel with its neighbour (C1+C2, C3+C4 …) in a scene.
+        /// Pairing in the active scene copies the odd channel's settings to the even one and pans
+        /// them hard left (odd) / hard right (even); from then on the dispatcher keeps them linked.
+        /// </summary>
+        public async Task<SetPairResult> SetPairAsync(int sceneId, int module, bool paired, int? userId, CancellationToken ct = default)
+        {
+            if (!ChannelPairs.IsChannel(module)) throw new ArgumentException("Only input channels 1-32 can be paired.");
+            int odd = ChannelPairs.OddOf(module);
+
+            await _gate.WaitAsync(ct);
+            try
+            {
+                await using var db = await _db.CreateDbContextAsync(ct);
+                var scene = await db.Scenes.FindAsync([sceneId], ct) ?? throw new KeyNotFoundException("Scene not found.");
+                var existing = await db.SceneChannelPairs.FindAsync([sceneId, odd], ct);
+                if (paired == (existing != null)) return new SetPairResult(odd, paired, 0, null); // already so
+
+                if (paired) db.SceneChannelPairs.Add(new SceneChannelPair { SceneId = sceneId, Module = odd });
+                else db.SceneChannelPairs.Remove(existing!);
+                Touch(scene, userId);
+                await db.SaveChangesAsync(ct);
+
+                int copied = 0;
+                string? note = null;
+                if (sceneId == _active.Id)
+                {
+                    if (paired)
+                    {
+                        if (_router.HasOutput)
+                        {
+                            var changes = BuildPairCopy(odd);
+                            _bus.Publish(changes, ChangeSource.Client, link: false);
+                            copied = changes.Length;
+                        }
+                        else
+                        {
+                            note = "No MIDI output is open: settings were not copied to the second channel.";
+                        }
+                    }
+                    await RefreshActiveAsync(db, ct);
+                }
+                _logger.LogInformation("Scene {Scene}: channels {A}+{B} {Action} ({Copied} values copied)",
+                    scene.Name, odd + 1, odd + 2, paired ? "paired" : "unpaired", copied);
+                return new SetPairResult(odd, paired, copied, note);
+            }
+            finally
+            {
+                _gate.Release();
+            }
+        }
+
+        /// <summary>Odd → even copy of every known setting, then pan / bus pan hard left (odd) and right (even).</summary>
+        private BehringerChange[] BuildPairCopy(int odd)
+        {
+            int even = ChannelPairs.PartnerOf(odd);
+            var changes = _state.Snapshot()
+                .Where(kv => kv.Key.Module == odd && !ChannelPairs.IsMirrored(kv.Key.Param))
+                .Select(kv => new BehringerChange(even, kv.Key.Param, kv.Value))
+                .ToList();
+            foreach (var param in new[] { ChannelPairs.PanParam, ChannelPairs.BusPanParam })
+            {
+                changes.Add(new BehringerChange(odd, param, ChannelPairs.PanHardLeft));
+                changes.Add(new BehringerChange(even, param, ChannelPairs.PanHardRight));
+            }
+            return changes.ToArray();
+        }
+
         // ---------------- helpers ----------------
 
         private List<SceneParameter> SnapshotParameters() =>
@@ -273,7 +351,7 @@ namespace MidiInterface.Services
         private async Task RefreshActiveAsync(AppDbContext db, CancellationToken ct)
         {
             var state = await db.AppState.AsNoTracking().FirstAsync(ct);
-            _active = await LoadActiveAsync(db, state.ActiveSceneId!.Value, ct);
+            SetActive(await LoadActiveAsync(db, state.ActiveSceneId!.Value, ct));
             try { ActiveSceneChanged?.Invoke(_active); }
             catch (Exception ex) { _logger.LogWarning(ex, "ActiveSceneChanged handler failed"); }
         }
@@ -283,7 +361,15 @@ namespace MidiInterface.Services
             var scene = await db.Scenes.AsNoTracking().FirstAsync(s => s.Id == id, ct);
             var labels = await db.SceneLabels.AsNoTracking().Where(l => l.SceneId == id).OrderBy(l => l.Module)
                 .Select(l => new SceneLabelDto(l.Module, l.Name, l.Color)).ToListAsync(ct);
-            return new ActiveSceneDto(scene.Id, scene.Name, labels);
+            var pairs = await db.SceneChannelPairs.AsNoTracking().Where(p => p.SceneId == id).OrderBy(p => p.Module)
+                .Select(p => p.Module).ToListAsync(ct);
+            return new ActiveSceneDto(scene.Id, scene.Name, labels, pairs);
+        }
+
+        private void SetActive(ActiveSceneDto scene)
+        {
+            _activePairs = new HashSet<int>(scene.Pairs);
+            _active = scene;
         }
 
         private static void Touch(Scene scene, int? userId)

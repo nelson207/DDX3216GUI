@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { usePutApiScenesByIdLabelsAndModuleMutation } from "../../router/apis/MidiApi";
+import {
+  usePutApiScenesByIdLabelsAndModuleMutation,
+  usePutApiScenesByIdPairsAndModuleMutation,
+} from "../../router/apis/MidiApi";
+import { isPairable, oddOf, usePair } from "../../router/usePair";
 import { apiErrorText } from "../../functions/ApiErrors";
 
 const COLORS = ["#3d8bfd", "#f08c00", "#2fb344", "#ae3ec9", "#e5383b", "#f5c400", "#20c997", "#868e96"];
@@ -79,6 +83,7 @@ export default function FaderNameDialog({ module, defaultName, onClose }) {
             />
           ))}
         </div>
+        {isPairable(module) && <PairSection module={module} sceneId={scene?.id} />}
         {saveState.error && <div className="midi-note midi-note-error">{apiErrorText(saveState.error)}</div>}
         <div className="dialog-actions">
           <button type="button" className="scene-btn" onClick={() => submit({ name: "", color: null })} disabled={saveState.isLoading || !current}>
@@ -93,6 +98,49 @@ export default function FaderNameDialog({ module, defaultName, onClose }) {
           </button>
         </div>
       </form>
+    </div>
+  );
+}
+
+/** Stereo pairing of an input channel with its neighbour (C1+C2, C3+C4 …) in the active scene. */
+function PairSection({ module, sceneId }) {
+  const pair = usePair(module);
+  const [setPair, state] = usePutApiScenesByIdPairsAndModuleMutation();
+  const [note, setNote] = useState(null);
+  const odd = oddOf(module);
+  const names = `C ${odd + 1} + C ${odd + 2}`;
+
+  const toggle = async () => {
+    setNote(null);
+    const res = await setPair({ id: sceneId, module, setPairRequest: { paired: !pair } });
+    if (res.error) setNote({ ok: false, text: apiErrorText(res.error) });
+    else if (res.data.note) setNote({ ok: false, text: res.data.note });
+    else if (res.data.paired) setNote({ ok: true, text: `Paired: C ${odd + 1} left, C ${odd + 2} right; settings copied.` });
+    else setNote({ ok: true, text: "Unpaired: the channels are independent again." });
+  };
+
+  return (
+    <div className="pair-section">
+      <button
+        type="button"
+        className={`pc-toggle${pair ? " on" : ""}`}
+        aria-pressed={Boolean(pair)}
+        disabled={!sceneId || state.isLoading}
+        onClick={toggle}
+      >
+        <span className="pc-toggle-led" aria-hidden="true" />
+        Stereo pair {names}
+      </button>
+      <p className="pair-help">
+        {pair
+          ? "Every change on one channel also applies to the other; pan is mirrored (left/right)."
+          : `Links ${names} as left/right: C ${odd + 2} takes the settings of C ${odd + 1}, then every change applies to both.`}
+      </p>
+      {note && (
+        <div className={`midi-note ${note.ok ? "scene-note-ok" : "midi-note-error"}`} role="status">
+          {note.text}
+        </div>
+      )}
     </div>
   );
 }

@@ -2,8 +2,8 @@ namespace MidiInterface.Models
 {
     public record SceneLabelDto(int Module, string Name, string? Color);
 
-    /// <summary>The scene everyone is on: its fader names.</summary>
-    public record ActiveSceneDto(int Id, string Name, IReadOnlyList<SceneLabelDto> Labels);
+    /// <summary>The scene everyone is on: its fader names and stereo pairs (odd channel modules).</summary>
+    public record ActiveSceneDto(int Id, string Name, IReadOnlyList<SceneLabelDto> Labels, IReadOnlyList<int> Pairs);
 
     public record SceneSummaryDto(
         int Id,
@@ -27,6 +27,12 @@ namespace MidiInterface.Models
     }
 
     public record SetLabelRequest(string? Name, string? Color);
+
+    /// <summary>Pair (true) or unpair (false) an input channel with its neighbour.</summary>
+    public record SetPairRequest(bool Paired);
+
+    /// <summary>ValuesCopied: settings copied odd → even on pairing (0 when not active or no MIDI output).</summary>
+    public record SetPairResult(int OddModule, bool Paired, int ValuesCopied, string? Note);
 
     public record ActivateSceneResult(int ParametersSent, double EstimatedSeconds);
     public record CaptureSceneResult(int ParametersCaptured);

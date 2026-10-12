@@ -29,6 +29,9 @@ The project builds on the reverse-engineering and documentation work in
   small screens.
 - 🏷 **Fader names and colours**: tap a strip name to rename it. The change appears live on every
   device.
+- 🎧 **Stereo pairs**: link an odd channel with the next one (C1+C2, C3+C4 …). The odd channel
+  becomes left and the even one right; every change on one applies to both, pan is mirrored.
+  Pairing copies the odd channel's settings to the even one. Pairs are saved per scene.
 
 ### Processing and FX
 
@@ -41,7 +44,7 @@ The project builds on the reverse-engineering and documentation work in
 
 ### Scenes and users
 
-- 🎬 **Scenes**: one active scene for everyone. A scene holds the fader names and, optionally, a
+- 🎬 **Scenes**: one active scene for everyone. A scene holds the fader names, stereo pairs and, optionally, a
   snapshot of the mixer values. Load **names only**, or **names + mixer**, which sends the saved
   values to the console.
 - 👤 **Users and roles**: **Admin** (everything, including users), **Operator** (mixer, MIDI,
@@ -60,7 +63,10 @@ The project builds on the reverse-engineering and documentation work in
   <img src="./screenshots/fx.png" alt="FX slot with knobs" width="49%">
 </p>
 <p>
+  <img src="./screenshots/stereo-pair.png" alt="Stereo pair: Guitar L/R on C 7 + C 8" width="49%">
   <img src="./screenshots/scenes.png" alt="Scenes panel" width="49%">
+</p>
+<p>
   <img src="./screenshots/mobile-view-menu.png" alt="Phone: view menu" width="24%">
 </p>
 
@@ -216,6 +222,7 @@ location / {
 | `Midi:FilterIncomingChannel` | `true` | Ignore SysEx for other MIDI channels/devices |
 | `Midi:MaxBytesPerSecond` | `3000` | MIDI output pacing (DIN ≈ 3125 B/s) |
 | `Midi:PollSeconds` | `10` | Fallback port check (hot-plug is event-driven) |
+| `Midi:VirtualOutput` | `false` | Development only: without ALSA (e.g. Windows), accept and discard changes so the app can be tried without a mixer |
 | `WebSocket:CheckOrigin` | `true` | Only accept pages served by this host |
 | `WebSocket:AllowedOrigins` | `[]` | Extra allowed origins |
 | `WebSocket:IdleTimeoutSeconds` | `30` | Drop clients that stop answering pings |

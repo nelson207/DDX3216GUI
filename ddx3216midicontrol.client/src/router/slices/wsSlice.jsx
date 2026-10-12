@@ -7,7 +7,8 @@ const initialState = {
   error: null, // last error (connection or reported by the server)
   // latest known value per "module:param" (server snapshot, websocket or local changes)
   values: {},
-  // active scene (same for everyone): { id, name, labels: { [module]: { name, color } } }
+  // active scene (same for everyone):
+  //   { id, name, labels: { [module]: { name, color } }, pairs: { [oddChannelModule]: true } }
   scene: null,
 };
 
@@ -52,7 +53,9 @@ const wsSlice = createSlice({
       if (!s) return;
       const labels = {};
       for (const l of s.labels ?? []) labels[l.module] = { name: l.name, color: l.color ?? null };
-      state.scene = { id: s.id, name: s.name, labels };
+      const pairs = {};
+      for (const odd of s.pairs ?? []) pairs[odd] = true;
+      state.scene = { id: s.id, name: s.name, labels, pairs };
     },
     // logout: forget everything that belonged to the session
     wsReset() {

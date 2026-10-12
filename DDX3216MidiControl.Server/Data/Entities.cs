@@ -38,6 +38,7 @@ namespace MidiInterface.Data
 
         public List<SceneLabel> Labels { get; set; } = new();
         public List<SceneParameter> Parameters { get; set; } = new();
+        public List<SceneChannelPair> Pairs { get; set; } = new();
     }
 
     /// <summary>Custom name (and colour) of one module (channel/bus/aux/fx/main) in a scene.</summary>
@@ -55,6 +56,16 @@ namespace MidiInterface.Data
         public int Module { get; set; }
         public int Param { get; set; }
         public double Value { get; set; }
+    }
+
+    /// <summary>
+    /// Stereo pair in a scene: input channel <see cref="Module"/> (odd channel: module 0, 2 … 30)
+    /// is linked with the next one. See Models/ChannelPairs.
+    /// </summary>
+    public class SceneChannelPair
+    {
+        public int SceneId { get; set; }
+        public int Module { get; set; }
     }
 
     /// <summary>Last known mixer values, persisted so they survive server restarts.</summary>

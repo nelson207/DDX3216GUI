@@ -158,6 +158,16 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.setLabelRequest,
       }),
     }),
+    putApiScenesByIdPairsAndModule: build.mutation<
+      PutApiScenesByIdPairsAndModuleApiResponse,
+      PutApiScenesByIdPairsAndModuleApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/Scenes/${queryArg.id}/pairs/${queryArg["module"]}`,
+        method: "PUT",
+        body: queryArg.setPairRequest,
+      }),
+    }),
     getApiUsers: build.query<GetApiUsersApiResponse, GetApiUsersApiArg>({
       query: () => ({ url: `/api/Users` }),
     }),
@@ -261,6 +271,13 @@ export type PutApiScenesByIdLabelsAndModuleApiArg = {
   module: number;
   setLabelRequest: SetLabelRequest;
 };
+export type PutApiScenesByIdPairsAndModuleApiResponse =
+  /** status 200 OK */ SetPairResult;
+export type PutApiScenesByIdPairsAndModuleApiArg = {
+  id: number;
+  module: number;
+  setPairRequest: SetPairRequest;
+};
 export type GetApiUsersApiResponse = /** status 200 OK */ UserDto[];
 export type GetApiUsersApiArg = void;
 export type PostApiUsersApiResponse = /** status 200 OK */ UserDto;
@@ -336,6 +353,7 @@ export type ActiveSceneDto = {
   id?: number;
   name?: string | null;
   labels?: SceneLabelDto[] | null;
+  pairs?: number[] | null;
 };
 export type RenameSceneRequest = {
   name?: string | null;
@@ -353,6 +371,15 @@ export type ActivateSceneRequest = {
 export type SetLabelRequest = {
   name?: string | null;
   color?: string | null;
+};
+export type SetPairResult = {
+  oddModule?: number;
+  paired?: boolean;
+  valuesCopied?: number;
+  note?: string | null;
+};
+export type SetPairRequest = {
+  paired?: boolean;
 };
 export type UserDto = {
   id?: number;
@@ -390,6 +417,7 @@ export const {
   usePostApiScenesByIdCaptureMutation,
   usePostApiScenesByIdActivateMutation,
   usePutApiScenesByIdLabelsAndModuleMutation,
+  usePutApiScenesByIdPairsAndModuleMutation,
   useGetApiUsersQuery,
   usePostApiUsersMutation,
   usePutApiUsersByIdMutation,

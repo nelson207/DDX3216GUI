@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { PARAM_DEFS } from "../../domain/ddxParamDefinition";
 import { useCurrentUser } from "../../router/useAuth";
+import { usePair } from "../../router/usePair";
 import FaderNameDialog from "../mixer/FaderNameDialog";
 import { DDX_VIEW_RANGES } from "../../domain/ddxViewRanges";
 import { buildFadersForView } from "../../functions/ChannelFunction";
@@ -30,11 +31,20 @@ function Strip({ label: defaultLabel, channelid, view, onRename }) {
   const common = { channelid, channellabel: label };
   const nameStyle = custom?.color ? { background: custom.color } : undefined;
   const isMain = channelid === MAIN_CHANNEL_ID;
-  const title = custom?.name ? `${custom.name} (${defaultLabel})` : defaultLabel;
+  const pair = usePair(channelid);
+  const baseTitle = custom?.name ? `${custom.name} (${defaultLabel})` : defaultLabel;
+  const title = pair
+    ? `${baseTitle} · stereo pair ${pair.side === "L" ? "left" : "right"} with C ${pair.partner + 1}`
+    : baseTitle;
+  const badge = pair && (
+    <span className="pair-badge" aria-label={pair.side === "L" ? "left" : "right"}>
+      {pair.side}
+    </span>
+  );
   return (
     <div
       id={`f_${channelid}`}
-      className={`strip strip-${stripKind(channelid)}`}
+      className={`strip strip-${stripKind(channelid)}${pair ? ` strip-paired strip-paired-${pair.side}` : ""}`}
     >
       {onRename ? (
         <button
@@ -44,10 +54,12 @@ function Strip({ label: defaultLabel, channelid, view, onRename }) {
           title={`${title} · tap to rename`}
           onClick={() => onRename(channelid, defaultLabel)}
         >
+          {badge}
           {label}
         </button>
       ) : (
         <div className="strip-name" style={nameStyle} title={title}>
+          {badge}
           {label}
         </div>
       )}

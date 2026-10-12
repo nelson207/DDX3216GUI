@@ -8,6 +8,7 @@ import {
   SendsPage,
 } from "./proc/ProcPages";
 import { MAIN_PROCESSORS } from "../../domain/ddxParamDefinition.Master";
+import { usePair } from "../../router/usePair";
 
 const MAIN_CHANNEL_ID = 64;
 // selectable channels: 1..32 + Main
@@ -50,6 +51,7 @@ function ProcPanel({ selectedChannel, onSelectChannel, selectedProcessor, onSele
   const idx = CHANNELS.indexOf(selectedChannel);
   const step = (d) => onSelectChannel(CHANNELS[(idx + d + CHANNELS.length) % CHANNELS.length]);
   const isMain = selectedChannel === "Main";
+  const pair = usePair(ch);
   // Main only has EQ and compressor (DDX3216 SysEx documentation)
   const processors = isMain ? PROCESSORS.filter((p) => MAIN_PROCESSORS.includes(p.key)) : PROCESSORS;
   const processor = processors.some((p) => p.key === selectedProcessor) ? selectedProcessor : processors[0].key;
@@ -102,6 +104,12 @@ function ProcPanel({ selectedChannel, onSelectChannel, selectedProcessor, onSele
         </div>
       </div>
 
+      {pair && (
+        <div className="pair-note" role="note">
+          <span className="pair-badge">{pair.side}</span>
+          Stereo pair with CH {pair.partner + 1}: every change applies to both channels (pan is mirrored).
+        </div>
+      )}
       <div className="proc-content" role="tabpanel">
         {/* key: remount per channel so held-control state never leaks between channels */}
         <ProcessorPage key={`${ch}_${processor}`} processor={processor} ch={ch} />

@@ -55,6 +55,16 @@ namespace MidiInterface.Controllers
         public Task<ActionResult<object>> SetLabel([FromRoute] int id, [FromRoute] int module, [FromBody] SetLabelRequest request, CancellationToken ct) =>
             Run<object>(async () => { await _scenes.SetLabelAsync(id, module, request, User.GetUserId(), ct); return new { id, module }; });
 
+        /// <summary>
+        /// Stereo-pairs (or unpairs) input channel <paramref name="module"/> with its neighbour
+        /// (C1+C2, C3+C4 …; either channel of the pair can be given). Pairing the active scene copies the
+        /// odd channel's settings to the even one and pans them hard left / hard right.
+        /// </summary>
+        [HttpPut("{id:int}/pairs/{module:int}")]
+        [Authorize(Policy = Policies.CanOperate)]
+        public Task<ActionResult<SetPairResult>> SetPair([FromRoute] int id, [FromRoute] int module, [FromBody] SetPairRequest request, CancellationToken ct) =>
+            Run(() => _scenes.SetPairAsync(id, module, request.Paired, User.GetUserId(), ct));
+
         private async Task<ActionResult<T>> Run<T>(Func<Task<T>> action)
         {
             try

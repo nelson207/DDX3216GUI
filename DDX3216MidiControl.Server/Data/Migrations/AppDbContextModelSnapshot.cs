@@ -15,7 +15,7 @@ namespace DDX3216MidiControl.Server.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.12");
 
             modelBuilder.Entity("MidiInterface.Data.AppState", b =>
                 {
@@ -78,6 +78,19 @@ namespace DDX3216MidiControl.Server.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Scenes");
+                });
+
+            modelBuilder.Entity("MidiInterface.Data.SceneChannelPair", b =>
+                {
+                    b.Property<int>("SceneId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Module")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("SceneId", "Module");
+
+                    b.ToTable("SceneChannelPairs");
                 });
 
             modelBuilder.Entity("MidiInterface.Data.SceneLabel", b =>
@@ -166,6 +179,15 @@ namespace DDX3216MidiControl.Server.Data.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
                 });
 
+            modelBuilder.Entity("MidiInterface.Data.SceneChannelPair", b =>
+                {
+                    b.HasOne("MidiInterface.Data.Scene", null)
+                        .WithMany("Pairs")
+                        .HasForeignKey("SceneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MidiInterface.Data.SceneLabel", b =>
                 {
                     b.HasOne("MidiInterface.Data.Scene", null)
@@ -187,6 +209,8 @@ namespace DDX3216MidiControl.Server.Data.Migrations
             modelBuilder.Entity("MidiInterface.Data.Scene", b =>
                 {
                     b.Navigation("Labels");
+
+                    b.Navigation("Pairs");
 
                     b.Navigation("Parameters");
                 });

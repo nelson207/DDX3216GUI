@@ -10,6 +10,7 @@ namespace MidiInterface.Data
         public DbSet<Scene> Scenes => Set<Scene>();
         public DbSet<SceneLabel> SceneLabels => Set<SceneLabel>();
         public DbSet<SceneParameter> SceneParameters => Set<SceneParameter>();
+        public DbSet<SceneChannelPair> SceneChannelPairs => Set<SceneChannelPair>();
         public DbSet<LiveParameter> LiveParameters => Set<LiveParameter>();
         public DbSet<AppState> AppState => Set<AppState>();
 
@@ -29,6 +30,7 @@ namespace MidiInterface.Data
                 e.HasIndex(s => s.Name).IsUnique();
                 e.HasMany(s => s.Labels).WithOne().HasForeignKey(l => l.SceneId).OnDelete(DeleteBehavior.Cascade);
                 e.HasMany(s => s.Parameters).WithOne().HasForeignKey(p => p.SceneId).OnDelete(DeleteBehavior.Cascade);
+                e.HasMany(s => s.Pairs).WithOne().HasForeignKey(p => p.SceneId).OnDelete(DeleteBehavior.Cascade);
             });
 
             b.Entity<SceneLabel>(e =>
@@ -39,6 +41,7 @@ namespace MidiInterface.Data
             });
 
             b.Entity<SceneParameter>(e => e.HasKey(p => new { p.SceneId, p.Module, p.Param }));
+            b.Entity<SceneChannelPair>(e => e.HasKey(p => new { p.SceneId, p.Module }));
             b.Entity<LiveParameter>(e => e.HasKey(p => new { p.Module, p.Param }));
 
             b.Entity<AppState>(e =>

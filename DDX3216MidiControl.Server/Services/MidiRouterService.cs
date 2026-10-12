@@ -15,6 +15,7 @@ namespace MidiInterface.Services
     public sealed partial class MidiRouterService : IDisposable
     {
         private const string ClientName = "DDX3216 Remote";
+        private const string VirtualOutputName = "Virtual output (development, no MIDI)";
 
         private readonly object _io = new();
         private readonly ChangeBus _bus;
@@ -23,6 +24,8 @@ namespace MidiInterface.Services
         private readonly bool _filterIncoming;
         private readonly AlsaSequencer? _seq;
         private readonly Timer _portsChangedDebounce;
+        // development without ALSA (e.g. Windows): accept and discard output so the UI can be used
+        private readonly bool _virtualOutput;
 
         private volatile List<AlsaPort> _ports = new();
         private MidiSettings _desired;
@@ -48,7 +51,13 @@ namespace MidiInterface.Services
             _seq = AlsaSequencer.TryCreate(ClientName, logger, out var error);
             if (_seq == null)
             {
-                _logger.LogWarning("MIDI disabled: {Reason}. (Linux: install libasound2 and add the user to the 'audio' group.)", error);
+                _logger.LogWarning("MIDI disabled: {Reason}. (Linux: install libasound2 / libasound2t64 and add the user to the 'audio' group.)", error);
+                _virtualOutput = config.GetValue("Midi:VirtualOutput", false);
+                if (_virtualOutput)
+                {
+                    _outOpen = true;
+                    _logger.LogWarning("Midi:VirtualOutput is on: changes are accepted and discarded (development only)");
+                }
                 return;
             }
             _seq.SysExReceived += OnSysEx;
@@ -64,6 +73,11 @@ namespace MidiInterface.Services
 
         public MidiDevices GetStatus()
         {
+            if (_virtualOutput)
+            {
+                var virtualPort = new List<MidiDeviceInfoPortName> { new(0, VirtualOutputName) };
+                return new MidiDevices([], virtualPort, null, 0, _desired.Channel, null, VirtualOutputName, false, true);
+            }
             lock (_io)
             {
                 var ins = _ports.Where(p => p.IsInput).Select(ToDto).ToList();
@@ -221,6 +235,7 @@ namespace MidiInterface.Services
         /// <summary>Sends one SysEx message. Returns false when no output is connected or ALSA refused it.</summary>
         public bool Send(byte[] data)
         {
+            if (_virtualOutput) return data.Length > 0; // discarded on purpose (development)
             if (data.Length == 0 || !_outOpen || _seq == null) return false;
             lock (_io)
             {

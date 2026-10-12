@@ -19,6 +19,11 @@ const CATEGORIES = [
 ];
 const categoryOf = (type) => CATEGORIES.find((c) => c.types.includes(type))?.name;
 
+// The desk runs every algorithm on FX 1 and 2 only; FX 3 and 4 are limited to 15-26
+// (Delay … Ring Modulator), see the DDX3216 manual, table 5.1.
+const LIMITED_SLOT_MIN_TYPE = 15;
+const allowedOn = (slot, type) => slot <= 2 || type === 0 || type >= LIMITED_SLOT_MIN_TYPE;
+
 const sendModule = (n) => FX_SEND_BASE + n - 1;
 const returnModule = (n) => FX_RETURN_BASE + (n - 1) * 2;
 
@@ -53,7 +58,10 @@ function SlotTab({ n, active, onSelect }) {
   );
 }
 
-function FxPicker({ current, onPick, onCancel }) {
+function FxPicker({ slot, current, onPick, onCancel }) {
+  const categories = CATEGORIES.map((c) => ({ ...c, types: c.types.filter((t) => allowedOn(slot, t)) })).filter(
+    (c) => c.types.length > 0
+  );
   return (
     <div className="fx-picker">
       <div className="fx-picker-head">
@@ -62,7 +70,12 @@ function FxPicker({ current, onPick, onCancel }) {
           Cancel
         </button>
       </div>
-      {CATEGORIES.map((cat) => (
+      {slot > 2 && (
+        <p className="fx-picker-note">
+          FX {slot} runs effects 15–26 only. Reverbs, stereo effects and the pitch shifter need FX 1 or FX 2.
+        </p>
+      )}
+      {categories.map((cat) => (
         <div key={cat.name} className="fx-cat">
           <div className="fx-cat-name">{cat.name}</div>
           <div className="fx-cat-grid">
@@ -126,6 +139,7 @@ function FxSlot({ n }) {
       <div className="module-body">
         {picking ? (
           <FxPicker
+            slot={n}
             current={type}
             onCancel={() => setPicking(false)}
             onPick={(t) => {

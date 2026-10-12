@@ -1,4 +1,5 @@
 import { ParamKind } from "../ddxParamKind";
+import { fmtHz } from "./fxFormat";
 export const FX_ECHO = {
   type: 10,
   name: "Echo",
@@ -58,7 +59,7 @@ export const FX_ECHO = {
       format: (v) => {
         // 20 Hz – 10 kHz, log
         const hz = 20 * Math.pow(500, v / 144);
-        return `${hz.toFixed(1)} Hz`;
+        return fmtHz(hz);
       },
     },
     {
@@ -71,7 +72,7 @@ export const FX_ECHO = {
       format: (v) => {
         // 100 Hz – 20 kHz, log
         const hz = 100 * Math.pow(200, v / 122);
-        return `${hz.toFixed(1)} Hz`;
+        return fmtHz(hz);
       },
     },
     {

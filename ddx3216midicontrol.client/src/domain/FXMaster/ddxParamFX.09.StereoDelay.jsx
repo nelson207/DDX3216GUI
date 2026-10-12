@@ -1,4 +1,5 @@
 import { ParamKind } from "../ddxParamKind";
+import { fmtHz } from "./fxFormat";
 export const FX_STEREO_DELAY = {
   type: 9,
   name: "Stereo Delay",
@@ -50,7 +51,7 @@ export const FX_STEREO_DELAY = {
       format: (v) => {
         // 20 Hz – 10 kHz, logarithmic
         const hz = 20 * Math.pow(500, v / 144);
-        return `${hz.toFixed(1)} Hz`;
+        return fmtHz(hz);
       },
     },
     {
@@ -63,7 +64,7 @@ export const FX_STEREO_DELAY = {
       format: (v) => {
         // 100 Hz – 20 kHz, logarithmic
         const hz = 100 * Math.pow(200, v / 122);
-        return `${hz.toFixed(1)} Hz`;
+        return fmtHz(hz);
       },
     },
     // FX params 97–98 are unused for this algorithm

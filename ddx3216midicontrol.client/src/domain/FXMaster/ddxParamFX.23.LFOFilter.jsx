@@ -1,4 +1,5 @@
 import { ParamKind } from "../ddxParamKind";
+import { fmtHz } from "./fxFormat";
 export const FX_LFO_FILTER = {
   type: 23,
   name: "LFO Filter",
@@ -40,7 +41,7 @@ export const FX_LFO_FILTER = {
       format: (v) => {
         // 100 Hz – 10 kHz, log
         const hz = 100 * Math.pow(100, v / 100);
-        return `${hz.toFixed(1)} Hz`;
+        return fmtHz(hz);
       },
     },
     {

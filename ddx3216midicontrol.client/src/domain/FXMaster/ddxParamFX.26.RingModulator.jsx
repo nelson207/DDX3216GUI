@@ -1,4 +1,5 @@
 import { ParamKind } from "../ddxParamKind";
+import { fmtHz } from "./fxFormat";
 export const FX_RING_MODULATOR = {
   type: 26,
   name: "Ring Modulator",
@@ -40,10 +41,8 @@ export const FX_RING_MODULATOR = {
       defaultRaw: 0,
       format: (v) => {
         // 0.1 – 10 kHz, log
-        const hz = 0.1 * Math.pow(100000, v / 106);
-        return hz >= 1000
-          ? `${(hz / 1000).toFixed(2)} kHz`
-          : `${hz.toFixed(1)} Hz`;
+        const hz = 100 * Math.pow(100, v / 106);
+        return fmtHz(hz);
       },
     },
     {
@@ -55,10 +54,8 @@ export const FX_RING_MODULATOR = {
       defaultRaw: 121,
       format: (v) => {
         // 0.1 – 20 kHz, log
-        const hz = 0.1 * Math.pow(200000, v / 121);
-        return hz >= 1000
-          ? `${(hz / 1000).toFixed(2)} kHz`
-          : `${hz.toFixed(1)} Hz`;
+        const hz = 100 * Math.pow(200, v / 121);
+        return fmtHz(hz);
       },
     },
     {

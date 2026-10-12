@@ -25,8 +25,8 @@ export const FX_CHORUS = {
       defaultRaw: 0,
       format: (v) => {
         // 0.05 – 20 kHz, log (as shown in your page)
-        const khz = 0.05 * Math.pow(20 / 0.05, v / 94);
-        return `${khz.toFixed(3)} kHz`;
+        const hz = 0.05 * Math.pow(20 / 0.05, v / 94);
+        return `${hz.toFixed(hz < 1 ? 3 : 2)} Hz`;
       },
     },
     {

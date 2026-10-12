@@ -2290,3 +2290,9 @@ button.strip-name:focus-visible {
     transition: none;
   }
 }
+
+.fx-picker-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--mx-text-dim);
+}

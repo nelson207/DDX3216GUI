@@ -1,4 +1,5 @@
 import { ParamKind } from "../ddxParamKind";
+import { fmtHz } from "./fxFormat";
 export const FX_LOFI = {
   type: 25,
   name: "LoFi",
@@ -36,7 +37,7 @@ export const FX_LOFI = {
       format: (v) => {
         // 20 Hz – 16 kHz, log
         const hz = 20 * Math.pow(800, v / 154);
-        return `${hz.toFixed(1)} Hz`;
+        return fmtHz(hz);
       },
     },
     {
@@ -62,7 +63,7 @@ export const FX_LOFI = {
       format: (v) => {
         // 20 Hz – 16 kHz, log
         const hz = 20 * Math.pow(800, v / 154);
-        return `${hz.toFixed(1)} Hz`;
+        return fmtHz(hz);
       },
     },
     {

@@ -1,4 +1,5 @@
 import { ParamKind } from "../ddxParamKind";
+import { fmtHz } from "./fxFormat";
 export const FX_ENHANCER = {
   type: 21,
   name: "Enhancer",
@@ -62,7 +63,7 @@ export const FX_ENHANCER = {
       format: (v) => {
         // 50 – 500 Hz, log
         const hz = 50 * Math.pow(500 / 50, v / 53);
-        return `${hz.toFixed(1)} Hz`;
+        return fmtHz(hz);
       },
     },
     {
